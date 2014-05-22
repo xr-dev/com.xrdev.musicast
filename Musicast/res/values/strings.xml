@@ -4,5 +4,9 @@
     <string name="app_name">Musicast</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="string_search">Buscar</string>
+    <string name="button_search">Iniciar Busca</string>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="string_loading">Carregando</string>
 
 </resources>
