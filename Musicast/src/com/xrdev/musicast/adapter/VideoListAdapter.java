@@ -85,9 +85,9 @@ public class VideoListAdapter extends BaseAdapter {
 		
 		final TextView descriptionView = (TextView) itemLayout.findViewById(R.id.text_video_description);
 		descriptionView.setText(videoItem.getDescription());
-
-		final TextView durationView = (TextView) itemLayout.findViewById(R.id.text_video_duration);
-		durationView.setText(Integer.toString(videoItem.getDuration()));
+		
+		final TextView viewCountView = (TextView) itemLayout.findViewById(R.id.text_video_viewcount);
+		viewCountView.setText(videoItem.getViewCount());
 
 		// Retornar o item dentro do layout.
 		return itemLayout;

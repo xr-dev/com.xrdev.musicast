@@ -12,7 +12,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" 
+        android:debuggable="true">
         <activity
             android:name="com.xrdev.musicast.activity.MainActivity"
             android:label="@string/app_name" >
@@ -26,6 +27,7 @@
             android:name="com.xrdev.musicast.activity.ResultActivity"
             android:label="@string/title_activity_result" >
         </activity>
+        
     </application>
-
+	<uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

@@ -6,6 +6,7 @@ import com.xrdev.musicast.R;
 import com.xrdev.musicast.R.layout;
 import com.xrdev.musicast.R.menu;
 import com.xrdev.musicast.adapter.VideoListAdapter;
+import com.xrdev.musicast.connection.YouTubeHandler;
 import com.xrdev.musicast.model.VideoItem;
 
 import android.os.AsyncTask;
@@ -77,25 +78,10 @@ public class ResultActivity extends ListActivity {
 		@Override
 		protected ArrayList<VideoItem> doInBackground(String... arg0) {
 			Log.i(TAG, "ResultActivity/AsyncTask: Entrando no doInBackground.");
-			try {
-				ArrayList<VideoItem> resultItems = new ArrayList<VideoItem>();
-				
-				Thread.sleep(300);
-				VideoItem item = new VideoItem("http://test", searchTerm + " (teste 1)", "Descrição", 0);
-				resultItems.add(item);
-				
-				Thread.sleep(300);
-				VideoItem item2 = new VideoItem("http://test", searchTerm + " (teste 2)", "Descrição", 0);
-				resultItems.add(item2);
-				
-				return resultItems;
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ArrayList<VideoItem> resultItems = YouTubeHandler.searchVideos(searchTerm);
 			
-			return null;
+			return resultItems;
+			
 		}
 		
 		@Override
