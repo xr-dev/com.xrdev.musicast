@@ -3,6 +3,7 @@ package com.xrdev.musicast.activity;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.R.layout;
 import com.xrdev.musicast.R.menu;
+import com.xrdev.musicast.connection.SpotifyWrapper;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -20,6 +22,7 @@ public class MainActivity extends Activity {
 	static private final String SEARCH_TERM = "searchTerm";
 	
 	Button searchButton;
+	Button jniTestButton;
 	EditText searchField;
 	
 	@Override
@@ -29,6 +32,7 @@ public class MainActivity extends Activity {
 		
 		// Inicializar objetos da UI.
 		searchButton = (Button) findViewById(R.id.searchButton);
+		jniTestButton = (Button) findViewById(R.id.testeStringJNI);
 		searchField = (EditText) findViewById(R.id.searchField); 
 		
 		
@@ -39,6 +43,15 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				startYoutubeSearch();
+			}
+
+		});
+		
+		jniTestButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				startJNITest();
 			}
 
 		});
@@ -66,6 +79,18 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 		
 		// 
+		
+	}
+	
+	public void startJNITest() {
+		Log.i(TAG, "[MainActivity] Iniciando teste de JNI/NDK.");
+		
+		String returnString = SpotifyWrapper.testeString();
+		
+		Toast.makeText(this, 
+				"Texto retornado da JNI: " + returnString, 
+				Toast.LENGTH_LONG)
+				.show();
 		
 	}
 

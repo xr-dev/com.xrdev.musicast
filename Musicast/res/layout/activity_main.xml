@@ -22,7 +22,7 @@
 
         <EditText
             android:id="@+id/searchField"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1" >
 
@@ -38,5 +38,13 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="@string/button_search" />
+
+    <Button
+        android:id="@+id/testeStringJNI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchButton"
+        android:layout_centerHorizontal="true"
+        android:text="Testar JNI" />
 
 </RelativeLayout>
