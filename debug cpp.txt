@@ -1,0 +1,38 @@
+I have similar problem as jimvonmoon, incl. warnings...:
+warning: while parsing target library list (at line 2): No segment defined for /system/bin/linker
+warning: Could not load shared library symbols for ...
+
+I think I found a workaround for this.
+
+After launch for each breakpoint already set i saw only:
+> No symbol table is loaded.  Use the "file" command.
+
+- after the application was launched, my library loaded, and running i paused app_process in eclipse debugger perspective
+- checked that my thread do not have source code attached - addresses only
+- given 
+
+> set solib-search-path ./obj/local/armeabi
+> file ./obj/local/armeabi/app_process
+as input for [Android Native Application Console] view
+
+output was:
+warning: while parsing target library list (at line 2): No segment defined for my.package.name
+warning: Could not load shared library symbols for libjnigraphics.so.
+Do you need "set solib-search-path" or "set sysroot"?
+warning: Unable to find dynamic linker breakpoint function.
+GDB will be unable to debug shared library initializers
+and track explicitly loaded dynamic code.
+warning: while parsing target library list (at line 2): No segment defined for my.package.name
+A program is being debugged already.
+Are you sure you want to change the file? (y or n) [answered Y; input not from terminal]
+Load new symbol table from PATH_TO_MY_PROJECT/obj/local/armeabi/app_process"? (y or n) [answered Y; input not from terminal]
+Reading symbols from PATH_TO_MY_PROJECT/obj/local/armeabi/app_process...done.
+
+WARNING: no debugging symbols found in PATH_TO_MY_PROJECT/obj/local/armeabi/app_process.
+Either the binary was compiled without debugging information
+or the debugging information was removed (e.g., with strip or strip -g).
+Debugger capabilities will be very limited.
+For further information: http://wiki/Main/GdbFaq#No_debugging_symbols_found
+
+- resumed process
+- previously set breakpoint automatically stopped execution or (if no breakpoint set) pause it again manually, and as for now it looks fine, i have source code, basic debugging seems to work

@@ -58,7 +58,7 @@ static sp_session_callbacks callbacks = {
 /**
  * Inicializa a conexão com o Spotify.
  */
-void* init_spotify(void *directory) {
+string init_spotify(void *directory) {
     string path = (char *)directory;
 
     sp_session_config config;
@@ -77,16 +77,46 @@ void* init_spotify(void *directory) {
     config.application_key = g_appkey;
     config.application_key_size = g_appkey_size;
 
-    config.user_agent = "YourAppName";
+    config.user_agent = "Musicast";
     config.callbacks = &callbacks;
     config.tracefile = trace_file.c_str();
+    // config.tracefile = NULL;
 
     sp_error error = sp_session_create(&config, &s_session);
+
+    string debug_strcallback;
 
     if (SP_ERROR_OK != error) {
         //Most calls in libspotify return an error enum, where 0 (SP_ERROR_OK) indicates success.
         //To be here means that Spotify has not been initialised and you will need to check the error code to see why.
+    	// Implementar tratamento de códigos de erro.
+    	switch (error) {
+    	case SP_ERROR_BAD_API_VERSION:
+    		debug_strcallback = "Erro: BAD_API_VERSION)";
+    		break;
+    	case SP_ERROR_BAD_USER_AGENT:
+    		debug_strcallback = "Erro: BAD_USER_AGENT";
+    		break;
+    	case SP_ERROR_BAD_APPLICATION_KEY:
+    		debug_strcallback = "Erro: SP_ERROR_BAD_APPLICATION_KEY";
+    		break;
+    	case SP_ERROR_API_INITIALIZATION_FAILED:
+    		debug_strcallback = "Erro: SP_ERROR_API_INITIALIZATION_FAILED";
+    		break;
+    	case SP_ERROR_INVALID_DEVICE_ID:
+    		debug_strcallback = "Erro: SP_ERROR_INVALID_DEVICE_ID";
+    		break;
+    	case SP_ERROR_CANT_OPEN_TRACE_FILE:
+    		debug_strcallback = "Erro: SP_ERROR_CANT_OPEN_TRACE_FILE";
+    		break;
+    	default:
+    		debug_strcallback = "Erro: erro desconhecido. Código:" + error;
+    	}
+    } else {
+    	debug_strcallback = "Debug: Sessão iniciada com sucesso.";
     }
+
+    return debug_strcallback;
 }
 
 

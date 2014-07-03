@@ -1,11 +1,7 @@
-D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//obj/local/armeabi/objs-debug/SpotifyWrapper/nativelib.o: \
- D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/nativelib.cpp \
- D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/nativelib.h \
- D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/jni.h \
- D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/sys/cdefs.h \
- D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/sys/cdefs_elf.h \
- D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/android/api-level.h \
- D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stdarg.h \
+D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//obj/local/armeabi/objs-debug/SpotifyWrapper/spotifywrapper.o: \
+ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/spotifywrapper.cpp \
+ D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/string \
+ D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_prolog.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_cprolog.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/features.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_stlport_version.h \
@@ -14,13 +10,12 @@ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//obj/local/armeabi/
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/host.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/_system.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/_android.h \
+ D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/sys/cdefs.h \
+ D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/sys/cdefs_elf.h \
+ D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/android/api-level.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/_gcc.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/stl_confix.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/_native_headers.h \
- D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_epilog.h \
- D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_config_compat_post.h \
- D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/string \
- D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_prolog.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/debug/_debug.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_string.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_alloc.h \
@@ -81,6 +76,7 @@ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//obj/local/armeabi/
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_cstdio.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stdio.h \
  D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/../include/stdio.h \
+ D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stdarg.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_construct.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_alloc.c \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_string_fwd.h \
@@ -147,20 +143,15 @@ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//obj/local/armeabi/
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_num_get.h \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_num_get.c \
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_string_io.c \
+ D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_epilog.h \
+ D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_config_compat_post.h \
  D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/spotifywrapper.h \
- D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/api.h
+ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/api.h \
+ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/key.h
 
-D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/nativelib.h:
+D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/string:
 
-D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/jni.h:
-
-D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/sys/cdefs.h:
-
-D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/sys/cdefs_elf.h:
-
-D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/android/api-level.h:
-
-D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stdarg.h:
+D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_prolog.h:
 
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_cprolog.h:
 
@@ -178,19 +169,17 @@ D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/_system.h:
 
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/_android.h:
 
+D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/sys/cdefs.h:
+
+D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/sys/cdefs_elf.h:
+
+D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/android/api-level.h:
+
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/_gcc.h:
 
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/stl_confix.h:
 
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/config/_native_headers.h:
-
-D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_epilog.h:
-
-D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_config_compat_post.h:
-
-D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/string:
-
-D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_prolog.h:
 
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/debug/_debug.h:
 
@@ -311,6 +300,8 @@ D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_cstdio.h:
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stdio.h:
 
 D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/../include/stdio.h:
+
+D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stdarg.h:
 
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_construct.h:
 
@@ -444,6 +435,12 @@ D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_num_get.c:
 
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_string_io.c:
 
+D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_epilog.h:
+
+D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_config_compat_post.h:
+
 D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/spotifywrapper.h:
 
 D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/api.h:
+
+D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/key.h:

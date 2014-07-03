@@ -6,6 +6,9 @@
  */
 
 #include "nativelib.h"
+#include <string>
+#include "spotifywrapper.h"
+using namespace std;
 
 
 /*
@@ -25,7 +28,19 @@ JNIEXPORT jstring JNICALL Java_com_xrdev_musicast_connection_SpotifyWrapper_test
 	return je->NewStringUTF("JNI configurado com sucesso!");
 }
 
-JNIEXPORT void JNICALL Java_com_xrdev_musicast_connection_SpotifyWrapper_init(JNIEnv *je, jclass jc, jstring directory) {
+JNIEXPORT jstring JNICALL Java_com_xrdev_musicast_connection_SpotifyWrapper_init(JNIEnv *je, jclass jc, jstring username, jstring password, jstring cache, jstring tracefile) {
+
+	const char* name = je->GetStringUTFChars(username, 0);
+	const char* pwd = je->GetStringUTFChars(password, 0);
+	const char* cache_location = je->GetStringUTFChars(cache, 0);
+	const char* trace_file = je->GetStringUTFChars(tracefile, 0);
+
+	// string debug_initcallback = init_spotify((void *) storage_path);
+
+
+	string debug_initcallback = init_spotify(name,pwd,cache_location,trace_file);
+
+	return je->NewStringUTF((const char*) debug_initcallback.c_str());
 
 }
 

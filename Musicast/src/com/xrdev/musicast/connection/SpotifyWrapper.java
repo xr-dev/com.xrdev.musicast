@@ -12,7 +12,7 @@ public class SpotifyWrapper {
 	
 	// Para implementar de fato no Spotify depois:
 	
-	public native static void init(String directory);
+	public native static String init(String login, String password, String directory, String tracefile);
 	
 	public native static void login(String username, String password);
 }

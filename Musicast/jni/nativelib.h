@@ -8,11 +8,6 @@
 #ifndef NATIVELIB_H_
 #define NATIVELIB_H_
 
-
-
-
-#endif /* NATIVELIB_H_ */
-
 #include <jni.h>
 
 // Interface para a biblioteca NATIVA.
@@ -33,8 +28,13 @@ extern "C" {
 JNIEXPORT jstring JNICALL Java_com_xrdev_musicast_connection_SpotifyWrapper_testeString(JNIEnv *je, jclass jc);
 
 
-JNIEXPORT void JNICALL Java_com_xrdev_musicast_connection_SpotifyWrapper_init(JNIEnv *je, jclass jc, jstring directory);
+JNIEXPORT jstring JNICALL Java_com_xrdev_musicast_connection_SpotifyWrapper_init(JNIEnv *je, jclass jc, jstring username, jstring password, jstring cache, jstring tracefile);
 JNIEXPORT void JNICALL Java_com_xrdev_musicast_connection_SpotifyWrapper_login(JNIEnv *je, jclass jc, jstring username, jstring password);
 
 }
+
+
+#endif /* NATIVELIB_H_ */
+
+
 

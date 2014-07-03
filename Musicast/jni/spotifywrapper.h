@@ -9,8 +9,10 @@
 #define SPOTIFYWRAPPER_H_
 
 #include "api.h"
+#include <string>
+using namespace std;
 
-void* init_spotify(void *directory);
+string init_spotify(void *directory);
 
 
 
