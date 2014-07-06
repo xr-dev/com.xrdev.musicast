@@ -104,22 +104,12 @@ public class MainActivity extends Activity {
 
 		Log.i(TAG, "[MainActivity] Iniciando teste de inicialização de sessão do Spotify.");
 		
-		String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.xrdev.musicast";
-		
-		String returnString = SpotifyWrapper.init(directory);
-		
-		Toast.makeText(this, 
-				"Texto retornado da JNI: " + returnString, 
-				Toast.LENGTH_LONG)
-				.show();
-		
-		
 	}
 	
 	private void spotifyInit() {
 		Log.i(TAG, "[MainActivity] Iniciando teste de inicialização de sessão do Spotify.");
 		
-		String cache = File.separator + "data" + File.separator + "data" + File.separator + "com.test.spotify" + File.separator + getCacheDir().getName();//set to empty string to disable cache
+		String cache = File.separator + "data" + File.separator + "data" + File.separator + "com.xrdev.musicast" + File.separator + getCacheDir().getName();//set to empty string to disable cache
 		String traceFile = cache + File.separator + "trace_file.txt";
 
 		try {
@@ -136,15 +126,16 @@ public class MainActivity extends Activity {
 		    /**
 		     * TODO: Debug com nome de usuário.
 		     */
-		    
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		    String responseString = SpotifyWrapper.init("gsb.barreto@gmail.com", "909750", cache, traceFile);
 		   
 		    Toast.makeText(this, 
 					"Texto retornado da JNI: " + responseString, 
 					Toast.LENGTH_LONG)
 					.show();
-
-		
 		
 	}
 

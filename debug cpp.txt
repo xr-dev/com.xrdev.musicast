@@ -1,3 +1,15 @@
+RESUMO:
+
+Pausar thread app_process
+Enviar os comandos no console gdb:
+
+set solib-search-path ./obj/local/armeabi
+file ./obj/local/armeabi/app_process
+
+Resumir o app_process
+
+
+
 I have similar problem as jimvonmoon, incl. warnings...:
 warning: while parsing target library list (at line 2): No segment defined for /system/bin/linker
 warning: Could not load shared library symbols for ...

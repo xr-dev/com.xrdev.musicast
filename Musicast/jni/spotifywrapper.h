@@ -12,7 +12,7 @@
 #include <string>
 using namespace std;
 
-string init_spotify(void *directory);
+string init_spotify(const char *username, const char *password,const char* cache_location,const char* trace_file);
 
 
 

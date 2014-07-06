@@ -11,6 +11,7 @@
 #include "spotifywrapper.h"
 #include "key.h"
 
+
 using namespace std;
 
 static sp_session *s_session;
@@ -58,20 +59,21 @@ static sp_session_callbacks callbacks = {
 /**
  * Inicializa a conexão com o Spotify.
  */
-string init_spotify(void *directory) {
-    string path = (char *)directory;
+string init_spotify(const char *username, const char *password,
+		const char* cache_location, const char* trace_file)
+ {
+
+	// int next_timeout = 0;
+	// pthread_mutex_init(&notify_mutex, NULL);
+	// pthread_cond_init(&notify_cond, NULL);
 
     sp_session_config config;
 
     memset(&config, 0, sizeof(config));
 
-    string cache_location = path + "/cache";
-    string settings_location = path + "/settings";
-    string trace_file = path + "/cache/trace.txt";
-
     config.api_version = SPOTIFY_API_VERSION;
-    config.cache_location = cache_location.c_str();
-    config.settings_location = settings_location.c_str();
+    config.cache_location = cache_location;
+    config.settings_location = cache_location;
 
     //these next two variables are defined in key.h
     config.application_key = g_appkey;
@@ -79,7 +81,7 @@ string init_spotify(void *directory) {
 
     config.user_agent = "Musicast";
     config.callbacks = &callbacks;
-    config.tracefile = trace_file.c_str();
+    config.tracefile = trace_file;
     // config.tracefile = NULL;
 
     sp_error error = sp_session_create(&config, &s_session);

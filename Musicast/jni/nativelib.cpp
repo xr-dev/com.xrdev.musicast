@@ -40,6 +40,7 @@ JNIEXPORT jstring JNICALL Java_com_xrdev_musicast_connection_SpotifyWrapper_init
 
 	string debug_initcallback = init_spotify(name,pwd,cache_location,trace_file);
 
+
 	return je->NewStringUTF((const char*) debug_initcallback.c_str());
 
 }
