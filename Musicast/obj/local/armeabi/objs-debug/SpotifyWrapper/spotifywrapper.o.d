@@ -147,7 +147,8 @@ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//obj/local/armeabi/
  D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/stl/_config_compat_post.h \
  D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/spotifywrapper.h \
  D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/api.h \
- D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/key.h
+ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/key.h \
+ D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/android/log.h
 
 D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport/string:
 
@@ -444,3 +445,5 @@ D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/spotifywrapper
 D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/api.h:
 
 D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni/key.h:
+
+D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include/android/log.h:

@@ -10,6 +10,10 @@
 #include <string>
 #include "spotifywrapper.h"
 #include "key.h"
+#include <android/log.h>
+
+#define APPNAME "Musicast"
+
 
 
 using namespace std;
@@ -19,6 +23,8 @@ static sp_session *s_session;
 //A message from the main Spotify thread
 static void log_message(sp_session *session, const char *data) {
     //do what you like with the log
+	__android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Logged message: %s",  data);
+
 }
 
 //A callback to indicate that we need to process events
@@ -63,10 +69,6 @@ string init_spotify(const char *username, const char *password,
 		const char* cache_location, const char* trace_file)
  {
 
-	// int next_timeout = 0;
-	// pthread_mutex_init(&notify_mutex, NULL);
-	// pthread_cond_init(&notify_cond, NULL);
-
     sp_session_config config;
 
     memset(&config, 0, sizeof(config));
@@ -84,6 +86,9 @@ string init_spotify(const char *username, const char *password,
     config.tracefile = trace_file;
     // config.tracefile = NULL;
 
+    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Cache location: %s", cache_location);
+    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Tracefile location: %s", trace_file);
+
     sp_error error = sp_session_create(&config, &s_session);
 
     string debug_strcallback;
@@ -94,28 +99,28 @@ string init_spotify(const char *username, const char *password,
     	// Implementar tratamento de códigos de erro.
     	switch (error) {
     	case SP_ERROR_BAD_API_VERSION:
-    		debug_strcallback = "Erro: BAD_API_VERSION)";
+    		debug_strcallback = "Error: BAD_API_VERSION)";
     		break;
     	case SP_ERROR_BAD_USER_AGENT:
-    		debug_strcallback = "Erro: BAD_USER_AGENT";
+    		debug_strcallback = "Error: BAD_USER_AGENT";
     		break;
     	case SP_ERROR_BAD_APPLICATION_KEY:
-    		debug_strcallback = "Erro: SP_ERROR_BAD_APPLICATION_KEY";
+    		debug_strcallback = "Error: SP_ERROR_BAD_APPLICATION_KEY";
     		break;
     	case SP_ERROR_API_INITIALIZATION_FAILED:
-    		debug_strcallback = "Erro: SP_ERROR_API_INITIALIZATION_FAILED";
+    		debug_strcallback = "Error: SP_ERROR_API_INITIALIZATION_FAILED";
     		break;
     	case SP_ERROR_INVALID_DEVICE_ID:
-    		debug_strcallback = "Erro: SP_ERROR_INVALID_DEVICE_ID";
+    		debug_strcallback = "Error: SP_ERROR_INVALID_DEVICE_ID";
     		break;
     	case SP_ERROR_CANT_OPEN_TRACE_FILE:
-    		debug_strcallback = "Erro: SP_ERROR_CANT_OPEN_TRACE_FILE";
+    		debug_strcallback = "Error: SP_ERROR_CANT_OPEN_TRACE_FILE";
     		break;
     	default:
-    		debug_strcallback = "Erro: erro desconhecido. Código:" + error;
+    		debug_strcallback = "Error: Code " + error;
     	}
     } else {
-    	debug_strcallback = "Debug: Sessão iniciada com sucesso.";
+    	debug_strcallback = "Debug: Session initialized.";
     }
 
     return debug_strcallback;
