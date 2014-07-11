@@ -44,7 +44,7 @@ public class VideoListAdapter extends BaseAdapter {
 	
 	}
 
-	// Retorna o número de itens na lista
+	// Retorna o nï¿½mero de itens na lista
 
 	@Override
 	public int getCount() {
@@ -70,7 +70,7 @@ public class VideoListAdapter extends BaseAdapter {
 	}
 
 
-	// Método mais importante, vai criar a View para cada item. É necessário mencionar o layout em XML gerado.
+	// MÃ©todo mais importante, vai criar a View para cada item. Ã© necessÃ¡rio mencionar o layout em XML gerado.
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final VideoItem videoItem = (VideoItem) mItems.get(position);

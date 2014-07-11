@@ -41,12 +41,12 @@ public class YouTubeHandler {
 		ArrayList<VideoItem> videoItemList = new ArrayList<VideoItem>();
 		
 		try {
-			// Construir o objeto que será a referência para todas as solicitações à API.
+			// Construir o objeto que serÃ¡ a referÃªncia para todas as solicitaÃ§Ãµes Ã  API.
 			youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
 		          public void initialize(HttpRequest request) throws IOException {}
 		        }).setApplicationName("musicast").build();
 			
-			System.out.println("[YoutubeHandler]: Conexão construída.");
+			System.out.println("[YoutubeHandler]: ConexÃ£o construÃ­da.");
 			YouTube.Search.List search = youtube.search().list("id,snippet");
 			
 			String apiKey = "AIzaSyBTXTaiH-BYye70pKDGc_Bpf1dkqiPDLcw";
@@ -61,13 +61,13 @@ public class YouTubeHandler {
 			search.setType("video");
 
 			/*
-			 * setFields: reduz as informações retornadas para apenas os campos necessários.
+			 * setFields: reduz as informaÃ§Ãµes retornadas para apenas os campos necessÃ¡rios.
 			 */
 			// search.setFields("items(id/kind,id/videoId,snippet/title,snippet/description)"); --> Sem viewcount.
 			
-			search.setFields("items(id/kind,id/videoId)"); // Pega apenas o ID. Pegar o restante do objeto Video que será encontrado.
+			search.setFields("items(id/kind,id/videoId)"); // Pega apenas o ID. Pegar o restante do objeto Video que serï¿½ encontrado.
 			
-			// Campos possíveis: https://developers.google.com/youtube/v3/docs/search
+			// Campos possï¿½veis: https://developers.google.com/youtube/v3/docs/search
 			search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
 			
 			System.out.println("[YouTubeHandler]: Iniciando busca.");
@@ -79,7 +79,7 @@ public class YouTubeHandler {
 			List<String> videoIds = new ArrayList<String>();
 			
 			/**
-			 * Pegar apenas os IDs dos vídeos encontrados.
+			 * Pegar apenas os IDs dos vï¿½deos encontrados.
 			 */
 			if (searchResultList != null) {
 				 Iterator resultsIterator = searchResultList.iterator();
@@ -88,7 +88,7 @@ public class YouTubeHandler {
 					 SearchResult searchResult = (SearchResult) resultsIterator.next();
 					 ResourceId rId = searchResult.getId(); // Pegar o ID do resultado.
 					 
-					 // Verifica se o resultado é um video. Adiciona a lista de IDs.
+					 // Verifica se o resultado Ã© um video. Adiciona a lista de IDs.
 					 if (rId.getKind().equals("youtube#video")) {
 				    	 
 						 videoIds.add(rId.getVideoId());
@@ -112,9 +112,9 @@ public class YouTubeHandler {
 				  */
 				 
 				 /**
-				  * Fazer uma busca usando Videos.list da API. Esta lista retorna objetos "Video", uma representação em Java
+				  * Fazer uma busca usando Videos.list da API. Esta lista retorna objetos "Video", uma representaÃ§ao em Java
 				  * do objeto JSON enviado pelo servidor.
-				  * Por este objeto, obter título, descrição e estatísticas (como viewcount).
+				  * Por este objeto, obter tÃ­tulo, descriÃ§Ã£o e estatÃ­sticas (como viewcount).
 				  */
 				 
 				 /**
@@ -122,10 +122,10 @@ public class YouTubeHandler {
 				  * youtube.videos() - chamada da API
 				  * .list("id,snippet,statistics") - Informar quais atributos do JSON retornar - 
 				  * https://developers.google.com/youtube/v3/docs/videos#resource
-				  * .setId - A única forma de pesquisar os vídeos desta forma é por ID. Juntar tudo usando vírgula como delimitador.
+				  * .setId - A Ãºnica forma de pesquisar os vÃ­deos desta forma Ã© por ID. Juntar tudo usando vÃ­rgula como delimitador.
 				  * .execute() - Autoexplicativo.
 				  */
-				 System.out.println("ÝouTubeHandler]: Montando lista de Objetos Video com IDs encontrados");
+				 System.out.println("[YouTubeHandler]: Montando lista de Objetos Video com IDs encontrados");
 				 VideoListResponse vlr = youtube.videos().list("id,snippet,statistics")
 						 .setId(TextUtils.join(",", videoIds))
 						 .setKey(apiKey)
@@ -133,9 +133,9 @@ public class YouTubeHandler {
 				 
 				 for (Video video : vlr.getItems()) {
 					 /**
-					  * Para cada video, buscar as informações relevantes e instanciar um VideoItem.
+					  * Para cada video, buscar as informaÃ§Ãµes relevantes e instanciar um VideoItem.
 					  * @TODO
-					  * Isso deve ser alterado na versão final. Trabalhar diretamente com os videos e enviá-los ao Chromecast?
+					  * Isso deve ser alterado na versÃ£o final. Trabalhar diretamente com os videos e enviÃ¡-los ao Chromecast?
 					  */
 					 String videoId = video.getId();
 					 String title = video.getSnippet().getTitle();
@@ -144,7 +144,7 @@ public class YouTubeHandler {
 					 
 					 // Adicionar o VideoItem ao Array.
 					 videoItemList.add(new VideoItem(videoId, title, description, viewCount));
-					 System.out.println("[YouTubeHandler] Video adicionado à lista para o View: " + title);
+					 System.out.println("[YouTubeHandler] Video adicionado Ã  lista para o View: " + title);
 					 
 				 }
 			}

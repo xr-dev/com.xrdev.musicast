@@ -43,7 +43,7 @@ public class ResultActivity extends ListActivity {
 		// Criar o adapter.
 		mAdapter = new VideoListAdapter(getApplicationContext());
 		
-		// Fazer o attach do adapter à ListView:
+		// Fazer o attach do adapter ï¿½ ListView:
 		getListView().setAdapter(mAdapter);
 		
 	}
@@ -57,7 +57,7 @@ public class ResultActivity extends ListActivity {
 	
 	
 	/**
-	 * Inner class para execução em segundo plano (AsyncTask):
+	 * Inner class para execuÃ§Ã£o em segundo plano (AsyncTask):
 	 */
 
 	public class VideoInfoDownloader extends AsyncTask<String, Void, ArrayList<VideoItem>>{

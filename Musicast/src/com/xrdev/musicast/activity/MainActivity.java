@@ -5,7 +5,6 @@ import java.io.File;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.R.layout;
 import com.xrdev.musicast.R.menu;
-import com.xrdev.musicast.connection.SpotifyWrapper;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -78,7 +77,7 @@ public class MainActivity extends Activity {
 	public void startYoutubeSearch() {
 		Log.i(TAG, "[MainActivity] Abrindo Activity de resultado.");
 		
-		// Colocar o conte˙do do campo como um extra no Intent para a Activity de resultado.
+		// Colocar o conte√∫do do campo como um extra no Intent para a Activity de resultado.
 		
 		Intent intent = new Intent(MainActivity.this, ResultActivity.class);
 		String searchTerm = searchField.getText().toString();
@@ -102,40 +101,14 @@ public class MainActivity extends Activity {
 		**/
 		
 
-		Log.i(TAG, "[MainActivity] Iniciando teste de inicializaÁ„o de sess„o do Spotify.");
+		Log.i(TAG, "[MainActivity] Iniciando teste de inicializa√ß√£o de sess√£o do Spotify.");
 		
 	}
 	
 	private void spotifyInit() {
-		Log.i(TAG, "[MainActivity] Iniciando teste de inicializaÁ„o de sess„o do Spotify.");
+		Log.i(TAG, "[MainActivity] Iniciando teste de inicializa√ß√£o de sess√£o do Spotify.");
 		
-		String cache = File.separator + "data" + File.separator + "data" + File.separator + "com.xrdev.musicast" + File.separator + getCacheDir().getName();//set to empty string to disable cache
-		String traceFile = cache + File.separator + "trace_file.txt";
-
-		try {
-		    File dir = new File(cache);
-		    if (!dir.exists()) {
-		    	dir.mkdir();
-		    }
-		    File f = new File(traceFile);
-		    if (!f.exists()) {
-		    	Log.w(getClass().getSimpleName(), "trace file does not exist, creating...");
-		    	f.createNewFile();
-		    }
-		    
-		    /**
-		     * TODO: Debug com nome de usu·rio.
-		     */
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
-		    String responseString = SpotifyWrapper.init("gsb.barreto@gmail.com", "909750", cache, traceFile);
-		   
-		    Toast.makeText(this, 
-					"Texto retornado da JNI: " + responseString, 
-					Toast.LENGTH_LONG)
-					.show();
 		
 	}
 

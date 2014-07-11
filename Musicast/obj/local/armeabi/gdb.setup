@@ -1,4 +1,0 @@
-set solib-search-path D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//obj/local/armeabi
-directory D:/Android/android-ndk-r9d/platforms/android-14/arch-arm/usr/include D:/Android/android-ndk-r9d/sources/cxx-stl/stlport/stlport D:/Android/android-ndk-r9d/sources/cxx-stl//gabi++/include D:/Users/Guilherme/Documents/Git/com.xrdev.musicast/Musicast//jni
-file obj/local/armeabi/app_process
-target remote :5039
