@@ -10,13 +10,12 @@
 
     <application
         android:allowBackup="true"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" 
-        android:debuggable="true" >
-        
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="com.xrdev.musicast.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,11 +24,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.xrdev.musicast.activity.ResultActivity"
+            android:name=".activity.ResultActivity"
             android:label="@string/title_activity_result" >
         </activity>
-        
+        <activity
+            android:name=".activity.SpotifyPlayer"
+            android:label="@string/title_activity_spotify_player"
+            android:launchMode="singleInstance" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="callback"
+                    android:scheme="musicast"/>
+            </intent-filter>
+
+
+        </activity>
     </application>
-	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 </manifest>

@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 		
 		// Inicializar objetos da UI.
 		searchButton = (Button) findViewById(R.id.searchButton);
-		jniTestButton = (Button) findViewById(R.id.testeStringJNI);
+		jniTestButton = (Button) findViewById(R.id.testeSpotify);
 		searchField = (EditText) findViewById(R.id.searchField); 
 
 		
@@ -53,8 +53,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// startJNITest();
-				spotifyInit();
+				startSpotifyTest();
 			}
 
 			
@@ -88,27 +87,12 @@ public class MainActivity extends Activity {
 		
 	}
 	
-	public void startJNITest() {
-		/**Log.i(TAG, "[MainActivity] Iniciando teste de JNI/NDK.");
-		
-		String returnString = SpotifyWrapper.testeString();
-		
-		Toast.makeText(this, 
-				"Texto retornado da JNI: " + returnString, 
-				Toast.LENGTH_LONG)
-				.show();
-		
-		**/
-		
+	public void startSpotifyTest() {
+		Log.i(TAG, "[MainActivity] Iniciando teste do Spotify.");
 
-		Log.i(TAG, "[MainActivity] Iniciando teste de inicialização de sessão do Spotify.");
-		
-	}
-	
-	private void spotifyInit() {
-		Log.i(TAG, "[MainActivity] Iniciando teste de inicialização de sessão do Spotify.");
-		
-		
+        Intent intent = new Intent(MainActivity.this, SpotifyPlayer.class);
+
+        startActivity(intent);
 		
 	}
 
