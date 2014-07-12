@@ -3,23 +3,19 @@ package com.xrdev.musicast.activity;
 import java.util.ArrayList;
 
 import com.xrdev.musicast.R;
-import com.xrdev.musicast.R.layout;
-import com.xrdev.musicast.R.menu;
 import com.xrdev.musicast.adapter.VideoListAdapter;
 import com.xrdev.musicast.connection.YouTubeHandler;
 import com.xrdev.musicast.model.VideoItem;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 
-public class ResultActivity extends ListActivity {
+public class YoutubeResultActivity extends ListActivity {
 
 	private String searchTerm;
 	private static final String SEARCH_TERM = "searchTerm";
@@ -36,7 +32,7 @@ public class ResultActivity extends ListActivity {
 		
 		// Iniciar a task que faz o download.
 		if (extras != null) {
-			searchTerm = (String) extras.get(ResultActivity.SEARCH_TERM);
+			searchTerm = (String) extras.get(YoutubeResultActivity.SEARCH_TERM);
 			new VideoInfoDownloader().execute(searchTerm);
 		}
 		
@@ -70,7 +66,7 @@ public class ResultActivity extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			// Preparar o spinner.
-			pd = new ProgressDialog(ResultActivity.this);
+			pd = new ProgressDialog(YoutubeResultActivity.this);
 			pd.setMessage(getString(R.string.string_loading));
 			pd.show();
 		}
@@ -81,7 +77,6 @@ public class ResultActivity extends ListActivity {
 			ArrayList<VideoItem> resultItems = YouTubeHandler.searchVideos(searchTerm);
 			
 			return resultItems;
-			
 		}
 		
 		@Override

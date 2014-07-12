@@ -24,26 +24,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ResultActivity"
+            android:name=".activity.YoutubeResultActivity"
             android:label="@string/title_activity_result" >
         </activity>
         <activity
-            android:name=".activity.SpotifyPlayer"
+            android:name=".activity.SpotifyAuthActivity"
             android:label="@string/title_activity_spotify_player"
             android:launchMode="singleInstance" >
-
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="callback"
-                    android:scheme="musicast"/>
+                    android:scheme="musicast" />
             </intent-filter>
-
-
+        </activity>
+        <activity
+            android:name=".activity.LoginTest"
+            android:label="@string/title_activity_login_test" >
         </activity>
     </application>
 

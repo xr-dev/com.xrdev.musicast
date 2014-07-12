@@ -1,11 +1,5 @@
 package com.xrdev.musicast.connection;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import android.text.TextUtils;
 
 import com.google.api.client.http.HttpRequest;
@@ -21,6 +15,12 @@ import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.xrdev.musicast.model.VideoItem;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class YouTubeHandler {

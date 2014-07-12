@@ -1,13 +1,8 @@
 package com.xrdev.musicast.activity;
 
-import java.io.File;
-
 import com.xrdev.musicast.R;
-import com.xrdev.musicast.R.layout;
-import com.xrdev.musicast.R.menu;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
@@ -16,7 +11,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -78,7 +72,7 @@ public class MainActivity extends Activity {
 		
 		// Colocar o conteúdo do campo como um extra no Intent para a Activity de resultado.
 		
-		Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+		Intent intent = new Intent(MainActivity.this, YoutubeResultActivity.class);
 		String searchTerm = searchField.getText().toString();
 		intent.putExtra(MainActivity.SEARCH_TERM, searchTerm);
 		startActivity(intent);
@@ -90,7 +84,7 @@ public class MainActivity extends Activity {
 	public void startSpotifyTest() {
 		Log.i(TAG, "[MainActivity] Iniciando teste do Spotify.");
 
-        Intent intent = new Intent(MainActivity.this, SpotifyPlayer.class);
+        Intent intent = new Intent(MainActivity.this, SpotifyAuthActivity.class);
 
         startActivity(intent);
 		

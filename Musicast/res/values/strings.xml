@@ -9,5 +9,7 @@
     <string name="title_activity_result">ResultActivity</string>
     <string name="string_loading">Carregando</string>
     <string name="title_activity_spotify_player">SpotifyPlayer</string>
+    <string name="title_activity_login_test">LoginTest</string>
+    <string name="string_success">Success</string>
 
 </resources>
