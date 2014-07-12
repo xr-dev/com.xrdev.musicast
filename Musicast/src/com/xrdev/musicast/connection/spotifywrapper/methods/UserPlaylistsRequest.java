@@ -1,0 +1,61 @@
+package com.xrdev.musicast.connection.spotifywrapper.methods;
+
+import com.google.common.util.concurrent.SettableFuture;
+import net.sf.json.JSONObject;
+import com.xrdev.musicast.connection.spotifywrapper.JsonUtil;
+import com.xrdev.musicast.connection.spotifywrapper.exceptions.*;
+import com.xrdev.musicast.connection.spotifywrapper.models.Page;
+import com.xrdev.musicast.connection.spotifywrapper.models.SimplePlaylist;
+
+import java.io.IOException;
+
+public class UserPlaylistsRequest extends AbstractRequest {
+
+  public UserPlaylistsRequest(Builder builder) {
+   super(builder);
+  }
+
+  public SettableFuture<Page<SimplePlaylist>> getAsync() {
+    SettableFuture<Page<SimplePlaylist>> simplePlaylistsPageFuture = SettableFuture.create();
+
+    try {
+      final String jsonString = getJson();
+      final JSONObject jsonObject = JSONObject.fromObject(jsonString);
+
+      simplePlaylistsPageFuture.set(JsonUtil.createSimplePlaylistsPage(jsonObject));
+    } catch (Exception e) {
+      simplePlaylistsPageFuture.setException(e);
+    }
+
+    return simplePlaylistsPageFuture;
+  }
+
+  public Page<SimplePlaylist> get() throws IOException, WebApiException {
+    final String jsonString = getJson();
+    final JSONObject jsonObject = JSONObject.fromObject(jsonString);
+
+    return JsonUtil.createSimplePlaylistsPage(jsonObject);
+  }
+
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder extends AbstractRequest.Builder<Builder> {
+
+    public Builder username(String username) {
+      assert (username != null);
+      return path(String.format("/v1/users/%s/playlists", username));
+    }
+
+    public Builder accessToken(String accessToken) {
+      return header("Authorization", "Bearer " + accessToken);
+    }
+
+    public UserPlaylistsRequest build() {
+      return new UserPlaylistsRequest(this);
+    }
+
+  }
+}
