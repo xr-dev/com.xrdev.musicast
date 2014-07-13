@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
 	static private final String SEARCH_TERM = "searchTerm";
 	
 	Button searchButton;
-	Button jniTestButton;
+	Button spotifyTestButton;
 	EditText searchField;
 	
 	@Override
@@ -28,8 +28,8 @@ public class MainActivity extends Activity {
 		
 		// Inicializar objetos da UI.
 		searchButton = (Button) findViewById(R.id.searchButton);
-		jniTestButton = (Button) findViewById(R.id.testeSpotify);
-		searchField = (EditText) findViewById(R.id.searchField); 
+		spotifyTestButton = (Button) findViewById(R.id.spotify_test_login);
+		searchField = (EditText) findViewById(R.id.youtube_search_field);
 
 		
 		// Incluir os listeners aos elementos da UI.
@@ -43,16 +43,15 @@ public class MainActivity extends Activity {
 
 		});
 		
-		jniTestButton.setOnClickListener(new OnClickListener() {
+		spotifyTestButton.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				startSpotifyTest();
-			}
+            @Override
+            public void onClick(View v) {
+                startSpotifyTest();
+            }
 
-			
 
-		});
+        });
 
 		
 		

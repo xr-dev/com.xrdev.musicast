@@ -6,14 +6,27 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.xrdev.musicast.activity.SpotifyAuthActivity">
+    tools:context="com.xrdev.musicast.activity.SpotifyAuthActivity"
+    android:background="@drawable/spotify_login_background">
 
 
-    <WebView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/spotifyAuthWebView"
-        android:layout_alignParentTop="true"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/text_spotify_login_description"
+        android:id="@+id/textLogin"
+        android:gravity="center_horizontal"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/string_spotify_login_button"
+        android:id="@+id/spotify_login_button"
+        android:background="#ff9adb00"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

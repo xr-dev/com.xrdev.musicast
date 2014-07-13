@@ -15,13 +15,13 @@
         android:layout_alignParentTop="true" >
 
         <TextView
-            android:id="@+id/searchLabel"
+            android:id="@+id/search_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/string_search" />
 
         <EditText
-            android:id="@+id/searchField"
+            android:id="@+id/youtube_search_field"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1" >
@@ -40,11 +40,11 @@
         android:text="@string/button_search" />
 
     <Button
-        android:id="@+id/testeSpotify"
+        android:id="@+id/spotify_test_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/searchButton"
         android:layout_centerHorizontal="true"
-        android:text="Testar Spotify" />
+        android:text="Test Spotify Login Activity" />
 
 </RelativeLayout>

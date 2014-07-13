@@ -29,8 +29,9 @@
         </activity>
         <activity
             android:name=".activity.SpotifyAuthActivity"
-            android:label="@string/title_activity_spotify_player"
-            android:launchMode="singleInstance" >
+            android:label="@string/title_activity_spotify_login"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -45,6 +46,17 @@
         <activity
             android:name=".activity.LoginTest"
             android:label="@string/title_activity_login_test" >
+        </activity>
+
+        <service
+            android:name=".connection.SpotifyService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <activity
+            android:name=".activity.SpotifyResultActivity"
+            android:label="@string/title_activity_spotify_result" >
         </activity>
     </application>
 
