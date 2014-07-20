@@ -47,4 +47,12 @@
         android:layout_centerHorizontal="true"
         android:text="Test Spotify Login Activity" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Spotify API Init"
+        android:id="@+id/spotify_test_api_init"
+        android:layout_below="@+id/spotify_test_login"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

@@ -31,7 +31,7 @@
             android:name=".activity.SpotifyAuthActivity"
             android:label="@string/title_activity_spotify_login"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -55,8 +55,12 @@
         </service>
 
         <activity
-            android:name=".activity.SpotifyResultActivity"
-            android:label="@string/title_activity_spotify_result" >
+            android:name=".activity.PlaylistsActivity"
+            android:label="@string/title_activity_spotify_playlists" >
+        </activity>
+        <activity
+            android:name=".activity.BinderActivityTest"
+            android:label="@string/title_activity_binder_activity_test" >
         </activity>
     </application>
 

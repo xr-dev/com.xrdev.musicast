@@ -18,7 +18,8 @@ public class MainActivity extends Activity {
 	static private final String SEARCH_TERM = "searchTerm";
 	
 	Button searchButton;
-	Button spotifyTestButton;
+	Button spotifyTestLogin;
+    Button spotifyTestAPI;
 	EditText searchField;
 	
 	@Override
@@ -28,7 +29,8 @@ public class MainActivity extends Activity {
 		
 		// Inicializar objetos da UI.
 		searchButton = (Button) findViewById(R.id.searchButton);
-		spotifyTestButton = (Button) findViewById(R.id.spotify_test_login);
+		spotifyTestLogin = (Button) findViewById(R.id.spotify_test_login);
+        spotifyTestAPI = (Button) findViewById(R.id.spotify_test_api_init);
 		searchField = (EditText) findViewById(R.id.youtube_search_field);
 
 		
@@ -43,16 +45,25 @@ public class MainActivity extends Activity {
 
 		});
 		
-		spotifyTestButton.setOnClickListener(new OnClickListener() {
+		spotifyTestLogin.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                startSpotifyTest();
+                startLoginTest();
             }
 
 
         });
 
+        spotifyTestAPI.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startApiTest();
+            }
+
+
+        });
 		
 		
 	}
@@ -67,7 +78,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void startYoutubeSearch() {
-		Log.i(TAG, "[MainActivity] Abrindo Activity de resultado.");
+		Log.i(TAG, "Abrindo Activity de resultado. / Opening Result Activity.");
 		
 		// Colocar o conteúdo do campo como um extra no Intent para a Activity de resultado.
 		
@@ -80,13 +91,21 @@ public class MainActivity extends Activity {
 		
 	}
 	
-	public void startSpotifyTest() {
-		Log.i(TAG, "[MainActivity] Iniciando teste do Spotify.");
+	public void startLoginTest() {
+		Log.i(TAG, "Iniciando teste de login do Spotify. / Starting Spotify Login Test.");
 
         Intent intent = new Intent(MainActivity.this, SpotifyAuthActivity.class);
 
         startActivity(intent);
 		
 	}
+
+    public void startApiTest() {
+        Log.i(TAG, "Iniciando teste da API do Spotify. / Starting Spotify API test.");
+
+        Intent intent = new Intent(MainActivity.this, PlaylistsActivity.class);
+
+        startActivity(intent);
+    }
 
 }

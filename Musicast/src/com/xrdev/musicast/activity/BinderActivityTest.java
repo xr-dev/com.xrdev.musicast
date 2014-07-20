@@ -1,42 +1,36 @@
 package com.xrdev.musicast.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-
 import com.xrdev.musicast.R;
+import com.xrdev.musicast.connection.SpotifyServiceBinder;
 
-public class SpotifyResultActivity extends Activity {
+public class BinderActivityTest extends Activity {
 
-    TextView mTextView;
-    String accessToken;
+    private static final String TAG = "Teste Binder -> Redirecionamento para Auth.";
+    private SpotifyServiceBinder mSpotifyBinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spotify_result);
+        setContentView(R.layout.activity_binder_activity_test);
 
-        mTextView = (TextView) findViewById(R.id.textview_spotify_result);
+        Log.d(TAG, "BinderActivityTest.onCreate()");
 
-        Intent recvIntent = getIntent();
-        Bundle extras = recvIntent.getExtras();
+        mSpotifyBinder = new SpotifyServiceBinder(this);
 
-        // Iniciar a task que faz o download.
-        if (extras != null) {
-            accessToken = (String) extras.get("accessToken");
-        }
+        mSpotifyBinder.bindService();
 
-        mTextView.append("\n Access token: " + accessToken);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.spotify_result, menu);
+        getMenuInflater().inflate(R.menu.binder_activity_test, menu);
         return true;
     }
 

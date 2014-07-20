@@ -11,11 +11,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.xrdev.musicast.R;
-import com.spotify.sdk.android.Spotify;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
 import com.spotify.sdk.android.playback.ConnectionStateCallback;
-import com.xrdev.musicast.connection.SpotifyService;
 import com.xrdev.musicast.connection.SpotifyServiceBinder;
 
 
@@ -35,15 +33,16 @@ public class SpotifyAuthActivity extends Activity implements
 
         mLoginButton = (Button) findViewById(R.id.spotify_login_button);
 
+        mSpotifyBinder = new SpotifyServiceBinder(this);
+        mSpotifyBinder.bindService();
+
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openLoginWindow();
+                mSpotifyBinder.getService().login(SpotifyAuthActivity.this);
             }
         });
 
-        mSpotifyBinder = new SpotifyServiceBinder(this);
-        mSpotifyBinder.bindService();
 
     }
 
@@ -70,6 +69,7 @@ public class SpotifyAuthActivity extends Activity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
+        // Será executado quando o usuário JÁ tiver logado pelo browser, por meio do IntentFilter.
         super.onNewIntent(intent);
 
         Log.i(TAG,"Entrando no onNewIntent");
@@ -80,26 +80,22 @@ public class SpotifyAuthActivity extends Activity implements
             AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
             // Spotify spotify = new Spotify(response.getAccessToken());
             String accessToken = response.getAccessToken();
+            //TODO: Code não está sendo obtido corretamente de response.
+            String code = response.getCode();
 
+
+
+            // mSpotifyBinder.getService().setAccessToken(accessToken);
+            mSpotifyBinder.getService().setCode(code);
 
             Log.i(TAG, "Access token obtido: " + accessToken);
+            Log.i(TAG, "Code obtido: " + code);
+
 
             // Iniciar o serviço que manterá a Spotify Web API.
+            mSpotifyBinder.getService().initWebApi();
 
-            Intent intent1 = new Intent(SpotifyAuthActivity.this, SpotifyResultActivity.class);
-            intent1.putExtra("accessToken",accessToken);
-            startActivity(intent1);
         }
-
-    }
-
-
-    public void openLoginWindow() {
-
-        // Para autenticação é necessário definir os escopos de acesso (array de Strings do quarto parâmetro.
-        // https://developer.spotify.com/web-api/using-scopes/
-
-        mSpotifyBinder.getService().login(this);
 
     }
 

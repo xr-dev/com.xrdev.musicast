@@ -12,7 +12,9 @@
     <string name="title_activity_login_test">LoginTest</string>
     <string name="string_success">Success</string>
     <string name="string_spotify_login_button">LOG IN TO SPOTIFY</string>
-    <string name="text_spotify_login_description">Log in with your Spotify account and start casting the videos of your favorite songs to Chromecast! \n\n You will be redirected to your browser to log in.</string>
-    <string name="title_activity_spotify_result">SpotifyResultActivity</string>
+    <string name="string_spotify_login_description">Log in with your Spotify account and start casting the videos of your favorite songs to Chromecast! \n\n You will be redirected to your browser to log in.</string>
+    <string name="title_activity_spotify_playlists">Playlists</string>
+    <string name="title_activity_binder_activity_test">BinderActivityTest</string>
+    <string name="string_tracks">tracks</string>
 
 </resources>
