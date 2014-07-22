@@ -86,8 +86,7 @@ public class MainActivity extends Activity {
 		String searchTerm = searchField.getText().toString();
 		intent.putExtra(MainActivity.SEARCH_TERM, searchTerm);
 		startActivity(intent);
-		
-		// 
+
 		
 	}
 	

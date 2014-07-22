@@ -14,6 +14,7 @@ import com.xrdev.musicast.R;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
 import com.spotify.sdk.android.playback.ConnectionStateCallback;
+import com.xrdev.musicast.connection.SpotifyHandler;
 import com.xrdev.musicast.connection.SpotifyServiceBinder;
 
 
@@ -22,6 +23,7 @@ public class SpotifyAuthActivity extends Activity implements
 
     // TODO: Armazenar os IDs num .properties?
     private static final String TAG = "SpotifyAuthActivity";
+    private static final String EXTRA_CODE = "code";
     private SpotifyServiceBinder mSpotifyBinder;
 
     private Button mLoginButton;
@@ -79,6 +81,7 @@ public class SpotifyAuthActivity extends Activity implements
             Log.d(TAG, uri.toString());
             AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
             // Spotify spotify = new Spotify(response.getAccessToken());
+
             String accessToken = response.getAccessToken();
             //TODO: Code não está sendo obtido corretamente de response.
             String code = response.getCode();
@@ -86,14 +89,23 @@ public class SpotifyAuthActivity extends Activity implements
 
 
             // mSpotifyBinder.getService().setAccessToken(accessToken);
-            mSpotifyBinder.getService().setCode(code);
+            // mSpotifyBinder.getService().setCode(code);
+
+            Intent playlistIntent = new Intent(SpotifyAuthActivity.this, PlaylistsActivity.class);
+            playlistIntent.putExtra(EXTRA_CODE, code);
+            startActivity(playlistIntent);
+
+            // SpotifyHandler.setAuthCredentials(getApplicationContext(), code);
+
+
+
 
             Log.i(TAG, "Access token obtido: " + accessToken);
             Log.i(TAG, "Code obtido: " + code);
 
 
             // Iniciar o serviço que manterá a Spotify Web API.
-            mSpotifyBinder.getService().initWebApi();
+            // mSpotifyBinder.getService().initWebApi();
 
         }
 
