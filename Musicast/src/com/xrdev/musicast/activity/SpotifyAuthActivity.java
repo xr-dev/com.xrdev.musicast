@@ -35,13 +35,14 @@ public class SpotifyAuthActivity extends Activity implements
 
         mLoginButton = (Button) findViewById(R.id.spotify_login_button);
 
-        mSpotifyBinder = new SpotifyServiceBinder(this);
-        mSpotifyBinder.bindService();
+        //mSpotifyBinder = new SpotifyServiceBinder(this);
+        //mSpotifyBinder.bindService();
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSpotifyBinder.getService().login(SpotifyAuthActivity.this);
+                // mSpotifyBinder.getService().login(SpotifyAuthActivity.this);
+                SpotifyHandler.openLoginPrompt(SpotifyAuthActivity.this);
             }
         });
 

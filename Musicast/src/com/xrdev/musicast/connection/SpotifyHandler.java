@@ -69,7 +69,7 @@ public class SpotifyHandler {
             }
 
         } catch (Exception e) {
-            Log.e(TAG, "Erro ao obter listas de reprodução do usuário. / Unable to get user playlists.");
+            Log.e(TAG, "Erro ao obter listas de reprodução do usuário. / Unable to get user playlists. Error: " + e.getMessage());
         }
 
         return result;
@@ -88,8 +88,7 @@ public class SpotifyHandler {
                 return api.getMe().accessToken(accessToken).build().get();
             }
         } catch (Exception e) {
-            Log.e(TAG, "Não foi possível obter os dados do usuário atual. / Unable to get data about current user.");
-            e.printStackTrace();
+            Log.e(TAG, "Não foi possível obter os dados do usuário atual. / Unable to get data about current user. Error: " + e.getMessage());
         }
         return null;
     }
@@ -125,7 +124,7 @@ public class SpotifyHandler {
 
 
         } catch (Exception e) {
-            Log.e(TAG,"Não foi possível fazer login à Web API. / Unable to login to Web API.");
+            Log.e(TAG,"Não foi possível fazer login à Web API. / Unable to login to Web API. Error: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -135,6 +134,12 @@ public class SpotifyHandler {
         Intent intent = new Intent(context, SpotifyAuthActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
+
+    public static void openLoginPrompt(Activity activity) {
+        Log.d(TAG, "Abrindo browser pelo SpotifyHandler. / Opening browser via SpotifyHandler.");
+        SpotifyAuthentication.openAuthWindow(CLIENT_ID, "code", REDIRECT_URI,
+                new String[]{"user-read-private", "playlist-read-private", "playlist-modify", "playlist-modify-private"}, null, activity);
     }
 
     public static void setCodeToPrefs(Context context, String code) {

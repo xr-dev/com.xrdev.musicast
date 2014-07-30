@@ -21,8 +21,8 @@ public class PlaylistItem {
         this.name = name;
     }
 
-    public int getNumTracks() {
-        return numTracks;
+    public String getNumTracks() {
+        return Integer.toString(numTracks);
     }
 
     public void setNumTracks(int numTracks) {

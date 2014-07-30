@@ -73,7 +73,7 @@ public class PlaylistAdapter extends BaseAdapter {
 	// Método mais importante, vai criar a View para cada item. é necessário mencionar o layout em XML gerado.
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		final PlaylistItem playlistItem = (PlaylistItem) mItems.get(position);
+		final PlaylistItem playlistItem = mItems.get(position);
 		
 		// Inflar o layout para cada item:
 		LayoutInflater li = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -84,7 +84,7 @@ public class PlaylistAdapter extends BaseAdapter {
 		titleView.setText(playlistItem.getName());
 		
 		final TextView tracksView = (TextView) itemLayout.findViewById(R.id.text_playlist_num_tracks);
-		tracksView.setText(playlistItem.getNumTracks());
+		tracksView.setText(playlistItem.getNumTracks()+" ");
 
 		// Retornar o item dentro do layout.
 		return itemLayout;

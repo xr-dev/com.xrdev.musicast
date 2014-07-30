@@ -57,7 +57,7 @@ public class PlaylistsActivity extends ListActivity {
 
 	public class PlaylistDownloader extends AsyncTask<String, Void, ArrayList<PlaylistItem>>{
 		ProgressDialog pd;
-        SpotifyServiceBinder mBinder = new SpotifyServiceBinder(getApplicationContext());
+        // SpotifyServiceBinder mBinder = new SpotifyServiceBinder(getApplicationContext());
 
 		public PlaylistDownloader() {
 			super();
