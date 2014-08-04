@@ -11,6 +11,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 public class MainActivity extends Activity {
 
@@ -20,6 +25,7 @@ public class MainActivity extends Activity {
 	Button searchButton;
 	Button spotifyTestLogin;
     Button spotifyTestAPI;
+    Button jodaTimeTest;
 	EditText searchField;
 	
 	@Override
@@ -31,6 +37,9 @@ public class MainActivity extends Activity {
 		searchButton = (Button) findViewById(R.id.searchButton);
 		spotifyTestLogin = (Button) findViewById(R.id.spotify_test_login);
         spotifyTestAPI = (Button) findViewById(R.id.spotify_test_api_init);
+
+        jodaTimeTest = (Button) findViewById(R.id.jodatime_test_button);
+
 		searchField = (EditText) findViewById(R.id.youtube_search_field);
 
 		
@@ -64,7 +73,34 @@ public class MainActivity extends Activity {
 
 
         });
-		
+
+        jodaTimeTest.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                DateTime dateTime = new DateTime();
+                DateTime timeAdded = dateTime.minusSeconds(3600);
+
+                String timeAddedString = timeAdded.toString();
+
+                DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+                DateTime parsedTime = fmt.parseDateTime(timeAddedString);
+
+                if (parsedTime.isAfterNow()) {
+                    Toast.makeText(getApplicationContext(),
+                            "Parsed time: " + parsedTime.toString() +
+                             "\n Parsed time é posterior à data atual (token válido)", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Parsed time: " + parsedTime.toString() +
+                            "\n Parsed time é anterior à data atual (token expirado)", Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+
+
+        });
 		
 	}
 

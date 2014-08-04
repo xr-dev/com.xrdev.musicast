@@ -87,7 +87,7 @@ public class PlaylistsActivity extends ListActivity {
 
             // Significa que a PlaylistsActivity foi aberta pelo onNewIntent da AuthActivity, logo será necessário setar os tokens.
             if (code != null) {
-                SpotifyHandler.setAuthCredentials(getApplication(), code);
+                SpotifyHandler.setAuthCredentials(getApplication());
             }
 
             ArrayList<PlaylistItem> resultItems = SpotifyHandler.getUserPlaylists(getApplicationContext());

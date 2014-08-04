@@ -3,19 +3,20 @@ package com.xrdev.musicast.connection;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
-import com.xrdev.musicast.activity.PlaylistsActivity;
 import com.xrdev.musicast.activity.SpotifyAuthActivity;
 import com.xrdev.musicast.connection.spotifywrapper.Api;
 import com.xrdev.musicast.connection.spotifywrapper.methods.UserPlaylistsRequest;
 import com.xrdev.musicast.connection.spotifywrapper.models.AuthorizationCodeCredentials;
 import com.xrdev.musicast.connection.spotifywrapper.models.Page;
+import com.xrdev.musicast.connection.spotifywrapper.models.RefreshAccessTokenCredentials;
 import com.xrdev.musicast.connection.spotifywrapper.models.SimplePlaylist;
 import com.xrdev.musicast.connection.spotifywrapper.models.User;
 import com.xrdev.musicast.model.PlaylistItem;
+import com.xrdev.musicast.model.Token;
+
 
 import java.util.ArrayList;
 
@@ -29,12 +30,6 @@ public class SpotifyHandler {
     private static final String REDIRECT_URI = "musicast://callback";
     private static final String CLIENT_SECRET = "cffb5db7d8eb4910b3a95527fcee6899";
 
-    // Login:
-
-    private static final String PREFS_NAME = "MusicastPrefs";
-    private static final String KEY_ACCESS_TOKEN = "accessToken";
-    private static final String KEY_REFRESH_TOKEN = "refreshToken";
-    private static final String KEY_CODE = "code";
 
     // Api:
     private static Api api = Api.builder()
@@ -49,7 +44,9 @@ public class SpotifyHandler {
 
         // Nenhum usuário atual, não retornar nenhuma playlist.
         if (currentUser == null)
+        // TODO: Usuário não conectado. Rever a lógica.
             return null;
+
 
         ArrayList<PlaylistItem> result = new ArrayList<PlaylistItem>();
 
@@ -70,6 +67,7 @@ public class SpotifyHandler {
 
         } catch (Exception e) {
             Log.e(TAG, "Erro ao obter listas de reprodução do usuário. / Unable to get user playlists. Error: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return result;
@@ -78,56 +76,76 @@ public class SpotifyHandler {
 
     public static User getCurrentUser(Context context) {
         try {
-            String accessToken = getAccessTokenFromPrefs(context);
+            Log.d(TAG, "Obtendo token válido para transação da API. / Obtaining valid token for API transaction.");
+            Token token = PrefsHandler.getValidToken(context);
 
-            Log.d(TAG, "Access token obtido pelo getCurrentUser(): / Access token obtained on getCurrentUser(): " + accessToken);
-
-            if (accessToken == null) {
+            if (token == null) {
+                Log.d(TAG, "Não foi possível obter um token válido. / Unable to obtain valid token.");
                 return null;
             } else {
-                return api.getMe().accessToken(accessToken).build().get();
+                String accessString = token.getAccessString();
+                api.setAccessToken(accessString);
+                Log.d(TAG, "Access token obtido pelo getCurrentUser(): / Access token obtained on getCurrentUser(): " + accessString);
+                return api.getMe().accessToken(accessString).build().get();
             }
         } catch (Exception e) {
-            Log.e(TAG, "Não foi possível obter os dados do usuário atual. / Unable to get data about current user. Error: " + e.getMessage());
+            Log.e(TAG, "EXCEPTION: Não foi possível obter os dados do usuário atual. / Unable to get data about current user. Error: " + e.getMessage());
         }
         return null;
     }
 
 
-    public static void login(Activity activity) {
-        Log.d(TAG, "Executando login() pelo SpotifyService. / Running login() on SpotifyService.");
-        SpotifyAuthentication.openAuthWindow(CLIENT_ID, "code", REDIRECT_URI,
-                new String[]{"user-read-private", "playlist-read-private", "playlist-modify", "playlist-modify-private"}, null, activity);
-    }
-
-    public static void setAuthCredentials(Context context, String code) {
+    public static void setAuthCredentials(Context context) {
         try {
 
-            setCodeToPrefs(context, code);
+            // setCodeToPrefs(context, code);
+
+            String code = PrefsHandler.getCodeFromPrefs(context);
 
             AuthorizationCodeCredentials authorizationCodeCredentials = api.authorizationCodeGrant(code).build().get();
 
-            String accessToken = authorizationCodeCredentials.getAccessToken();
-            String refreshToken = authorizationCodeCredentials.getRefreshToken();
+            Token token = new Token(authorizationCodeCredentials);
 
-            if (accessToken == null) {
+            if (token == null || token.getAccessString() == null) {
                 Log.e(TAG, "Não foi possível obter tokens pelo AuthorizationCodeCredentials. / Unable to get tokens via AuthorizationCodeCredentials");
             } else {
-                Log.d(TAG, "Token obtido pelo AuthorizationCodeCredentials: / Token obtained via AuthenticationCodeCredentials:  " + accessToken);
-                Log.d(TAG, "Refresh Token obtido pelo AuthorizationCodeCredentials: / Refresh Token obtained via AuthenticationCodeCredentials:  " + refreshToken);
-                api.setAccessToken(accessToken);
-                api.setRefreshToken(refreshToken);
-                setAccessTokenToPrefs(context, accessToken);
-                setRefreshTokenToPrefs(context, refreshToken);
+                Log.d(TAG, "Token obtido pelo AuthorizationCodeCredentials: / Token obtained via AuthenticationCodeCredentials:  " + token.getAccessString());
+                Log.d(TAG, "Refresh Token obtido pelo AuthorizationCodeCredentials: / Refresh Token obtained via AuthenticationCodeCredentials:  " + token.getRefreshString());
+                PrefsHandler.setTokenToPrefs(context, token);
             }
-
-
 
         } catch (Exception e) {
             Log.e(TAG,"Não foi possível fazer login à Web API. / Unable to login to Web API. Error: " + e.getMessage());
             e.printStackTrace();
         }
 
+    }
+
+    public static Token getRefreshedToken(Context context) {
+        try {
+            Log.d(TAG, "Token expirado, atualizando token... / Token expired, refreshing token...");
+
+            Token currentToken = PrefsHandler.getTokenFromPrefs(context);
+
+            api.setAccessToken(currentToken.getAccessString());
+            api.setRefreshToken(currentToken.getRefreshString());
+
+            RefreshAccessTokenCredentials refreshRequest = api.refreshAccessToken().build().get();
+            String refreshedAccessToken = refreshRequest.getAccessToken();
+
+            if (refreshedAccessToken == null) {
+                Log.e(TAG, "Não foi possível obter o token atualizado pelo RefreshAccessTokenCredentials. / Unable to get refreshed token via RefreshAccessTokenCredentials.");
+                startLoginActivity(context);
+            } else {
+                Log.d(TAG,"Token atualizado pelo RefreshAccessTokenCredentials: / Refreshed token obtained via RefreshAccessTokenCredentials: " + refreshedAccessToken);
+                return new Token(refreshedAccessToken, currentToken.getRefreshString(), refreshRequest.getExpiresIn());
+            }
+        } catch (Exception e) {
+            Log.e(TAG,"Exception: Não foi possível atualizar o access token. / Unable to refresh access token. " );
+            e.printStackTrace();
+            startLoginActivity(context);
+        }
+        return null;
     }
 
     public static void startLoginActivity(Context context) {
@@ -142,40 +160,5 @@ public class SpotifyHandler {
                 new String[]{"user-read-private", "playlist-read-private", "playlist-modify", "playlist-modify-private"}, null, activity);
     }
 
-    public static void setCodeToPrefs(Context context, String code) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_CODE, code);
-        editor.apply();
-    }
-
-    public static String getCodeFromPrefs(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getString(KEY_CODE, null);
-    }
-
-    public static void setAccessTokenToPrefs(Context context, String accessToken) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_ACCESS_TOKEN, accessToken);
-        editor.apply();
-    }
-
-    public static String getAccessTokenFromPrefs(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getString(KEY_ACCESS_TOKEN, null);
-    }
-
-    public static void setRefreshTokenToPrefs(Context context, String refreshToken) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_REFRESH_TOKEN, refreshToken);
-        editor.apply();
-    }
-
-    public static String getRefreshTokenFromPrefs(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getString(KEY_REFRESH_TOKEN, null);
-    }
 
 }

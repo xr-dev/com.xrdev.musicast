@@ -14,6 +14,7 @@ import com.xrdev.musicast.R;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
 import com.spotify.sdk.android.playback.ConnectionStateCallback;
+import com.xrdev.musicast.connection.PrefsHandler;
 import com.xrdev.musicast.connection.SpotifyHandler;
 import com.xrdev.musicast.connection.SpotifyServiceBinder;
 
@@ -21,7 +22,6 @@ import com.xrdev.musicast.connection.SpotifyServiceBinder;
 public class SpotifyAuthActivity extends Activity implements
         ConnectionStateCallback {
 
-    // TODO: Armazenar os IDs num .properties?
     private static final String TAG = "SpotifyAuthActivity";
     private static final String EXTRA_CODE = "code";
     private SpotifyServiceBinder mSpotifyBinder;
@@ -84,10 +84,9 @@ public class SpotifyAuthActivity extends Activity implements
             // Spotify spotify = new Spotify(response.getAccessToken());
 
             String accessToken = response.getAccessToken();
-            //TODO: Code não está sendo obtido corretamente de response.
             String code = response.getCode();
 
-
+            PrefsHandler.setCodeToPrefs(this, code);
 
             // mSpotifyBinder.getService().setAccessToken(accessToken);
             // mSpotifyBinder.getService().setCode(code);
