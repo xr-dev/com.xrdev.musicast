@@ -246,7 +246,7 @@ public class SpotifyService extends Service {
 
                 String name = playlist.getName();
                 int numTracks = playlist.getTracks().getTotal();
-                result.add(new PlaylistItem(name, numTracks));
+                // result.add(new PlaylistItem(name, numTracks));
 
             }
 

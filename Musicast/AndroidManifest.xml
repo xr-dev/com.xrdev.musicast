@@ -43,10 +43,6 @@
                     android:scheme="musicast" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.LoginTest"
-            android:label="@string/title_activity_login_test" >
-        </activity>
 
         <service
             android:name=".connection.SpotifyService"
@@ -56,11 +52,17 @@
 
         <activity
             android:name=".activity.PlaylistsActivity"
-            android:label="@string/title_activity_spotify_playlists" >
+            android:label="@string/title_activity_spotify_playlists"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.BinderActivityTest"
             android:label="@string/title_activity_binder_activity_test" >
+        </activity>
+        <activity
+            android:name=".activity.TracksActivity"
+            android:label="@string/title_activity_tracks"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

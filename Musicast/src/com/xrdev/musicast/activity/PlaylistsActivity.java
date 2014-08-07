@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ListView;
 
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.PlaylistAdapter;
@@ -40,6 +42,9 @@ public class PlaylistsActivity extends ListActivity {
 		
 		// Fazer o attach do adapter à ListView:
 		getListView().setAdapter(mAdapter);
+        getListView().setClickable(true);
+
+
 		
 	}
 
@@ -49,6 +54,18 @@ public class PlaylistsActivity extends ListActivity {
 		getMenuInflater().inflate(R.menu.result, menu);
 		return true;
 	}
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        PlaylistItem clickedItem = (PlaylistItem) l.getItemAtPosition(position);
+        Intent intent = new Intent(this, TracksActivity.class);
+
+        PlaylistItem.packageIntent(intent, clickedItem);
+
+        startActivity(intent);
+    }
 	
 	
 	/**

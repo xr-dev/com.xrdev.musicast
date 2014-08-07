@@ -15,6 +15,8 @@
     <string name="string_spotify_login_description">Log in with your Spotify account and start casting the videos of your favorite songs to Chromecast! \n\n You will be redirected to your browser to log in.</string>
     <string name="title_activity_spotify_playlists">Playlists</string>
     <string name="title_activity_binder_activity_test">BinderActivityTest</string>
-    <string name="string_tracks"> tracks</string>
+    <string name="string_tracks">" tracks"</string>
+    <string name="title_activity_tracks">Tracks</string>
+    <string name="string_spacer">" - "</string>
 
 </resources>

@@ -8,17 +8,24 @@ import android.util.Log;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
 import com.xrdev.musicast.activity.SpotifyAuthActivity;
 import com.xrdev.musicast.connection.spotifywrapper.Api;
+import com.xrdev.musicast.connection.spotifywrapper.methods.PlaylistTracksRequest;
 import com.xrdev.musicast.connection.spotifywrapper.methods.UserPlaylistsRequest;
 import com.xrdev.musicast.connection.spotifywrapper.models.AuthorizationCodeCredentials;
 import com.xrdev.musicast.connection.spotifywrapper.models.Page;
+import com.xrdev.musicast.connection.spotifywrapper.models.PlaylistTrack;
 import com.xrdev.musicast.connection.spotifywrapper.models.RefreshAccessTokenCredentials;
+import com.xrdev.musicast.connection.spotifywrapper.models.SimpleAlbum;
+import com.xrdev.musicast.connection.spotifywrapper.models.SimpleArtist;
 import com.xrdev.musicast.connection.spotifywrapper.models.SimplePlaylist;
+import com.xrdev.musicast.connection.spotifywrapper.models.Track;
 import com.xrdev.musicast.connection.spotifywrapper.models.User;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.Token;
+import com.xrdev.musicast.model.TrackItem;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Guilherme on 22/07/2014.
@@ -37,6 +44,35 @@ public class SpotifyHandler {
             .clientSecret(CLIENT_SECRET)
             .redirectURI(REDIRECT_URI)
             .build();
+
+
+    public static ArrayList<TrackItem> getPlaylistTracks(PlaylistItem playlist) {
+
+        ArrayList<TrackItem> result = new ArrayList<TrackItem>();
+
+        final PlaylistTracksRequest request = api.getPlaylistTracks(playlist.getOwnerId(), playlist.getPlaylistId()).build();
+
+        try {
+            final Page<PlaylistTrack> tracksPage = request.get();
+
+            for (PlaylistTrack playlistTrack : tracksPage.getItems()) {
+                // TODO: Melhorar os dados que vão ser incluídos no Adapter de tracks.
+
+                Track track = playlistTrack.getTrack();
+
+                result.add(new TrackItem(track));
+
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao obter faixas de lista de reprodução. / Unable to get playlist tracks. Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return result;
+
+
+    }
 
     public static ArrayList<PlaylistItem> getUserPlaylists(Context context) {
 
@@ -61,7 +97,9 @@ public class SpotifyHandler {
 
                 String name = playlist.getName();
                 int numTracks = playlist.getTracks().getTotal();
-                result.add(new PlaylistItem(name, numTracks));
+                String playlistId = playlist.getId();
+                String ownerId = playlist.getOwner().getId();
+                result.add(new PlaylistItem(name, numTracks, playlistId, ownerId));
 
             }
 

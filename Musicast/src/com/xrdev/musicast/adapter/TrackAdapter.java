@@ -1,7 +1,6 @@
 package com.xrdev.musicast.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,26 +9,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xrdev.musicast.R;
-import com.xrdev.musicast.model.PlaylistItem;
+import com.xrdev.musicast.model.TrackItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaylistAdapter extends BaseAdapter {
+public class TrackAdapter extends BaseAdapter {
 
-	private final List<PlaylistItem> mItems = new ArrayList<PlaylistItem>();
+	private final List<TrackItem> mItems = new ArrayList<TrackItem>();
 	private final Context mContext;
-	private final static String TAG = "PlaylistAdapter";
+	private final static String TAG = "TrackAdapter";
 
 
-	public PlaylistAdapter(Context context) {
+	public TrackAdapter(Context context) {
 		mContext = context;
 	}
 	
 	
 	// Adiciona um item a lista
 	
-	public void add(PlaylistItem item) {
+	public void add(TrackItem item) {
 
 		mItems.add(item);
 		notifyDataSetChanged();
@@ -45,7 +44,7 @@ public class PlaylistAdapter extends BaseAdapter {
 	
 	}
 
-	// Retorna o n�mero de itens na lista
+	// Retorna o número de itens na lista
 
 	@Override
 	public int getCount() {
@@ -56,7 +55,7 @@ public class PlaylistAdapter extends BaseAdapter {
 
 	// Recupera um determinado item
 	@Override
-	public PlaylistItem getItem(int pos) {
+	public TrackItem getItem(int pos) {
 		return mItems.get(pos);
 	}
 	
@@ -74,19 +73,21 @@ public class PlaylistAdapter extends BaseAdapter {
 	// Método mais importante, vai criar a View para cada item. é necessário mencionar o layout em XML gerado.
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		final PlaylistItem playlistItem = mItems.get(position);
+		final TrackItem trackItem = mItems.get(position);
 		
 		// Inflar o layout para cada item:
 		LayoutInflater li = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		RelativeLayout itemLayout = (RelativeLayout) li.inflate(R.layout.item_playlist, null);
+		RelativeLayout itemLayout = (RelativeLayout) li.inflate(R.layout.item_track, null);
 		
 		// Montar os textviews com os dados de cada item:
-		final TextView titleView = (TextView) itemLayout.findViewById(R.id.text_playlist_name);
-		titleView.setText(playlistItem.getName());
+		final TextView titleView = (TextView) itemLayout.findViewById(R.id.text_track_name);
+		titleView.setText(trackItem.getName());
 		
-		final TextView tracksView = (TextView) itemLayout.findViewById(R.id.text_playlist_num_tracks);
-		tracksView.setText(playlistItem.getNumTracks());
+		final TextView artistsView = (TextView) itemLayout.findViewById(R.id.text_track_artists);
+		artistsView.setText(trackItem.getArtists());
 
+        final TextView albumView = (TextView) itemLayout.findViewById(R.id.text_track_album);
+        albumView.setText(trackItem.getAlbum());
 
 		// Retornar o item dentro do layout.
 		return itemLayout;
