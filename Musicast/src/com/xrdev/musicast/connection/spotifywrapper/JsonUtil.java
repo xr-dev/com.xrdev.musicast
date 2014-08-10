@@ -181,7 +181,12 @@ public class JsonUtil {
 
     SimpleAlbum simpleAlbum = new SimpleAlbum();
 
-    simpleAlbum.setAlbumType(createAlbumType(simpleAlbumJson.getString("album_type")));
+    if (simpleAlbumJson.getString("album_type").equals("null")) {
+        simpleAlbum.setAlbumType(null);
+    } else {
+        simpleAlbum.setAlbumType(createAlbumType(simpleAlbumJson.getString("album_type")));
+    }
+
     simpleAlbum.setExternalUrls(createExternalUrls(simpleAlbumJson.getJSONObject("external_urls")));
     simpleAlbum.setHref(simpleAlbumJson.getString("href"));
     simpleAlbum.setId(simpleAlbumJson.getString("id"));
