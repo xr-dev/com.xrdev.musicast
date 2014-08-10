@@ -52,6 +52,8 @@ public class SpotifyHandler {
 
         final PlaylistTracksRequest request = api.getPlaylistTracks(playlist.getOwnerId(), playlist.getPlaylistId()).build();
 
+        Log.d(TAG, "PlaylistRequest: " + request.toStringWithQueryParameters());
+
         try {
             final Page<PlaylistTrack> tracksPage = request.get();
 

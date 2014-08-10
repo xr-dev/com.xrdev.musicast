@@ -270,6 +270,7 @@ public class Api {
     final PlaylistTracksRequest.Builder builder = PlaylistTracksRequest.builder();
     setDefaults(builder);
     builder.path("/v1/users/" + userId + "/playlists/" + playlistId + "/tracks");
+    builder.parameter("limit", "2000");
     return builder;
   }
 

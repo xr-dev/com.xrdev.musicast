@@ -85,6 +85,7 @@ public class TracksActivity extends ListActivity {
 
             if (playlistItem != null){
                 Log.d(TAG, "Buscando músicas da Playlist ID / Fetching tracks from Playlist ID: " + playlistItem.getPlaylistId());
+                Log.d(TAG, "Owner ID: " + playlistItem.getOwnerId());
                 return SpotifyHandler.getPlaylistTracks(playlistItem);
             } else {
                 return null;

@@ -365,7 +365,13 @@ public class JsonUtil {
     User user = new User();
 
     // Always in the user object
-    user.setExternalUrls(createExternalUrls(userJson.getJSONObject("external_urls")));
+
+    if (userJson.has("external_urls")){
+        user.setExternalUrls(createExternalUrls(userJson.getJSONObject("external_urls")));
+    } else {
+        user.setExternalUrls(null);
+    }
+
     user.setHref(userJson.getString("href"));
     user.setId(userJson.getString("id"));
     user.setType(createSpotifyEntityType(userJson.getString("type")));
@@ -530,8 +536,15 @@ public class JsonUtil {
     } catch (ParseException e) {
       returnedPlaylistTrack.setAddedAt(null);
     }
-    returnedPlaylistTrack.setAddedBy(createUser(playlistTrackJson.getJSONObject("added_by")));
-    returnedPlaylistTrack.setTrack(createTrack(playlistTrackJson.getJSONObject("track")));
+
+    JSONObject addedBy = playlistTrackJson.getJSONObject("added_by");
+    if (addedBy.toString().equals("null")) {
+        returnedPlaylistTrack.setAddedBy(null);
+    } else {
+        returnedPlaylistTrack.setAddedBy(createUser(playlistTrackJson.getJSONObject("added_by")));
+    }
+
+      returnedPlaylistTrack.setTrack(createTrack(playlistTrackJson.getJSONObject("track")));
     return returnedPlaylistTrack;
   }
 
