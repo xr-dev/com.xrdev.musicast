@@ -18,5 +18,6 @@
     <string name="string_tracks">" tracks"</string>
     <string name="title_activity_tracks">Tracks</string>
     <string name="string_spacer">" - "</string>
+    <string name="media_route_menu_title">Cast</string>
 
 </resources>

@@ -90,7 +90,6 @@ public class SpotifyHandler {
 
         final UserPlaylistsRequest request = api.getPlaylistsForUser(currentUser.getId()).build();
 
-
         try {
             final Page<SimplePlaylist> playlistsPage = request.get();
 
@@ -130,6 +129,7 @@ public class SpotifyHandler {
             }
         } catch (Exception e) {
             Log.e(TAG, "EXCEPTION: Não foi possível obter os dados do usuário atual. / Unable to get data about current user. Error: " + e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }

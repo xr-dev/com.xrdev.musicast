@@ -16,6 +16,12 @@ dependencies {
     compile 'com.google.protobuf:protobuf-java:2.5.0'
     compile 'commons-httpclient:commons-httpclient:3.1'
     compile 'com.google.guava:guava:17.0-rc2'
+
+    compile 'com.android.support:appcompat-v7:20.+'
+    compile 'com.android.support:mediarouter-v7:20.+'
+    compile 'com.google.android.gms:play-services:5.0.+'
+
+
     // compile group: 'net.sf.json-lib', name: 'json-lib', version:'2.4', classifier:'jdk15'
     // compile group: 'org.mockito', name: 'mockito-all', version:'1.8.4'
     compile files('libs/commons-lang-2.6.jar')
@@ -25,11 +31,14 @@ dependencies {
     compile files('libs/ezmorph-1.0.6.jar')
     compile files('libs/json-lib-2.4-jdk15.jar')
     compile files('libs/joda-time-2.4.jar')
+
+    compile 'com.google.android:multidex:0.1' // multi-dex
 }
 
 repositories {
     maven { url 'http://repo.maven.apache.org/maven2' }
     mavenCentral()
+    jcenter() // Biblioteca multi-dex
 }
 
 android {
@@ -72,4 +81,23 @@ android {
         exclude 'META-INF/LICENSE.txt'
     }
 
+    dexOptions {
+        preDexLibraries = false
+    }
+
+
 }
+
+afterEvaluate {
+    tasks.matching {
+        it.name.startsWith('dex')
+    }.each { dx ->
+        if (dx.additionalParameters == null) {
+            dx.additionalParameters = []
+        }
+        dx.additionalParameters += '--multi-dex'
+        dx.additionalParameters += "--main-dex-list=$projectDir/multidex".toString() // enable the main-dex-list
+
+    }
+}
+

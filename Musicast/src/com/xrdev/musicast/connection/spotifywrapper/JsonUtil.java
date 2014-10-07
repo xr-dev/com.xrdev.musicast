@@ -181,6 +181,7 @@ public class JsonUtil {
 
     SimpleAlbum simpleAlbum = new SimpleAlbum();
 
+
     if (simpleAlbumJson.getString("album_type").equals("null")) {
         simpleAlbum.setAlbumType(null);
     } else {
@@ -195,7 +196,11 @@ public class JsonUtil {
     simpleAlbum.setType(createSpotifyEntityType(simpleAlbumJson.getString("type")));
     simpleAlbum.setUri(simpleAlbumJson.getString("uri"));
 
-    return simpleAlbum;
+    simpleAlbum.setAvailableMarkets(
+    createAvailableMarkets(simpleAlbumJson.getJSONArray("available_markets")));
+
+
+      return simpleAlbum;
   }
 
   public static List<Album> createAlbums(String json) {

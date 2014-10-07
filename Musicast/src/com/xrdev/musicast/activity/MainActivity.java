@@ -1,6 +1,7 @@
 package com.xrdev.musicast.activity;
 
 import com.xrdev.musicast.R;
+import com.xrdev.musicast.connection.PrefsHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -25,7 +26,7 @@ public class MainActivity extends Activity {
 	Button searchButton;
 	Button spotifyTestLogin;
     Button spotifyTestAPI;
-    Button jodaTimeTest;
+    Button logoutTest;
 	EditText searchField;
 	
 	@Override
@@ -38,7 +39,7 @@ public class MainActivity extends Activity {
 		spotifyTestLogin = (Button) findViewById(R.id.spotify_test_login);
         spotifyTestAPI = (Button) findViewById(R.id.spotify_test_api_init);
 
-        jodaTimeTest = (Button) findViewById(R.id.jodatime_test_button);
+        logoutTest = (Button) findViewById(R.id.logout_button);
 
 		searchField = (EditText) findViewById(R.id.youtube_search_field);
 
@@ -74,29 +75,12 @@ public class MainActivity extends Activity {
 
         });
 
-        jodaTimeTest.setOnClickListener(new OnClickListener() {
+        logoutTest.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                DateTime dateTime = new DateTime();
-                DateTime timeAdded = dateTime.minusSeconds(3600);
-
-                String timeAddedString = timeAdded.toString();
-
-                DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-                DateTime parsedTime = fmt.parseDateTime(timeAddedString);
-
-                if (parsedTime.isAfterNow()) {
-                    Toast.makeText(getApplicationContext(),
-                            "Parsed time: " + parsedTime.toString() +
-                             "\n Parsed time é posterior à data atual (token válido)", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "Parsed time: " + parsedTime.toString() +
-                            "\n Parsed time é anterior à data atual (token expirado)", Toast.LENGTH_LONG).show();
-                }
-
-
+                PrefsHandler.clearPrefs(getApplicationContext());
+                Toast.makeText(getApplicationContext(),"Logged out successfully",Toast.LENGTH_SHORT).show();
             }
 
 

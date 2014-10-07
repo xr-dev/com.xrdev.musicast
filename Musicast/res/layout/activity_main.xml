@@ -58,8 +58,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test JodaTime"
-        android:id="@+id/jodatime_test_button"
+        android:text="Logout"
+        android:id="@+id/logout_button"
         android:layout_below="@+id/spotify_test_api_init"
         android:layout_centerHorizontal="true" />
 

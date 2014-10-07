@@ -69,4 +69,11 @@ public class PrefsHandler {
             }
         }
     }
+
+    public static void clearPrefs(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.clear().apply();
+    }
 }

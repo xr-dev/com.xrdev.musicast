@@ -1,10 +1,13 @@
 package com.xrdev.musicast.activity;
 
+import android.app.FragmentManager;
 import android.app.ListActivity;
+import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 
@@ -16,11 +19,12 @@ import com.xrdev.musicast.model.TrackItem;
 
 import java.util.ArrayList;
 
-public class TracksActivity extends ListActivity {
+public class TracksActivity extends ActionBarActivity {
 
 
 	private TrackAdapter mAdapter;
     private PlaylistItem playlistItem;
+    private ListFragment listFragment;
 	private final static String TAG = "TracksActivity";
     private final static String EXTRA_CODE = "code";
 	
@@ -38,11 +42,20 @@ public class TracksActivity extends ListActivity {
 
 		// Criar o adapter.
 		mAdapter = new TrackAdapter(getApplicationContext());
-		
-		// Fazer o attach do adapter à ListView:
-		getListView().setAdapter(mAdapter);
-		
-	}
+
+        // Fazer o attach do adapter à ListFragment:
+        listFragment = new ListFragment();
+        listFragment.setListAdapter(mAdapter);
+
+
+        // Iniciar o FragmentManager e incluir o fragment da lista ao layout:
+        FragmentManager fm = getFragmentManager();
+
+        if (fm.findFragmentById(android.R.id.content) == null) {
+            fm.beginTransaction().add(android.R.id.content, listFragment).commit();
+        }
+
+    }
 
     @Override
     protected void onPause() {

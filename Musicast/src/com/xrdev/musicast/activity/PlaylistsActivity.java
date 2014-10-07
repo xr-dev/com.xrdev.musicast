@@ -86,7 +86,7 @@ public class PlaylistsActivity extends ListActivity {
 			// Preparar o spinner
             pd = new ProgressDialog(PlaylistsActivity.this);
 			pd.setMessage(getString(R.string.string_loading));
-			pd.show();
+			// pd.show();
 
 		}
 		
