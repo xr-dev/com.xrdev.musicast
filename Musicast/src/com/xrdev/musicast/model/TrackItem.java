@@ -19,10 +19,14 @@ public class TrackItem {
 
 
 
+    private String youtubeId;
+
+
+
     public TrackItem(Track apiTrack) {
         this.trackId = apiTrack.getId();
         this.name = apiTrack.getName();
-        this.duration = apiTrack.getDuration();
+        this.duration = apiTrack.getDuration() / 1000; // Duração no Spotify API é em milissegundos. Transformar em segundos.
         this.artistsList = apiTrack.getArtists();
         this.album = apiTrack.getAlbum();
     }
@@ -68,4 +72,14 @@ public class TrackItem {
     public String getAlbum() {
         return album.getName();
     }
+
+    public String getYoutubeId() {
+        return youtubeId;
+    }
+
+    public void setYoutubeId(String youtubeId) {
+        this.youtubeId = youtubeId;
+    }
+
+
 }

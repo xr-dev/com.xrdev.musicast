@@ -14,7 +14,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat"
-        android:name="ApplicationState" >
+        android:name=".Application" >
 
 
         <meta-data
@@ -51,29 +51,69 @@
             </intent-filter>
         </activity>
 
+
+        <activity
+        android:name=".activity.PlaylistsActivity"
+        android:label="@string/title_activity_spotify_playlists"
+        android:screenOrientation="portrait">
+        </activity>
+        <activity
+        android:name=".activity.BinderActivityTest"
+        android:label="@string/title_activity_binder_activity_test" >
+        </activity>
+        <activity
+        android:name=".activity.TracksActivity"
+        android:label="@string/title_activity_tracks"
+        android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+        android:name="com.google.sample.castcompanionlibrary.cast.player.VideoCastControllerActivity"
+        android:screenOrientation="portrait"
+        android:label="@string/app_name" android:launchMode="singleTask"
+        android:parentActivityName="com.xrdev.musicast.activity.TracksActivity"
+        android:theme="@style/Theme.VideoOverlay">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.xrdev.musicast.activity.TracksActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".connection.SpotifyService"
             android:enabled="true"
             android:exported="true" >
         </service>
 
-        <activity
-            android:name=".activity.PlaylistsActivity"
-            android:label="@string/title_activity_spotify_playlists"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".activity.BinderActivityTest"
-            android:label="@string/title_activity_binder_activity_test" >
-        </activity>
-        <activity
-            android:name=".activity.TracksActivity"
-            android:label="@string/title_activity_tracks"
-            android:screenOrientation="portrait">
-        </activity>
+        <service
+            android:name="com.google.sample.castcompanionlibrary.notification.VideoCastNotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action
+                    android:name="com.google.sample.castcompanionlibrary.action.toggleplayback" />
+                <action
+                    android:name="com.google.sample.castcompanionlibrary.action.stop" />
+                <action
+                    android:name="com.google.sample.castcompanionlibrary.action.notificationvisibility" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.google.sample.castcompanionlibrary.cast.reconnection.ReconnectionService"/>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="true" >
+    </uses-feature>
+
 
 </manifest>

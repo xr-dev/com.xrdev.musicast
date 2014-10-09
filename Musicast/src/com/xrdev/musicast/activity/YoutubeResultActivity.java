@@ -74,8 +74,9 @@ public class YoutubeResultActivity extends ListActivity {
 		@Override
 		protected ArrayList<VideoItem> doInBackground(String... arg0) {
 			Log.i(TAG, "ResultActivity/AsyncTask: Entrando no doInBackground.");
-			ArrayList<VideoItem> resultItems = YouTubeHandler.searchVideos(searchTerm);
-			
+			ArrayList<VideoItem> resultItems =  new ArrayList<VideoItem>();
+            resultItems.add(YouTubeHandler.searchVideo(searchTerm));
+
 			return resultItems;
 		}
 		

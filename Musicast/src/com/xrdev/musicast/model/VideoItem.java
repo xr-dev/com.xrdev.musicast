@@ -7,18 +7,25 @@ public class VideoItem {
 	private String title;
 	private String description;
 	private BigInteger viewCount;
+    private int duration;
 	
-	public VideoItem(String id, String title, String description, BigInteger viewCount) {
+	public VideoItem(String id, String title, String description, BigInteger viewCount, int duration) {
 		this.videoId = id;
 		this.title = title;
 		this.description = description;
 		this.viewCount = viewCount;
+        this.duration = duration;
 	}
+
+    public VideoItem(String id, int duration){
+        this.videoId = id;
+        this.duration = duration;
+    }
 	
-	public String getUrl() {
+	public String getVideoId() {
 		return videoId;
 	}
-	public void setUrl(String url) {
+	public void setVideoId(String url) {
 		this.videoId = url;
 	}
 	public String getTitle() {
@@ -40,9 +47,15 @@ public class VideoItem {
 		return this.viewCount;
 	}
 	public String getViewCount() {
-		String viewString = this.viewCount.toString();
-		return viewString;
+        return String.valueOf(viewCount);
 	}
-	
-	
+    public String getDuration() {
+        return String.valueOf(duration);
+    }
+    public int getDurationInt(){
+        return duration;
+    }
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 }

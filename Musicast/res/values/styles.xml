@@ -17,4 +17,9 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="Theme.VideoOverlay" parent="@style/AppTheme">
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+
 </resources>
