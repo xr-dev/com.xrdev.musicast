@@ -397,6 +397,8 @@ public class VideoCastManager extends BaseCastManager
     public void startCastControllerActivity(Context context, Bundle mediaWrapper, int position,
             boolean shouldStart) {
         Intent intent = new Intent(context, VideoCastControllerActivity.class);
+        // TODO: Testar e corrigir o addFlags. Deve estar incorreto.
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_MEDIA, mediaWrapper);
         intent.putExtra(EXTRA_START_POINT, position);
         intent.putExtra(EXTRA_SHOULD_START, shouldStart);

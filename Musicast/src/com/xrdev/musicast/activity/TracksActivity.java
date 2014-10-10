@@ -87,6 +87,9 @@ public class TracksActivity extends ActionBarActivity {
 
         tracksFragment.setListAdapter(mAdapter);
 
+        // Estabelecer sessão com o chromecast:
+        mCastMgr.reconnectSessionIfPossible(getApplicationContext(), false, 10); // context, showDialog, timeout.
+
         new TrackDownloader().execute();
 
         // Iniciar o FragmentManager e incluir o fragment da lista ao layout:
@@ -110,12 +113,15 @@ public class TracksActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        if (mCastMgr != null)
+            mCastMgr.decrementUiCounter();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mCastMgr = Application.getCastManager(this);
+        mCastMgr.incrementUiCounter();
     }
 
     @Override
