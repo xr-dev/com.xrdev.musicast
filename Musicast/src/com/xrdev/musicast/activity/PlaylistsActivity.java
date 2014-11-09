@@ -12,7 +12,7 @@ import android.widget.ListView;
 
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.PlaylistAdapter;
-import com.xrdev.musicast.connection.SpotifyHandler;
+import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.connection.SpotifyServiceBinder;
 import com.xrdev.musicast.model.PlaylistItem;
 
@@ -104,10 +104,10 @@ public class PlaylistsActivity extends ListActivity {
 
             // Significa que a PlaylistsActivity foi aberta pelo onNewIntent da AuthActivity, logo será necessário setar os tokens.
             if (code != null) {
-                SpotifyHandler.setAuthCredentials(getApplication());
+                SpotifyManager.setAuthCredentials(getApplication());
             }
 
-            ArrayList<PlaylistItem> resultItems = SpotifyHandler.getUserPlaylists(getApplicationContext());
+            ArrayList<PlaylistItem> resultItems = SpotifyManager.getUserPlaylists(getApplicationContext());
 
             return resultItems;
 
@@ -122,7 +122,7 @@ public class PlaylistsActivity extends ListActivity {
 			}
 
             if (resultItems == null) {
-                SpotifyHandler.startLoginActivity(getApplicationContext());
+                SpotifyManager.startLoginActivity(getApplicationContext());
             } else {
                 for (PlaylistItem item : resultItems) {
                     mAdapter.add(item);

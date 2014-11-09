@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.VideoListAdapter;
-import com.xrdev.musicast.connection.YouTubeHandler;
+import com.xrdev.musicast.connection.YouTubeManager;
 import com.xrdev.musicast.model.VideoItem;
 
 import android.os.AsyncTask;
@@ -75,7 +75,7 @@ public class YoutubeResultActivity extends ListActivity {
 		protected ArrayList<VideoItem> doInBackground(String... arg0) {
 			Log.i(TAG, "ResultActivity/AsyncTask: Entrando no doInBackground.");
 			ArrayList<VideoItem> resultItems =  new ArrayList<VideoItem>();
-            resultItems.add(YouTubeHandler.searchVideo(searchTerm));
+            resultItems.add(YouTubeManager.searchVideo(searchTerm));
 
 			return resultItems;
 		}

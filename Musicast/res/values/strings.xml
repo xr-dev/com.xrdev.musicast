@@ -19,9 +19,10 @@
     <string name="string_spacer">" - "</string>
 
     <string name="string_success">Success</string>
-    <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_result">Test Result</string>
     <string name="title_activity_login_test">LoginTest</string>
     <string name="title_activity_spotify_playlists">Playlists</string>
     <string name="title_activity_binder_activity_test">BinderActivityTest</string>
+    <string name="title_text">Musicast Debug Activity</string>
 
 </resources>

@@ -20,7 +20,9 @@ dependencies {
 
     compile 'junit:junit:4.11'
     compile 'com.google.protobuf:protobuf-java:2.5.0'
-    compile 'commons-httpclient:commons-httpclient:3.1'
+    compile 'commons-httpclient:commons-httpclient:3.1' // Versão original usada pela Web API.
+    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5'  // Versão necessa´ria para conversao~do YouTubeMP4
+    // compile 'org.apache.httpcomponents:httpclient:4.3.3'    // Versão necessária para conversão do Youtube MP4.
     compile 'com.google.guava:guava:17.0-rc2'
 
     /*compile 'com.android.support:appcompat-v7:20.+'

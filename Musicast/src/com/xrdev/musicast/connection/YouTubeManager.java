@@ -1,7 +1,9 @@
 package com.xrdev.musicast.connection;
 
 import android.text.TextUtils;
+import android.widget.Toast;
 
+import com.google.android.gms.cast.MediaInfo;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
@@ -14,8 +16,10 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
+import com.xrdev.musicast.Application;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.model.VideoItem;
+import com.xrdev.musicast.utils.YouTubeMp4Extractor;
 
 import org.joda.time.Period;
 import org.joda.time.Seconds;
@@ -29,7 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class YouTubeHandler {
+public class YouTubeManager {
 	private static final long NUMBER_OF_VIDEOS_RETURNED = 1;
 	
 	/** Global instance of the HTTP transport. */
@@ -175,7 +179,7 @@ public class YouTubeHandler {
 		return resultVideo;
 	}
 
-    public static ArrayList<TrackItem> associateYouTubeIds(ArrayList<TrackItem> arrayList){
+    public static ArrayList<TrackItem> associateYouTubeData(ArrayList<TrackItem> arrayList){
         String artists;
         String trackName;
 
@@ -198,9 +202,16 @@ public class YouTubeHandler {
 
             // Procurar correlação usando a duração dos vídeos.
                 // Configurar a tolerância na duração pelo if abaixo.
-                if (video.getDurationInt() <= (item.getDuration() + 30)
-                        && video.getDurationInt() >= (item.getDuration() - 30)){
+                if (video.getDurationInt() <= (item.getDuration() + 15)
+                        && video.getDurationInt() >= (item.getDuration() - 15)){
                     item.setYoutubeId(video.getVideoId());
+
+                    try {
+                        String mp4Path = YouTubeMp4Extractor.extractMP4(video.getVideoId());
+                        item.setYoutubeMp4(mp4Path);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

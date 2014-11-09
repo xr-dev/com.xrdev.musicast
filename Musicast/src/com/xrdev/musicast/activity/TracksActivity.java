@@ -1,7 +1,6 @@
 package com.xrdev.musicast.activity;
 
 import android.app.FragmentManager;
-import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -20,8 +19,8 @@ import com.google.sample.castcompanionlibrary.widgets.MiniController;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.TrackAdapter;
-import com.xrdev.musicast.connection.SpotifyHandler;
-import com.xrdev.musicast.connection.YouTubeHandler;
+import com.xrdev.musicast.connection.SpotifyManager;
+import com.xrdev.musicast.connection.YouTubeManager;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.TrackItem;
 
@@ -192,11 +191,11 @@ public class TracksActivity extends ActionBarActivity {
                 Log.d(TAG, "Buscando músicas da Playlist ID / Fetching tracks from Playlist ID: " + playlistItem.getPlaylistId());
                 Log.d(TAG, "Owner ID: " + playlistItem.getOwnerId());
                 // Buscar IDs e metadados do Spotify.
-                ArrayList<TrackItem> spotifyItems = SpotifyHandler.getPlaylistTracks(playlistItem);
+                ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(playlistItem);
 
                 // Associar aos IDs do YouTube.
 
-                ArrayList<TrackItem> result = YouTubeHandler.associateYouTubeIds(spotifyItems);
+                ArrayList<TrackItem> result = YouTubeManager.associateYouTubeData(spotifyItems);
 
                 return result;
 
@@ -214,7 +213,7 @@ public class TracksActivity extends ActionBarActivity {
 
             if (resultItems == null) {
                 // TODO: Alterar esse método. Uma lista de reprodução vazia tem null como resultado esperado.
-                SpotifyHandler.startLoginActivity(getApplicationContext());
+                SpotifyManager.startLoginActivity(getApplicationContext());
             } else {
                 for (TrackItem item : resultItems) {
                     mAdapter.add(item);

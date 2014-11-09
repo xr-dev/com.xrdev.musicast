@@ -1,8 +1,9 @@
-package com.xrdev.musicast.connection;
+package com.xrdev.musicast.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.model.Token;
 
 import org.joda.time.DateTime;
@@ -10,7 +11,7 @@ import org.joda.time.DateTime;
 /**
  * Created by Guilherme on 03/08/2014.
  */
-public class PrefsHandler {
+public class PrefsManager {
 
     private static final String PREFS_NAME = "MusicastPrefs";
     private static final String KEY_ACCESS_TOKEN = "accessToken";
@@ -60,7 +61,7 @@ public class PrefsHandler {
         if (currentToken.isValid()) {
             return currentToken;
         } else {
-            Token refreshedToken = SpotifyHandler.getRefreshedToken(context);
+            Token refreshedToken = SpotifyManager.getRefreshedToken(context);
             if (refreshedToken == null) {
                 return null;
             } else {

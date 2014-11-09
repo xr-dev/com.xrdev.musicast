@@ -14,23 +14,21 @@ import com.xrdev.musicast.connection.spotifywrapper.models.AuthorizationCodeCred
 import com.xrdev.musicast.connection.spotifywrapper.models.Page;
 import com.xrdev.musicast.connection.spotifywrapper.models.PlaylistTrack;
 import com.xrdev.musicast.connection.spotifywrapper.models.RefreshAccessTokenCredentials;
-import com.xrdev.musicast.connection.spotifywrapper.models.SimpleAlbum;
-import com.xrdev.musicast.connection.spotifywrapper.models.SimpleArtist;
 import com.xrdev.musicast.connection.spotifywrapper.models.SimplePlaylist;
 import com.xrdev.musicast.connection.spotifywrapper.models.Track;
 import com.xrdev.musicast.connection.spotifywrapper.models.User;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.Token;
 import com.xrdev.musicast.model.TrackItem;
+import com.xrdev.musicast.utils.PrefsManager;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Guilherme on 22/07/2014.
  */
-public class SpotifyHandler {
+public class SpotifyManager {
     // IDs:
     private static final String TAG = "SpotifyHandler";
     private static final String CLIENT_ID = "befa95e4d007494ea40efcdbd3e1fff7";
@@ -116,7 +114,7 @@ public class SpotifyHandler {
     public static User getCurrentUser(Context context) {
         try {
             Log.d(TAG, "Obtendo token válido para transação da API. / Obtaining valid token for API transaction.");
-            Token token = PrefsHandler.getValidToken(context);
+            Token token = PrefsManager.getValidToken(context);
 
             if (token == null) {
                 Log.d(TAG, "Não foi possível obter um token válido. / Unable to obtain valid token.");
@@ -140,7 +138,7 @@ public class SpotifyHandler {
 
             // setCodeToPrefs(context, code);
 
-            String code = PrefsHandler.getCodeFromPrefs(context);
+            String code = PrefsManager.getCodeFromPrefs(context);
 
             AuthorizationCodeCredentials authorizationCodeCredentials = api.authorizationCodeGrant(code).build().get();
 
@@ -151,7 +149,7 @@ public class SpotifyHandler {
             } else {
                 Log.d(TAG, "Token obtido pelo AuthorizationCodeCredentials: / Token obtained via AuthenticationCodeCredentials:  " + token.getAccessString());
                 Log.d(TAG, "Refresh Token obtido pelo AuthorizationCodeCredentials: / Refresh Token obtained via AuthenticationCodeCredentials:  " + token.getRefreshString());
-                PrefsHandler.setTokenToPrefs(context, token);
+                PrefsManager.setTokenToPrefs(context, token);
             }
 
         } catch (Exception e) {
@@ -165,7 +163,7 @@ public class SpotifyHandler {
         try {
             Log.d(TAG, "Token expirado, atualizando token... / Token expired, refreshing token...");
 
-            Token currentToken = PrefsHandler.getTokenFromPrefs(context);
+            Token currentToken = PrefsManager.getTokenFromPrefs(context);
 
             api.setAccessToken(currentToken.getAccessString());
             api.setRefreshToken(currentToken.getRefreshString());

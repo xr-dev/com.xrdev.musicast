@@ -1,7 +1,7 @@
 package com.xrdev.musicast.activity;
 
 import com.xrdev.musicast.R;
-import com.xrdev.musicast.connection.PrefsHandler;
+import com.xrdev.musicast.utils.PrefsManager;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -13,10 +13,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 public class MainActivity extends Activity {
 
@@ -79,7 +75,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                PrefsHandler.clearPrefs(getApplicationContext());
+                PrefsManager.clearPrefs(getApplicationContext());
                 Toast.makeText(getApplicationContext(),"Logged out successfully",Toast.LENGTH_SHORT).show();
             }
 

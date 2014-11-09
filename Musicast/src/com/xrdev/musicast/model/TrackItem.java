@@ -17,9 +17,8 @@ public class TrackItem {
     private List<SimpleArtist> artistsList;
     private SimpleAlbum album;
 
-
-
     private String youtubeId;
+    private String youtubeMp4;
 
 
 
@@ -81,5 +80,11 @@ public class TrackItem {
         this.youtubeId = youtubeId;
     }
 
+    public String getYoutubeMp4() {
+        return youtubeMp4;
+    }
 
+    public void setYoutubeMp4(String youtubeMp4) {
+        this.youtubeMp4 = youtubeMp4;
+    }
 }

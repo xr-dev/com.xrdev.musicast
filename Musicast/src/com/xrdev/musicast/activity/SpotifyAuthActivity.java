@@ -14,8 +14,8 @@ import com.xrdev.musicast.R;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
 import com.spotify.sdk.android.playback.ConnectionStateCallback;
-import com.xrdev.musicast.connection.PrefsHandler;
-import com.xrdev.musicast.connection.SpotifyHandler;
+import com.xrdev.musicast.utils.PrefsManager;
+import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.connection.SpotifyServiceBinder;
 
 
@@ -42,7 +42,7 @@ public class SpotifyAuthActivity extends Activity implements
             @Override
             public void onClick(View v) {
                 // mSpotifyBinder.getService().login(SpotifyAuthActivity.this);
-                SpotifyHandler.openLoginPrompt(SpotifyAuthActivity.this);
+                SpotifyManager.openLoginPrompt(SpotifyAuthActivity.this);
             }
         });
 
@@ -86,7 +86,7 @@ public class SpotifyAuthActivity extends Activity implements
             String accessToken = response.getAccessToken();
             String code = response.getCode();
 
-            PrefsHandler.setCodeToPrefs(this, code);
+            PrefsManager.setCodeToPrefs(this, code);
 
             // mSpotifyBinder.getService().setAccessToken(accessToken);
             // mSpotifyBinder.getService().setCode(code);
