@@ -13,7 +13,9 @@ import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 public class Application extends MultiDexApplication {
 
     private static String CAST_APPLICATION_ID;
+    private static String CHANNEL_NAMESPACE;
     private static VideoCastManager mCastMgr = null;
+    
 
     @Override
     public void onCreate(){
@@ -27,6 +29,8 @@ public class Application extends MultiDexApplication {
             public void run() {
                 // Lógica caso necessária. Usar mContext ao invés de this.
                 CAST_APPLICATION_ID = getString(R.string.cast_app_id);
+                CHANNEL_NAMESPACE = getString(R.string.cast_channel_namespace);
+                // Inserir o namespace "musicastChannel" nas Strings.
             }
         }.run();
 
@@ -39,7 +43,7 @@ public class Application extends MultiDexApplication {
 
     public static VideoCastManager getCastManager(Context context) {
         if (null == mCastMgr) {
-            mCastMgr = VideoCastManager.initialize(context, CAST_APPLICATION_ID, null, null);
+            mCastMgr = VideoCastManager.initialize(context, CAST_APPLICATION_ID, null, CHANNEL_NAMESPACE);
             // Parâmetros initialize:
             // Contexto, ID da aplicação, Activity que será o Player Control (null para usar a Activity padrão do CCL), custom channel.
             mCastMgr.enableFeatures(
