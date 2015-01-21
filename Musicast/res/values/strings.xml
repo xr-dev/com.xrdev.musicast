@@ -5,7 +5,9 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
-    <string name="cast_app_id">E3FA9FF0</string>
+    <string name="cast_app_id">E7378308</string>
+    <string name="cast_app_id_smr">E3FA9FF0</string>
+    <string name="cast_channel_namespace">urn:x-cast:com.xrdev.musicast</string>
 
     <string name="string_search">Search</string>
     <string name="button_search">Test YouTube Search</string>

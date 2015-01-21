@@ -3,9 +3,15 @@ package com.xrdev.musicast;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
+import com.google.android.gms.cast.ApplicationMetadata;
+import com.google.android.gms.cast.CastDevice;
 import com.google.sample.castcompanionlibrary.cast.BaseCastManager;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
+import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
+import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 
 /**
  * Created by Guilherme on 07/10/2014.
@@ -15,6 +21,7 @@ public class Application extends MultiDexApplication {
     private static String CAST_APPLICATION_ID;
     private static String CHANNEL_NAMESPACE;
     private static VideoCastManager mCastMgr = null;
+    private static VideoCastConsumerImpl mCastConsumer = null;
     
 
     @Override
@@ -30,7 +37,7 @@ public class Application extends MultiDexApplication {
                 // Lógica caso necessária. Usar mContext ao invés de this.
                 CAST_APPLICATION_ID = getString(R.string.cast_app_id);
                 CHANNEL_NAMESPACE = getString(R.string.cast_channel_namespace);
-                // Inserir o namespace "musicastChannel" nas Strings.
+
             }
         }.run();
 
@@ -55,7 +62,31 @@ public class Application extends MultiDexApplication {
 
         }
         mCastMgr.setContext(context);
+
+        mCastConsumer = getConsumerImpl();
+
+        mCastMgr.addVideoCastConsumer(mCastConsumer);
+
         return mCastMgr;
+    }
+
+    public static VideoCastConsumerImpl getConsumerImpl() {
+        mCastConsumer = new VideoCastConsumerImpl() {
+
+            @Override
+            public void onApplicationConnected(ApplicationMetadata appMetadata,
+                                               String sessionId, boolean wasLaunched) {
+                Log.i("APPLICATION", "CAST APPLICATION CONNECTED");
+            }
+
+            @Override
+            public void onDataMessageReceived(String message) {
+                Log.i("APPLICATION", "CAST RECEIVED MESSAGE:" + message);
+            }
+        };
+
+        return mCastConsumer;
+
     }
 
 

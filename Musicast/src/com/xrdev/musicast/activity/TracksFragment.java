@@ -6,14 +6,14 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
+import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
+import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.model.TrackItem;
-import com.xrdev.musicast.utils.YouTubeMp4Extractor;
-
-import java.io.IOException;
+import com.xrdev.musicast.utils.JsonConverter;
 
 /**
  * Created by Guilherme on 08/10/2014.
@@ -21,7 +21,9 @@ import java.io.IOException;
 public class TracksFragment extends ListFragment {
 
     VideoCastManager mCastMgr;
+    VideoCastConsumerImpl mConsumerImpl;
     Context mContext;
+    JsonConverter jsonConverter = new JsonConverter();
 
     public static TracksFragment newInstance() {
         TracksFragment tf = new TracksFragment();
@@ -68,18 +70,20 @@ public class TracksFragment extends ListFragment {
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, selectedTrack.getArtists() + " - " + selectedTrack.getName());
 
         // Extrair o link MP4 usando o YouTubeID:
-            if (selectedTrack.getYoutubeMp4() != null) {
-                MediaInfo mediaInfo = new MediaInfo.Builder(
-                        "http://playground.html5rocks.com/samples/html5_misc/chrome_japan.mp4")
-                        .setContentType("video/mp4")
-                        .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-                        .setMetadata(mediaMetadata)
-                        .build();
+            if (youtubeId != null) {
 
                 mContext = getActivity().getApplicationContext();
                 mCastMgr = Application.getCastManager(mContext);
 
-                mCastMgr.startCastControllerActivity(mContext, mediaInfo, 0, true);
+                try {
+                    String customMessage = jsonConverter.makeJson(JsonConverter.TYPE_LOAD_VIDEO, selectedTrack);
+
+                    mCastMgr.sendDataMessage(customMessage);
+                } catch (TransientNetworkDisconnectionException e) {
+                    e.printStackTrace();
+                } catch (NoConnectionException e) {
+                    e.printStackTrace();
+                }
 
             } else {
                 Toast.makeText(getActivity(),"YouTube video not found for this track.", Toast.LENGTH_LONG).show();

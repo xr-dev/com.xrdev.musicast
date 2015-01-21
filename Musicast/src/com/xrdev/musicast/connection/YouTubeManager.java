@@ -205,13 +205,6 @@ public class YouTubeManager {
                 if (video.getDurationInt() <= (item.getDuration() + 15)
                         && video.getDurationInt() >= (item.getDuration() - 15)){
                     item.setYoutubeId(video.getVideoId());
-
-                    try {
-                        String mp4Path = YouTubeMp4Extractor.extractMP4(video.getVideoId());
-                        item.setYoutubeMp4(mp4Path);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
 

@@ -23,6 +23,7 @@ import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.connection.YouTubeManager;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.TrackItem;
+import com.xrdev.musicast.utils.JsonConverter;
 
 import java.util.ArrayList;
 
@@ -44,6 +45,7 @@ public class TracksActivity extends ActionBarActivity {
     private MiniController mMiniController;
     private MediaRouter mMediaRouter;
     private MediaRouteSelector mMediaRouteSelector;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,8 @@ public class TracksActivity extends ActionBarActivity {
 
         // -------------------- PREPARAR LISTFRAGMENT --------------------
 		// Criar o adapter.
-		mAdapter = new TrackAdapter(getApplicationContext());
+		//mAdapter = new TrackAdapter(getApplicationContext());
+        mAdapter = new TrackAdapter(this);
         FragmentManager fm = getFragmentManager();
 
         // Fazer o attach do adapter à ListFragment:

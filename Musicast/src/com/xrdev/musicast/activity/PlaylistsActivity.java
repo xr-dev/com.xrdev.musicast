@@ -38,8 +38,10 @@ public class PlaylistsActivity extends ListActivity {
         new PlaylistDownloader().execute();
 
 		// Criar o adapter.
-		mAdapter = new PlaylistAdapter(getApplicationContext());
-		
+        //mAdapter = new PlaylistAdapter(getApplicationContext());
+
+        mAdapter = new PlaylistAdapter(this);
+
 		// Fazer o attach do adapter à ListView:
 		getListView().setAdapter(mAdapter);
         getListView().setClickable(true);
