@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -88,6 +89,21 @@ public class TrackAdapter extends BaseAdapter {
 
         final TextView albumView = (TextView) itemLayout.findViewById(R.id.text_track_album);
         albumView.setText(trackItem.getAlbum());
+
+        final ProgressBar progressBar = (ProgressBar) itemLayout.findViewById(R.id.pbar_youtube_fetch);
+        final TextView videoFound = (TextView) itemLayout.findViewById(R.id.text_video_found);
+
+        if (trackItem.wasSearched()) {
+            progressBar.setVisibility(View.GONE);
+            videoFound.setVisibility(View.VISIBLE);
+            if (trackItem.wasFound())
+                videoFound.setText(R.string.string_video_found);
+            else
+                videoFound.setText(R.string.string_video_not_found);
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            videoFound.setVisibility(View.GONE);
+        }
 
 		// Retornar o item dentro do layout.
 		return itemLayout;

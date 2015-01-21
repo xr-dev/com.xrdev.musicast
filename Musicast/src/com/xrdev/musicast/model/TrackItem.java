@@ -1,5 +1,6 @@
 package com.xrdev.musicast.model;
 
+import com.xrdev.musicast.connection.YouTubeManager;
 import com.xrdev.musicast.connection.spotifywrapper.models.SimpleAlbum;
 import com.xrdev.musicast.connection.spotifywrapper.models.SimpleArtist;
 import com.xrdev.musicast.connection.spotifywrapper.models.Track;
@@ -18,6 +19,7 @@ public class TrackItem {
     private SimpleAlbum album;
 
     private String youtubeId;
+    public static String VIDEO_NOT_FOUND = "0";
 
 
     public TrackItem(Track apiTrack) {
@@ -76,6 +78,20 @@ public class TrackItem {
 
     public void setYoutubeId(String youtubeId) {
         this.youtubeId = youtubeId;
+    }
+
+    public boolean wasSearched(){
+        if (youtubeId != null)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean wasFound(){
+        if (youtubeId.equals(VIDEO_NOT_FOUND))
+            return false;
+        else
+            return true;
     }
 
 }

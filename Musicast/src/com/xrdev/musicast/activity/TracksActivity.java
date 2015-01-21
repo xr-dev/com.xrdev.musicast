@@ -12,6 +12,9 @@ import android.support.v7.media.MediaRouter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.google.sample.castcompanionlibrary.cast.BaseCastManager;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
@@ -188,7 +191,7 @@ public class TracksActivity extends ActionBarActivity {
 		
 		@Override
 		protected ArrayList<TrackItem> doInBackground(String... arg0) {
-			Log.i(TAG, "AsyncTask: Entrando no doInBackground.");
+			Log.i(TAG, "AsyncTask Spotify: Entrando no doInBackground.");
 
             if (playlistItem != null){
                 Log.d(TAG, "Buscando músicas da Playlist ID / Fetching tracks from Playlist ID: " + playlistItem.getPlaylistId());
@@ -198,9 +201,9 @@ public class TracksActivity extends ActionBarActivity {
 
                 // Associar aos IDs do YouTube.
 
-                ArrayList<TrackItem> result = YouTubeManager.associateYouTubeData(spotifyItems);
+                // ArrayList<TrackItem> result = YouTubeManager.associateYouTubeData(spotifyItems);
 
-                return result;
+                return spotifyItems;
 
             } else {
                 return null;
@@ -208,23 +211,68 @@ public class TracksActivity extends ActionBarActivity {
 		}
 		
 		@Override
-		protected void onPostExecute(ArrayList<TrackItem> resultItems) {
-			super.onPostExecute(resultItems);
+		protected void onPostExecute(ArrayList<TrackItem> spotifyItems) {
+			super.onPostExecute(spotifyItems);
 			if (pd.isShowing()) {
 				pd.dismiss();
 			}
 
-            if (resultItems == null) {
+            if (spotifyItems == null) {
                 // TODO: Alterar esse método. Uma lista de reprodução vazia tem null como resultado esperado.
                 SpotifyManager.startLoginActivity(getApplicationContext());
             } else {
-                for (TrackItem item : resultItems) {
+                for (TrackItem item : spotifyItems) {
                     mAdapter.add(item);
                 }
             }
 
+            new YouTubeDownloader(mAdapter).execute();
+
 		}
 
 	}
+
+    public class YouTubeDownloader extends AsyncTask<String, Void, Void>{
+
+        private int numTracks;
+        private TrackAdapter adapter;
+
+        public YouTubeDownloader(TrackAdapter adapter) {
+            super();
+            this.numTracks = adapter.getCount();
+            this.adapter = adapter;
+        }
+
+
+        /*@Override
+        protected void onPreExecute() {
+
+        }*/
+
+        @Override
+        protected Void doInBackground(String... arg0) {
+            Log.i(TAG, "AsyncTask YouTube: Entrando no doInBackground.");
+
+
+            for (int i = 0; i < numTracks; i++) {
+                TrackItem currentItem = adapter.getItem(i);
+                YouTubeManager.associateYouTubeData(currentItem);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+
+            return null;
+        }
+
+/*        @Override
+        protected void onPostExecute() {
+
+        }*/
+
+    }
 	
 }

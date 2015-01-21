@@ -40,7 +40,6 @@ public class TracksFragment extends ListFragment {
         String spotifyId;
         String youtubeId;
         String duration;
-        String mp4Path;
 
         if (selectedTrack.getTrackId() == null)
             spotifyId = "Not found.";
@@ -66,10 +65,6 @@ public class TracksFragment extends ListFragment {
                 Toast.LENGTH_LONG).
                 show();
 
-        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-        mediaMetadata.putString(MediaMetadata.KEY_TITLE, selectedTrack.getArtists() + " - " + selectedTrack.getName());
-
-        // Extrair o link MP4 usando o YouTubeID:
             if (youtubeId != null) {
 
                 mContext = getActivity().getApplicationContext();

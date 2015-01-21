@@ -19,7 +19,6 @@ import com.google.api.services.youtube.model.VideoListResponse;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.model.VideoItem;
-import com.xrdev.musicast.utils.YouTubeMp4Extractor;
 
 import org.joda.time.Period;
 import org.joda.time.Seconds;
@@ -179,6 +178,39 @@ public class YouTubeManager {
 		return resultVideo;
 	}
 
+    public static void associateYouTubeData(TrackItem item){
+        String artists;
+        String trackName;
+
+        // Recuperar dados de um item.
+
+        if (item.getArtists() == null)
+            artists = "";
+        else
+            artists = item.getArtists();
+
+        if (item.getName() == null)
+            trackName = "";
+        else
+            trackName = item.getName();
+
+        // Buscar no Youtube por vídeos correspondentes.
+        VideoItem video = searchVideo(artists + " - " + trackName);
+
+        if (video == null) {
+            item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
+            return;
+        }
+        // Procurar correlação usando a duração dos vídeos.
+        // Configurar a tolerância na duração pelo if abaixo.
+        if (video.getDurationInt() <= (item.getDuration() + 15)
+                && video.getDurationInt() >= (item.getDuration() - 15)){
+            item.setYoutubeId(video.getVideoId());
+        } else {
+            item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
+        }
+    }
+
     public static ArrayList<TrackItem> associateYouTubeData(ArrayList<TrackItem> arrayList){
         String artists;
         String trackName;
@@ -205,6 +237,8 @@ public class YouTubeManager {
                 if (video.getDurationInt() <= (item.getDuration() + 15)
                         && video.getDurationInt() >= (item.getDuration() - 15)){
                     item.setYoutubeId(video.getVideoId());
+                } else {
+                    item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
                 }
             }
 
