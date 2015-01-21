@@ -34,6 +34,7 @@ public class SpotifyManager {
     private static final String CLIENT_ID = "befa95e4d007494ea40efcdbd3e1fff7";
     private static final String REDIRECT_URI = "musicast://callback";
     private static final String CLIENT_SECRET = "cffb5db7d8eb4910b3a95527fcee6899";
+    private static final int REQUEST_LIMIT = 100;
 
 
     // Api:
@@ -46,31 +47,42 @@ public class SpotifyManager {
 
     public static ArrayList<TrackItem> getPlaylistTracks(PlaylistItem playlist) {
 
+        int offset = 0;
+        int totalTracks = playlist.getNumTracksInt();
+
         ArrayList<TrackItem> result = new ArrayList<TrackItem>();
 
-        final PlaylistTracksRequest request = api.getPlaylistTracks(playlist.getOwnerId(), playlist.getPlaylistId()).build();
+        while (offset < totalTracks) {
+            final PlaylistTracksRequest request = api.getPlaylistTracks(playlist.getOwnerId(), playlist.getPlaylistId())
+                    .limit(REQUEST_LIMIT)
+                    .offset(offset)
+                    .build();
 
-        Log.d(TAG, "PlaylistRequest: " + request.toStringWithQueryParameters());
+            Log.d(TAG, "Total tracks:" + totalTracks);
+            Log.d(TAG, "PlaylistRequest: " + request.toStringWithQueryParameters());
 
-        try {
-            final Page<PlaylistTrack> tracksPage = request.get();
 
-            for (PlaylistTrack playlistTrack : tracksPage.getItems()) {
-                // TODO: Melhorar os dados que vão ser incluídos no Adapter de tracks.
+            try {
+                final Page<PlaylistTrack> tracksPage = request.get();
 
-                Track track = playlistTrack.getTrack();
+                for (PlaylistTrack playlistTrack : tracksPage.getItems()) {
+                    // TODO: Melhorar os dados que vão ser incluídos no Adapter de tracks.
 
-                result.add(new TrackItem(track));
+                    Track track = playlistTrack.getTrack();
 
+                    result.add(new TrackItem(track));
+
+                }
+
+                offset += REQUEST_LIMIT;
+
+            } catch (Exception e) {
+                Log.e(TAG, "Erro ao obter faixas de lista de reprodução. / Unable to get playlist tracks. Error: " + e.getMessage());
+                e.printStackTrace();
             }
-
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao obter faixas de lista de reprodução. / Unable to get playlist tracks. Error: " + e.getMessage());
-            e.printStackTrace();
         }
 
         return result;
-
 
     }
 
