@@ -34,7 +34,6 @@ public class SpotifyManager {
     private static final String CLIENT_ID = "befa95e4d007494ea40efcdbd3e1fff7";
     private static final String REDIRECT_URI = "musicast://callback";
     private static final String CLIENT_SECRET = "cffb5db7d8eb4910b3a95527fcee6899";
-    private static final int REQUEST_LIMIT = 100;
 
 
     // Api:
@@ -45,16 +44,14 @@ public class SpotifyManager {
             .build();
 
 
-    public static ArrayList<TrackItem> getPlaylistTracks(PlaylistItem playlist) {
+    public static ArrayList<TrackItem> getPlaylistTracks(PlaylistItem playlist, int limit, int offset) {
 
-        int offset = 0;
         int totalTracks = playlist.getNumTracksInt();
 
         ArrayList<TrackItem> result = new ArrayList<TrackItem>();
 
-        while (offset < totalTracks) {
             final PlaylistTracksRequest request = api.getPlaylistTracks(playlist.getOwnerId(), playlist.getPlaylistId())
-                    .limit(REQUEST_LIMIT)
+                    .limit(limit)
                     .offset(offset)
                     .build();
 
@@ -74,13 +71,10 @@ public class SpotifyManager {
 
                 }
 
-                offset += REQUEST_LIMIT;
-
             } catch (Exception e) {
                 Log.e(TAG, "Erro ao obter faixas de lista de reprodução. / Unable to get playlist tracks. Error: " + e.getMessage());
                 e.printStackTrace();
             }
-        }
 
         return result;
 

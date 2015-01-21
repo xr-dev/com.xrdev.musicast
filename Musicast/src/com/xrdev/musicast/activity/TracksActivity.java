@@ -12,9 +12,6 @@ import android.support.v7.media.MediaRouter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import com.google.sample.castcompanionlibrary.cast.BaseCastManager;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
@@ -26,7 +23,6 @@ import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.connection.YouTubeManager;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.TrackItem;
-import com.xrdev.musicast.utils.JsonConverter;
 
 import java.util.ArrayList;
 
@@ -40,6 +36,7 @@ public class TracksActivity extends ActionBarActivity {
     private TracksFragment tracksFragment;
     private TrackAdapter mAdapter;
     private PlaylistItem playlistItem;
+    private int mTotalTracks;
 
     private ActionBar actionBar;
     private MenuItem mediaRouteMenuItem;
@@ -48,6 +45,12 @@ public class TracksActivity extends ActionBarActivity {
     private MiniController mMiniController;
     private MediaRouter mMediaRouter;
     private MediaRouteSelector mMediaRouteSelector;
+
+    private AsyncTask mFirstRunTask;
+    private AsyncTask mBackgroundTask;
+
+    private int mRequestOffset;
+    private static int REQUEST_LIMIT = 30;
 
 
 	@Override
@@ -95,7 +98,7 @@ public class TracksActivity extends ActionBarActivity {
         // Estabelecer sessão com o chromecast:
         mCastMgr.reconnectSessionIfPossible(getApplicationContext(), false, 10); // context, showDialog, timeout.
 
-        new TrackDownloader().execute();
+        mFirstRunTask = new TrackDownloader().execute();
 
         // Iniciar o FragmentManager e incluir o fragment da lista ao layout:
 
@@ -164,6 +167,17 @@ public class TracksActivity extends ActionBarActivity {
         mCastMgr.removeMiniController(mMiniController);
     }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+
+        if (mFirstRunTask != null)
+            mFirstRunTask.cancel(true);
+
+        if (mBackgroundTask != null)
+            mBackgroundTask.cancel(true);
+    }
+
 
 
 
@@ -194,14 +208,15 @@ public class TracksActivity extends ActionBarActivity {
 			Log.i(TAG, "AsyncTask Spotify: Entrando no doInBackground.");
 
             if (playlistItem != null){
+                mRequestOffset = 0;
+                mTotalTracks = playlistItem.getNumTracksInt();
+
                 Log.d(TAG, "Buscando músicas da Playlist ID / Fetching tracks from Playlist ID: " + playlistItem.getPlaylistId());
                 Log.d(TAG, "Owner ID: " + playlistItem.getOwnerId());
                 // Buscar IDs e metadados do Spotify.
-                ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(playlistItem);
+                ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(playlistItem, REQUEST_LIMIT, mRequestOffset);
 
-                // Associar aos IDs do YouTube.
-
-                // ArrayList<TrackItem> result = YouTubeManager.associateYouTubeData(spotifyItems);
+                mRequestOffset += REQUEST_LIMIT;
 
                 return spotifyItems;
 
@@ -226,20 +241,18 @@ public class TracksActivity extends ActionBarActivity {
                 }
             }
 
-            new YouTubeDownloader(mAdapter).execute();
+            mBackgroundTask = new backgroundDownloader(mAdapter).execute();
 
 		}
 
 	}
 
-    public class YouTubeDownloader extends AsyncTask<String, Void, Void>{
+    public class backgroundDownloader extends AsyncTask<String, Void, Void>{
 
-        private int numTracks;
         private TrackAdapter adapter;
 
-        public YouTubeDownloader(TrackAdapter adapter) {
+        public backgroundDownloader(TrackAdapter adapter) {
             super();
-            this.numTracks = adapter.getCount();
             this.adapter = adapter;
         }
 
@@ -251,10 +264,39 @@ public class TracksActivity extends ActionBarActivity {
 
         @Override
         protected Void doInBackground(String... arg0) {
-            Log.i(TAG, "AsyncTask YouTube: Entrando no doInBackground.");
+            Log.i(TAG, "AsyncTask em Background: Entrando no doInBackground.");
 
 
-            for (int i = 0; i < numTracks; i++) {
+
+            if (playlistItem != null){
+                while (mRequestOffset < mTotalTracks) {
+
+                    if (isCancelled())
+                        break;
+
+                    final ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(playlistItem, REQUEST_LIMIT, mRequestOffset);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (TrackItem item : spotifyItems) {
+                                adapter.add(item);
+                            }
+                        }
+                    });
+
+                    mRequestOffset += REQUEST_LIMIT;
+
+                }
+
+            } else {
+                return null;
+            }
+
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if(isCancelled())
+                    break;
+
                 TrackItem currentItem = adapter.getItem(i);
                 YouTubeManager.associateYouTubeData(currentItem);
                 runOnUiThread(new Runnable() {
