@@ -87,7 +87,7 @@ public class TrackAdapter extends BaseAdapter {
 
             holder.titleView = (TextView) convertView.findViewById(R.id.text_track_name);
             holder.artistsView = (TextView) convertView.findViewById(R.id.text_track_artists);
-            holder.albumView = (TextView) convertView.findViewById(R.id.text_track_album);
+            // holder.albumView = (TextView) convertView.findViewById(R.id.text_track_album);
             holder.progressBar = (ProgressBar) convertView.findViewById(R.id.pbar_youtube_fetch);
             holder.videoFound = (TextView) convertView.findViewById(R.id.text_video_found);
 
@@ -101,10 +101,10 @@ public class TrackAdapter extends BaseAdapter {
 		holder.titleView.setText(trackItem.getName());
 		
 		// final TextView artistsView = (TextView) itemLayout.findViewById(R.id.text_track_artists);
-		holder.artistsView.setText(trackItem.getArtists());
+		holder.artistsView.setText(trackItem.getArtists() + " - " + trackItem.getAlbum());
 
         // final TextView albumView = (TextView) itemLayout.findViewById(R.id.text_track_album);
-        holder.albumView.setText(trackItem.getAlbum());
+        // holder.albumView.setText(trackItem.getAlbum());
 
         if (trackItem.wasSearched()) {
             holder.progressBar.setVisibility(View.GONE);

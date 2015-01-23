@@ -19,44 +19,20 @@
         android:layout_toStartOf="@+id/text_video_found"/>
 
     <TextView
-        android:id="@+id/text_track_spacer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/string_spacer"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:maxLines="2" 
-        android:ellipsize="end"
-        android:textColor="#A1A1A1"
-        android:layout_alignTop="@+id/text_track_artists"
-        android:layout_toRightOf="@+id/text_track_artists"
-        android:layout_toEndOf="@+id/text_track_artists" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Artist Name"
+        android:text="Artist Name + Album"
         android:id="@+id/text_track_artists"
         android:layout_below="@+id/text_track_name"
         android:textColor="#A1A1A1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Album Name"
-        android:id="@+id/text_track_album"
-        android:textColor="#A1A1A1"
         android:maxLines="1"
         android:ellipsize="end"
-        android:layout_alignTop="@+id/text_track_artists"
-        android:layout_toRightOf="@+id/text_track_spacer"
-        android:layout_toEndOf="@+id/text_track_spacer"
         android:layout_toLeftOf="@+id/text_video_found"
-        android:layout_toStartOf="@+id/text_video_found" />
+        android:layout_toStartOf="@+id/text_video_found"
+        android:layout_marginLeft="10dp" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleSmall"
