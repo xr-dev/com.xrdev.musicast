@@ -21,6 +21,8 @@ public class TrackItem {
     private String youtubeId;
     public static String VIDEO_NOT_FOUND = "0";
 
+    private int queueIndex;
+
 
     public TrackItem(Track apiTrack) {
         this.trackId = apiTrack.getId();
@@ -78,6 +80,14 @@ public class TrackItem {
 
     public void setYoutubeId(String youtubeId) {
         this.youtubeId = youtubeId;
+    }
+
+    public int getQueueIndex() {
+        return queueIndex;
+    }
+
+    public void setQueueIndex(int queueIndex) {
+        this.queueIndex = queueIndex;
     }
 
     public boolean wasSearched(){

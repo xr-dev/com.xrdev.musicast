@@ -6,12 +6,11 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.cast.MediaMetadata;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
-import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
 import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.xrdev.musicast.Application;
+import com.xrdev.musicast.model.QueueList;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.utils.JsonConverter;
 
@@ -21,13 +20,17 @@ import com.xrdev.musicast.utils.JsonConverter;
 public class TracksFragment extends ListFragment {
 
     VideoCastManager mCastMgr;
-    VideoCastConsumerImpl mConsumerImpl;
     Context mContext;
     JsonConverter jsonConverter = new JsonConverter();
+    QueueList mQueue;
 
     public static TracksFragment newInstance() {
         TracksFragment tf = new TracksFragment();
         return tf;
+    }
+
+    public void setQueue(QueueList queue) {
+        this.mQueue = queue;
     }
 
     @Override
@@ -40,6 +43,7 @@ public class TracksFragment extends ListFragment {
         String spotifyId;
         String youtubeId;
         String duration;
+        String youtubeIndex;
 
         if (selectedTrack.getTrackId() == null)
             spotifyId = "Not found.";
@@ -56,12 +60,15 @@ public class TracksFragment extends ListFragment {
         else
             duration = String.valueOf(selectedTrack.getDuration());
 
+            youtubeIndex = String.valueOf(selectedTrack.getQueueIndex());
+
 
         Toast.makeText(getActivity(),"Selected track: "
                 + selectedTrack.getArtists() + " - " + selectedTrack.getName() + "\n"
                 + "Duration: " + duration + " seconds. \n"
                 + "Spotify ID: " + spotifyId + "\n"
-                + "YouTube ID: " + youtubeId,
+                + "YouTube ID: " + youtubeId + "\n"
+                + "YouTube index: " + youtubeIndex,
                 Toast.LENGTH_LONG).
                 show();
 
@@ -70,10 +77,20 @@ public class TracksFragment extends ListFragment {
                 mContext = getActivity().getApplicationContext();
                 mCastMgr = Application.getCastManager(mContext);
 
-                try {
-                    String customMessage = jsonConverter.makeJson(JsonConverter.TYPE_LOAD_VIDEO, selectedTrack);
 
-                    mCastMgr.sendDataMessage(customMessage);
+
+                try {
+                    mCastMgr.sendDataMessage(
+                            jsonConverter.makeLoadPlaylistJson(JsonConverter.TYPE_LOAD_PLAYLIST, mQueue, selectedTrack.getQueueIndex())
+                    );
+
+                    mCastMgr.sendDataMessage(
+                            jsonConverter.makeJson(JsonConverter.TYPE_PLAY_VIDEO_AT, selectedTrack)
+                    );
+
+                    //String customMessage = jsonConverter.makeLoadPlaylistJson(JsonConverter.TYPE_LOAD_VIDEO, selectedTrack);
+
+                    //mCastMgr.sendDataMessage(customMessage);
                 } catch (TransientNetworkDisconnectionException e) {
                     e.printStackTrace();
                 } catch (NoConnectionException e) {

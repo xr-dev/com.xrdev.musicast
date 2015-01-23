@@ -17,6 +17,7 @@ import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.xrdev.musicast.Application;
+import com.xrdev.musicast.model.QueueList;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.model.VideoItem;
 
@@ -178,7 +179,7 @@ public class YouTubeManager {
 		return resultVideo;
 	}
 
-    public static void associateYouTubeData(TrackItem item){
+    public static void associateYouTubeData(TrackItem item, QueueList queue){
         String artists;
         String trackName;
 
@@ -206,6 +207,8 @@ public class YouTubeManager {
         if (video.getDurationInt() <= (item.getDuration() + 15)
                 && video.getDurationInt() >= (item.getDuration() - 15)){
             item.setYoutubeId(video.getVideoId());
+            queue.addValidTrack(item);
+            item.setQueueIndex(queue.getValidTracks().size() - 1);
         } else {
             item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
         }

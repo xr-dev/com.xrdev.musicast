@@ -190,6 +190,7 @@ public class VideoCastManager extends BaseCastManager
             mCastManager = sInstance;
         }
         return sInstance;
+
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.xrdev.musicast.model.JsonModel;
+import com.xrdev.musicast.model.QueueList;
 import com.xrdev.musicast.model.TrackItem;
 
 /**
@@ -17,6 +18,7 @@ public class JsonConverter {
     private JsonModel jsonModel;
     public static String TYPE_LOAD_VIDEO = "loadVideo";
     public static String TYPE_LOAD_PLAYLIST = "loadPlaylist";
+    public static String TYPE_PLAY_VIDEO_AT = "playVideoAt";
     public static String TYPE_PLAY_VIDEO = "playVideo";
     public static String TYPE_PAUSE_VIDEO = "pauseVideo";
     public static String TYPE_STOP_VIDEO = "stopVideo";
@@ -36,8 +38,28 @@ public class JsonConverter {
             // Argumentos incorretos, apresentar mensagem de erro?
         }
 
-        Log.d(TAG,"Mensagem enviada JSON: " + jsonString);
+        writeLog();
+
         return jsonString;
+    }
+
+    public String makeLoadPlaylistJson(String type, QueueList queue, int index){
+
+        jsonModel = new JsonModel();
+        jsonModel.setType(type);
+        jsonModel.setVideoIds(queue.getValidIds());
+        jsonModel.setIndex(String.valueOf(index));
+
+        jsonString = gson.toJson(jsonModel);
+
+        writeLog();
+
+        return jsonString;
+    }
+
+
+    public void writeLog() {
+        Log.d(TAG,"Mensagem enviada JSON: " + jsonString);
     }
 
 }

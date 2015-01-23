@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
+import android.widget.ListAdapter;
 
 import com.google.android.gms.cast.ApplicationMetadata;
-import com.google.android.gms.cast.CastDevice;
-import com.google.sample.castcompanionlibrary.cast.BaseCastManager;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
-import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
+import com.xrdev.musicast.model.PlaylistItem;
+import com.xrdev.musicast.model.QueueList;
 
 /**
  * Created by Guilherme on 07/10/2014.
@@ -22,6 +21,7 @@ public class Application extends MultiDexApplication {
     private static String CHANNEL_NAMESPACE;
     private static VideoCastManager mCastMgr = null;
     private static VideoCastConsumerImpl mCastConsumer = null;
+    private static QueueList mQueue = null;
     
 
     @Override
@@ -45,6 +45,14 @@ public class Application extends MultiDexApplication {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig){
+
+    }
+
+    public static QueueList getQueue(String playlistId){
+        if (null == mQueue || !mQueue.getPlaylistId().equals(playlistId))
+            mQueue = QueueList.initialize(playlistId);
+
+        return mQueue;
 
     }
 

@@ -22,6 +22,7 @@ import com.xrdev.musicast.adapter.TrackAdapter;
 import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.connection.YouTubeManager;
 import com.xrdev.musicast.model.PlaylistItem;
+import com.xrdev.musicast.model.QueueList;
 import com.xrdev.musicast.model.TrackItem;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class TracksActivity extends ActionBarActivity {
     private TrackAdapter mAdapter;
     private PlaylistItem playlistItem;
     private int mTotalTracks;
+    private QueueList mQueue;
 
     private ActionBar actionBar;
     private MenuItem mediaRouteMenuItem;
@@ -85,6 +87,8 @@ public class TracksActivity extends ActionBarActivity {
         mAdapter = new TrackAdapter(this);
         FragmentManager fm = getFragmentManager();
 
+        mQueue = Application.getQueue(playlistItem.getPlaylistId());
+
         // Fazer o attach do adapter à ListFragment:
 
         tracksFragment = (TracksFragment) fm.findFragmentById(R.id.fragment_tracks_list);
@@ -93,6 +97,7 @@ public class TracksActivity extends ActionBarActivity {
             tracksFragment = TracksFragment.newInstance();
         }
 
+        tracksFragment.setQueue(mQueue);
         tracksFragment.setListAdapter(mAdapter);
 
         // Estabelecer sessão com o chromecast:
@@ -298,7 +303,7 @@ public class TracksActivity extends ActionBarActivity {
                     break;
 
                 TrackItem currentItem = adapter.getItem(i);
-                YouTubeManager.associateYouTubeData(currentItem);
+                YouTubeManager.associateYouTubeData(currentItem, mQueue);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

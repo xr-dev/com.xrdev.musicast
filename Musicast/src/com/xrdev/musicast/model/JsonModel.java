@@ -9,7 +9,7 @@ public class JsonModel {
     String type;
     String index;
     String videoId;
-    ArrayList<TrackItem> trackList;
+    ArrayList<String> videoIds;
 
     public String getType() {
         return type;
@@ -35,11 +35,11 @@ public class JsonModel {
         this.videoId = videoId;
     }
 
-    public ArrayList<TrackItem> getTrackList() {
-        return trackList;
+    public ArrayList<String> getVideoIds() {
+        return videoIds;
     }
 
-    public void setTrackList(ArrayList<TrackItem> trackList) {
-        this.trackList = trackList;
+    public void setVideoIds(ArrayList<String> videoIds) {
+        this.videoIds = videoIds;
     }
 }
