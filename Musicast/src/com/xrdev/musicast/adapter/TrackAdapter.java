@@ -77,42 +77,60 @@ public class TrackAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final TrackItem trackItem = mItems.get(position);
-		
-		// Inflar o layout para cada item:
-		LayoutInflater li = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		RelativeLayout itemLayout = (RelativeLayout) li.inflate(R.layout.item_track, null);
-		
+
+        // Inflar o layout para cada item:
+        TrackHolder holder = new TrackHolder();
+
+        if (convertView == null) {
+            LayoutInflater li = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = li.inflate(R.layout.item_track, parent, false);
+
+            holder.titleView = (TextView) convertView.findViewById(R.id.text_track_name);
+            holder.artistsView = (TextView) convertView.findViewById(R.id.text_track_artists);
+            holder.albumView = (TextView) convertView.findViewById(R.id.text_track_album);
+            holder.progressBar = (ProgressBar) convertView.findViewById(R.id.pbar_youtube_fetch);
+            holder.videoFound = (TextView) convertView.findViewById(R.id.text_video_found);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (TrackHolder) convertView.getTag();
+        }
+
 		// Montar os textviews com os dados de cada item:
-		final TextView titleView = (TextView) itemLayout.findViewById(R.id.text_track_name);
-		titleView.setText(trackItem.getName());
+		// final TextView titleView = (TextView) itemLayout.findViewById(R.id.text_track_name);
+		holder.titleView.setText(trackItem.getName());
 		
-		final TextView artistsView = (TextView) itemLayout.findViewById(R.id.text_track_artists);
-		artistsView.setText(trackItem.getArtists());
+		// final TextView artistsView = (TextView) itemLayout.findViewById(R.id.text_track_artists);
+		holder.artistsView.setText(trackItem.getArtists());
 
-        final TextView albumView = (TextView) itemLayout.findViewById(R.id.text_track_album);
-        albumView.setText(trackItem.getAlbum());
-
-        final ProgressBar progressBar = (ProgressBar) itemLayout.findViewById(R.id.pbar_youtube_fetch);
-        final TextView videoFound = (TextView) itemLayout.findViewById(R.id.text_video_found);
+        // final TextView albumView = (TextView) itemLayout.findViewById(R.id.text_track_album);
+        holder.albumView.setText(trackItem.getAlbum());
 
         if (trackItem.wasSearched()) {
-            progressBar.setVisibility(View.GONE);
-            videoFound.setVisibility(View.VISIBLE);
+            holder.progressBar.setVisibility(View.GONE);
+            holder.videoFound.setVisibility(View.VISIBLE);
             if (trackItem.wasFound()){
-                videoFound.setText(R.string.string_video_found);
+                holder.videoFound.setText(R.string.string_video_found);
             }
             else {
-                videoFound.setText(R.string.string_video_not_found);
+                holder.videoFound.setText(R.string.string_video_not_found);
             }
         } else {
-            progressBar.setVisibility(View.VISIBLE);
-            videoFound.setVisibility(View.GONE);
+            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.videoFound.setVisibility(View.GONE);
         }
 
 		// Retornar o item dentro do layout.
-		return itemLayout;
+		return convertView;
 	}
 
+    static class TrackHolder {
+        TextView titleView;
+        TextView artistsView;
+        TextView albumView;
+        ProgressBar progressBar;
+        TextView videoFound;
+    }
 
 	
 	

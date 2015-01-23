@@ -103,7 +103,9 @@ public class TracksActivity extends ActionBarActivity {
         // Estabelecer sessão com o chromecast:
         mCastMgr.reconnectSessionIfPossible(getApplicationContext(), false, 10); // context, showDialog, timeout.
 
-        mFirstRunTask = new TrackDownloader().execute();
+        // mFirstRunTask = new TrackDownloader().execute();
+
+        mFirstRunTask = new TrackDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
 
         // Iniciar o FragmentManager e incluir o fragment da lista ao layout:
 
@@ -202,10 +204,11 @@ public class TracksActivity extends ActionBarActivity {
 		@Override
 		protected void onPreExecute() {
 			// Preparar o spinner
+            Log.i(TAG, "AsyncTask Spotify: Iniciando onPreExecute.");
             pd = new ProgressDialog(TracksActivity.this);
 			pd.setMessage(getString(R.string.string_loading));
 			pd.show();
-
+            Log.i(TAG, "AsyncTask Spotify: Finalizando onPreExecute.");
 		}
 		
 		@Override

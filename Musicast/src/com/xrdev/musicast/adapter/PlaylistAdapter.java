@@ -75,23 +75,38 @@ public class PlaylistAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final PlaylistItem playlistItem = mItems.get(position);
-		
-		// Inflar o layout para cada item:
-		LayoutInflater li = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		RelativeLayout itemLayout = (RelativeLayout) li.inflate(R.layout.item_playlist, null);
-		
+
+        // Inflar o layout para cada item:
+
+        PlaylistHolder holder = new PlaylistHolder();
+
+        if(convertView == null) {
+            LayoutInflater li = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = li.inflate(R.layout.item_playlist, parent, false);
+
+            holder.titleView = (TextView) convertView.findViewById(R.id.text_playlist_name);
+            holder.tracksView = (TextView) convertView.findViewById(R.id.text_playlist_num_tracks);
+
+            convertView.setTag(holder);
+
+        } else {
+            holder = (PlaylistHolder) convertView.getTag();
+        }
+
 		// Montar os textviews com os dados de cada item:
-		final TextView titleView = (TextView) itemLayout.findViewById(R.id.text_playlist_name);
-		titleView.setText(playlistItem.getName());
-		
-		final TextView tracksView = (TextView) itemLayout.findViewById(R.id.text_playlist_num_tracks);
-		tracksView.setText(playlistItem.getNumTracks());
+		holder.titleView.setText(playlistItem.getName());
+		holder.tracksView.setText(playlistItem.getNumTracks());
 
 
 		// Retornar o item dentro do layout.
-		return itemLayout;
+		return convertView;
 	}
 
+
+    static class PlaylistHolder {
+        TextView titleView;
+        TextView tracksView;
+    }
 
 	
 	
