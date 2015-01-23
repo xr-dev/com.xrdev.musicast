@@ -14,9 +14,9 @@ import java.util.List;
 public class TrackItem {
     private String trackId;
     private String name;
+    private String artists;
     private int duration;
-    private List<SimpleArtist> artistsList;
-    private SimpleAlbum album;
+    private String album;
 
     private String youtubeId;
     public static String VIDEO_NOT_FOUND = "0";
@@ -28,8 +28,8 @@ public class TrackItem {
         this.trackId = apiTrack.getId();
         this.name = apiTrack.getName();
         this.duration = apiTrack.getDuration() / 1000; // Duração no Spotify API é em milissegundos. Transformar em segundos.
-        this.artistsList = apiTrack.getArtists();
-        this.album = apiTrack.getAlbum();
+        this.album = apiTrack.getAlbum().getName();
+        this.artists = getArtistsFromApi(apiTrack);
     }
 
     public String getTrackId() {
@@ -56,8 +56,10 @@ public class TrackItem {
         this.duration = duration;
     }
 
-    public String getArtists() {
-        Iterator iterator = artistsList.iterator();
+    public String getArtistsFromApi(Track apiTrack) {
+        List<SimpleArtist> apiList = apiTrack.getArtists();
+
+        Iterator iterator = apiList.iterator();
 
         String artistsString = "";
 
@@ -70,8 +72,12 @@ public class TrackItem {
         return artistsString;
     }
 
+    public String getArtists(){
+        return artists;
+    }
+
     public String getAlbum() {
-        return album.getName();
+        return album;
     }
 
     public String getYoutubeId() {

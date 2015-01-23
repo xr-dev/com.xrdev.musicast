@@ -63,30 +63,23 @@ public class TracksFragment extends ListFragment {
             youtubeIndex = String.valueOf(selectedTrack.getQueueIndex());
 
 
-        Toast.makeText(getActivity(),"Selected track: "
-                + selectedTrack.getArtists() + " - " + selectedTrack.getName() + "\n"
-                + "Duration: " + duration + " seconds. \n"
-                + "Spotify ID: " + spotifyId + "\n"
-                + "YouTube ID: " + youtubeId + "\n"
-                + "YouTube index: " + youtubeIndex,
-                Toast.LENGTH_LONG).
-                show();
 
-            if (youtubeId != null) {
+
+            if (selectedTrack.wasFound()) {
 
                 mContext = getActivity().getApplicationContext();
                 mCastMgr = Application.getCastManager(mContext);
 
 
-
+                // Foi encontrado vídeo, enviar mensagem.
                 try {
                     mCastMgr.sendDataMessage(
                             jsonConverter.makeLoadPlaylistJson(JsonConverter.TYPE_LOAD_PLAYLIST, mQueue, selectedTrack.getQueueIndex())
                     );
 
-                    mCastMgr.sendDataMessage(
-                            jsonConverter.makeJson(JsonConverter.TYPE_PLAY_VIDEO_AT, selectedTrack)
-                    );
+                /*mCastMgr.sendDataMessage(
+                        jsonConverter.makeJson(JsonConverter.TYPE_PLAY_VIDEO_AT, selectedTrack)
+                ); */
 
                     //String customMessage = jsonConverter.makeLoadPlaylistJson(JsonConverter.TYPE_LOAD_VIDEO, selectedTrack);
 
@@ -96,6 +89,15 @@ public class TracksFragment extends ListFragment {
                 } catch (NoConnectionException e) {
                     e.printStackTrace();
                 }
+
+                Toast.makeText(getActivity(),"Selected track: "
+                                + selectedTrack.getArtists() + " - " + selectedTrack.getName() + "\n"
+                                + "Duration: " + duration + " seconds. \n"
+                                + "Spotify ID: " + spotifyId + "\n"
+                                + "YouTube ID: " + youtubeId + "\n"
+                                + "YouTube index: " + youtubeIndex,
+                        Toast.LENGTH_LONG).
+                        show();
 
             } else {
                 Toast.makeText(getActivity(),"YouTube video not found for this track.", Toast.LENGTH_LONG).show();

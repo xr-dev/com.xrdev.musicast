@@ -71,6 +71,8 @@ public class TrackAdapter extends BaseAdapter {
 	}
 
 
+
+
 	// Método mais importante, vai criar a View para cada item. é necessário mencionar o layout em XML gerado.
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -96,10 +98,12 @@ public class TrackAdapter extends BaseAdapter {
         if (trackItem.wasSearched()) {
             progressBar.setVisibility(View.GONE);
             videoFound.setVisibility(View.VISIBLE);
-            if (trackItem.wasFound())
+            if (trackItem.wasFound()){
                 videoFound.setText(R.string.string_video_found);
-            else
+            }
+            else {
                 videoFound.setText(R.string.string_video_not_found);
+            }
         } else {
             progressBar.setVisibility(View.VISIBLE);
             videoFound.setVisibility(View.GONE);

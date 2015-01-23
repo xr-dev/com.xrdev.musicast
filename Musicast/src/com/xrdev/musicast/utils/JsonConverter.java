@@ -49,6 +49,7 @@ public class JsonConverter {
         jsonModel.setType(type);
         jsonModel.setVideoIds(queue.getValidIds());
         jsonModel.setIndex(String.valueOf(index));
+        jsonModel.setTracksMetadata(queue.getValidTracks());
 
         jsonString = gson.toJson(jsonModel);
 
