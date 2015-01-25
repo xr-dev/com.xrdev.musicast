@@ -8,6 +8,7 @@ public class VideoItem {
 	private String description;
 	private BigInteger viewCount;
     private int duration;
+    private boolean isLicensed;
 	
 	public VideoItem(String id, String title, String description, BigInteger viewCount, int duration) {
 		this.videoId = id;
@@ -20,6 +21,12 @@ public class VideoItem {
     public VideoItem(String id, int duration){
         this.videoId = id;
         this.duration = duration;
+    }
+
+    public VideoItem(String id, int duration, boolean isLicensed){
+        this.videoId = id;
+        this.duration = duration;
+        this.isLicensed = isLicensed;
     }
 	
 	public String getVideoId() {
@@ -57,5 +64,13 @@ public class VideoItem {
     }
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public boolean isLicensed() {
+        return isLicensed;
+    }
+
+    public void setLicensed(boolean isLicensed) {
+        this.isLicensed = isLicensed;
     }
 }

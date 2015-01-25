@@ -153,6 +153,7 @@ public class YouTubeManager {
 					 //String description = video.getSnippet().getDescription();
 					 //BigInteger viewCount = video.getStatistics().getViewCount();
                      String durationString = video.getContentDetails().getDuration();
+                     boolean isLicensed = video.getContentDetails().getLicensedContent();
 
 
                      // Converter a duração do formato String enviado pela API para segundos.
@@ -165,7 +166,7 @@ public class YouTubeManager {
                      // Adicionar o VideoItem ao Array.
 					 // videoItemList.add(new VideoItem(videoId, title, description, viewCount, durationInt));
 
-                     resultVideo = new VideoItem(videoId, durationInt);
+                     resultVideo = new VideoItem(videoId, durationInt, isLicensed);
 
                      System.out.println("[YouTubeHandler] Video adicionado à lista para o View: " + videoId);
 					 
@@ -204,8 +205,9 @@ public class YouTubeManager {
         }
         // Procurar correlação usando a duração dos vídeos.
         // Configurar a tolerância na duração pelo if abaixo.
-        if (video.getDurationInt() <= (item.getDuration() + 15)
-                && video.getDurationInt() >= (item.getDuration() - 15)){
+
+        if ((video.isLicensed()) || (video.getDurationInt() <= (item.getDuration() + 15)
+                && video.getDurationInt() >= (item.getDuration() - 15))){
             item.setYoutubeId(video.getVideoId());
             queue.addValidTrack(item);
             item.setQueueIndex(queue.getValidTracks().size() - 1);
