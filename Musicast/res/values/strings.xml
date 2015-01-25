@@ -10,7 +10,6 @@
     <string name="cast_channel_namespace">urn:x-cast:com.xrdev.musicast</string>
 
     <string name="string_search">Search</string>
-    <string name="button_search">Test YouTube Search</string>
     <string name="string_loading">Loading</string>
     <string name="title_activity_spotify_login">Log in to Spotify</string>
     <string name="string_spotify_login_button">LOG IN TO SPOTIFY</string>

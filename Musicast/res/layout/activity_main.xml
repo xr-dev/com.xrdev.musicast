@@ -16,56 +16,35 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="44dp"
-        android:layout_alignParentEnd="false">
+        android:layout_alignParentEnd="false"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/search_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/string_search" />
-
-        <EditText
-            android:id="@+id/youtube_search_field"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
-
-            <requestFocus />
-        </EditText>
 
     </LinearLayout>
 
     <Button
-        android:id="@+id/searchButton"
+        android:id="@+id/button_test_app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_search"
+        android:text="Test App"
         android:layout_below="@+id/linearLayout"
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:id="@+id/spotify_test_login"
+        android:id="@+id/button_test_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/searchButton"
+        android:layout_below="@+id/button_test_app"
         android:layout_centerHorizontal="true"
-        android:text="Test Spotify Login Activity" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test Spotify API Init"
-        android:id="@+id/spotify_test_api_init"
-        android:layout_below="@+id/spotify_test_login"
-        android:layout_centerHorizontal="true" />
+        android:text="Test Login Activity" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout"
-        android:id="@+id/logout_button"
-        android:layout_below="@+id/spotify_test_api_init"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/button_test_logout"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/button_test_login" />
 
     <TextView
         android:layout_width="wrap_content"

@@ -19,11 +19,9 @@ public class MainActivity extends Activity {
 	static private final String TAG = "TCC";
 	static private final String SEARCH_TERM = "searchTerm";
 	
-	Button searchButton;
-	Button spotifyTestLogin;
-    Button spotifyTestAPI;
+	Button testAppButton;
+	Button testLoginButton;
     Button logoutTest;
-	EditText searchField;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,41 +29,27 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		// Inicializar objetos da UI.
-		searchButton = (Button) findViewById(R.id.searchButton);
-		spotifyTestLogin = (Button) findViewById(R.id.spotify_test_login);
-        spotifyTestAPI = (Button) findViewById(R.id.spotify_test_api_init);
+		testAppButton = (Button) findViewById(R.id.button_test_app);
+		testLoginButton = (Button) findViewById(R.id.button_test_login);
 
-        logoutTest = (Button) findViewById(R.id.logout_button);
-
-		searchField = (EditText) findViewById(R.id.youtube_search_field);
-
+        logoutTest = (Button) findViewById(R.id.button_test_logout);
 		
 		// Incluir os listeners aos elementos da UI.
 		
-		searchButton.setOnClickListener(new OnClickListener() {
+		testAppButton.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				startYoutubeSearch();
-			}
+            @Override
+            public void onClick(View v) {
+                startFragmentsTest();
+            }
 
-		});
+        });
 		
-		spotifyTestLogin.setOnClickListener(new OnClickListener() {
+		testLoginButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 startLoginTest();
-            }
-
-
-        });
-
-        spotifyTestAPI.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                startApiTest();
             }
 
 
@@ -92,19 +76,7 @@ public class MainActivity extends Activity {
 		return true;
 		
 	}
-	
-	public void startYoutubeSearch() {
-		Log.i(TAG, "Abrindo Activity de resultado. / Opening Result Activity.");
-		
-		// Colocar o conteúdo do campo como um extra no Intent para a Activity de resultado.
-		
-		Intent intent = new Intent(MainActivity.this, YoutubeResultActivity.class);
-		String searchTerm = searchField.getText().toString();
-		intent.putExtra(MainActivity.SEARCH_TERM, searchTerm);
-		startActivity(intent);
 
-		
-	}
 	
 	public void startLoginTest() {
 		Log.i(TAG, "Iniciando teste de login do Spotify. / Starting Spotify Login Test.");
@@ -115,10 +87,10 @@ public class MainActivity extends Activity {
 		
 	}
 
-    public void startApiTest() {
-        Log.i(TAG, "Iniciando teste da API do Spotify. / Starting Spotify API test.");
+    public void startFragmentsTest() {
+        Log.i(TAG, "Iniciando teste de Fragments. / Starting Fragments test.");
 
-        Intent intent = new Intent(MainActivity.this, PlaylistsActivity.class);
+        Intent intent = new Intent(MainActivity.this, MusicastActivity.class);
 
         startActivity(intent);
     }

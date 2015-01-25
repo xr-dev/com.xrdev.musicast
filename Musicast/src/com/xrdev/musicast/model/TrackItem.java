@@ -104,6 +104,10 @@ public class TrackItem {
     }
 
     public boolean wasFound(){
+        if (null == youtubeId) {
+            return false;
+        }
+
         if (youtubeId.equals(VIDEO_NOT_FOUND))
             return false;
         else

@@ -41,6 +41,9 @@ dependencies {
     compile files('libs/joda-time-2.4.jar')
 
     compile 'com.google.android:multidex:0.1' // multi-dex
+
+    compile 'com.sothree.slidinguppanel:library:2.0.4'
+
 }
 
 repositories {

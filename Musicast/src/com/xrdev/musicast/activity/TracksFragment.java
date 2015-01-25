@@ -10,6 +10,7 @@ import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
 import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.xrdev.musicast.Application;
+import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.QueueList;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.utils.JsonConverter;
@@ -21,6 +22,7 @@ public class TracksFragment extends ListFragment {
 
     VideoCastManager mCastMgr;
     Context mContext;
+    PlaylistItem mPlaylist;
     JsonConverter jsonConverter = new JsonConverter();
     QueueList mQueue;
 
@@ -31,6 +33,14 @@ public class TracksFragment extends ListFragment {
 
     public void setQueue(QueueList queue) {
         this.mQueue = queue;
+    }
+
+    public PlaylistItem getPlaylist() {
+        return mPlaylist;
+    }
+
+    public void setPlaylist(PlaylistItem mPlaylist) {
+        this.mPlaylist = mPlaylist;
     }
 
     @Override
@@ -102,6 +112,7 @@ public class TracksFragment extends ListFragment {
             } else {
                 Toast.makeText(getActivity(),"YouTube video not found for this track.", Toast.LENGTH_LONG).show();
             }
+
 
 
 

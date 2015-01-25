@@ -16,7 +16,6 @@ import com.spotify.sdk.android.authentication.SpotifyAuthentication;
 import com.spotify.sdk.android.playback.ConnectionStateCallback;
 import com.xrdev.musicast.utils.PrefsManager;
 import com.xrdev.musicast.connection.SpotifyManager;
-import com.xrdev.musicast.connection.SpotifyServiceBinder;
 
 
 public class SpotifyAuthActivity extends Activity implements
@@ -24,8 +23,6 @@ public class SpotifyAuthActivity extends Activity implements
 
     private static final String TAG = "SpotifyAuthActivity";
     private static final String EXTRA_CODE = "code";
-    private SpotifyServiceBinder mSpotifyBinder;
-
     private Button mLoginButton;
 
     @Override
@@ -91,7 +88,7 @@ public class SpotifyAuthActivity extends Activity implements
             // mSpotifyBinder.getService().setAccessToken(accessToken);
             // mSpotifyBinder.getService().setCode(code);
 
-            Intent playlistIntent = new Intent(SpotifyAuthActivity.this, PlaylistsActivity.class);
+            Intent playlistIntent = new Intent(SpotifyAuthActivity.this, MusicastActivity.class);
             playlistIntent.putExtra(EXTRA_CODE, code);
             startActivity(playlistIntent);
 
