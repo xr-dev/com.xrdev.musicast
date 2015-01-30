@@ -13,24 +13,31 @@ import android.support.v7.media.MediaRouter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.sample.castcompanionlibrary.cast.BaseCastManager;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
-import com.google.sample.castcompanionlibrary.widgets.MiniController;
+import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
+import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.PlaylistAdapter;
 import com.xrdev.musicast.adapter.TrackAdapter;
 import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.connection.YouTubeManager;
+import com.xrdev.musicast.model.JsonModel;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.QueueList;
 import com.xrdev.musicast.model.TrackItem;
+import com.xrdev.musicast.utils.JsonConverter;
 
 import java.util.ArrayList;
 
 public class MusicastActivity extends ActionBarActivity
-    implements PlaylistsFragment.OnPlaylistSelectedListener{
+    implements PlaylistsFragment.OnPlaylistSelectedListener, Application.OnMessageReceived {
 
 
     private final static String TAG = "MusicastActivity";
@@ -47,7 +54,11 @@ public class MusicastActivity extends ActionBarActivity
     private PlaylistsFragment mPlaylistsFragment;
     private TracksFragment mTracksFragment;
 
-    private Intent mFromApiIntent;
+    private Button mPlayButton;
+    private Button mRevButton;
+    private Button mFwdButton;
+    private Button mTestOverlayButton;
+    private TextView mTrackInfo;
 
     private ActionBar actionBar;
     private MenuItem mediaRouteMenuItem;
@@ -63,7 +74,14 @@ public class MusicastActivity extends ActionBarActivity
 
     private int mRequestOffset;
     private static int REQUEST_LIMIT = 30;
+    private int status;
+    private static final int UNSTARTED = -1;
+    private static final int IDLE = 0;
+    private static final int PLAYING = 1;
+    private static final int PAUSED = 2;
+    private static final int BUFFERING = 3;
 
+    JsonConverter jsonConverter = new JsonConverter();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +94,14 @@ public class MusicastActivity extends ActionBarActivity
 
         Log.d(TAG, "MusicastActivity.onCreate()");
 
+
         if (savedInstanceState != null) {
             Log.d(TAG, "MusicastActivity: retornando de uma instância salva, pulando o onCreate().");
             return;
         }
+
+        Application.setListener(this);
+        Log.d(TAG,"Listener configurado à classe global.");
 
         actionBar = getSupportActionBar();
 
@@ -97,8 +119,6 @@ public class MusicastActivity extends ActionBarActivity
 
         setTitle(R.string.title_activity_spotify_playlists);
 
-        // Verificar se a Activity foi iniciada por um intent do Spotify API:
-        mFromApiIntent = getIntent();
         // Inicializar adapters:
         mPlaylistAdapter = new PlaylistAdapter(this);
         mTrackAdapter = new TrackAdapter(this);
@@ -128,6 +148,57 @@ public class MusicastActivity extends ActionBarActivity
         mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
 
         // mFirstTracksTask = new TrackDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
+
+
+
+        // -------------------- INSTANCIAR VIEWS DO SLIDING PANEL --------------------
+
+        this.status = UNSTARTED;
+
+        mPlayButton = (Button) findViewById(R.id.play_button);
+        mRevButton = (Button) findViewById(R.id.rev_button);
+        mFwdButton = (Button) findViewById(R.id.fwd_button);
+        mTestOverlayButton = (Button) findViewById(R.id.test_overlay_button);
+
+        mPlayButton.setVisibility(View.INVISIBLE);
+        mRevButton.setVisibility(View.INVISIBLE);
+        mFwdButton.setVisibility(View.INVISIBLE);
+
+        mTrackInfo = (TextView) findViewById(R.id.trackinfo_queue_text);
+        mTrackInfo.setText("No video currently playing.");
+
+        mPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (status == PLAYING) {
+                    sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_PAUSE_VIDEO));
+                } else {
+                    sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_PLAY_VIDEO));
+                }
+            }
+        });
+
+        mRevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_PLAY_PREVIOUS));
+            }
+        });
+
+        mFwdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_PLAY_NEXT));
+            }
+        });
+
+        mTestOverlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_SHOW_OVERLAY));
+            }
+        });
 
 
     }
@@ -231,6 +302,49 @@ public class MusicastActivity extends ActionBarActivity
 
     }
 
+    public void onMessageReceived(String message) {
+        Gson gson = new Gson();
+        JsonModel obj = gson.fromJson(message, JsonModel.class);
+        String type = obj.getType();
+        if (type.equals("stateChange") || type.equals("statusCheck")) {
+            int status = Integer.parseInt(obj.getMessage());
+            updateStatus(status);
+        }
+        if (type.equals("trackInfo")) {
+            int index = Integer.parseInt(obj.getMessage());
+            updateTrackInfo(index);
+        }
+    }
+
+    private void updateStatus(int status) {
+        this.status = status;
+        switch (status) {
+            case UNSTARTED:
+                break;
+            case IDLE:
+                mPlayButton.setText("Play");
+                break;
+            case PLAYING:
+                mPlayButton.setText("Pause");
+                break;
+            case PAUSED:
+                mPlayButton.setText("Play");
+                break;
+            case BUFFERING:
+                break;
+        }
+    }
+
+    private void updateTrackInfo(int index) {
+        TrackItem track = mQueue.getValidTracks().get(index);
+        String artists = track.getArtists();
+        String name = track.getName();
+        mTrackInfo.setText(artists + " - " + name);
+        mPlayButton.setVisibility(View.VISIBLE);
+        mRevButton.setVisibility(View.VISIBLE);
+        mFwdButton.setVisibility(View.VISIBLE);
+    }
+
 
     private void displayBackStack(FragmentManager fm) {
         int count = fm.getBackStackEntryCount();
@@ -242,6 +356,16 @@ public class MusicastActivity extends ActionBarActivity
         }
     }
 
+    private void sendMessage(String message) {
+        try {
+            mCastMgr.sendDataMessage(message);
+            Log.d(TAG, "Message sent: " + message);
+        } catch (TransientNetworkDisconnectionException e) {
+            e.printStackTrace();
+        } catch (NoConnectionException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
 	 * Inner classes para execução em segundo plano (AsyncTask):

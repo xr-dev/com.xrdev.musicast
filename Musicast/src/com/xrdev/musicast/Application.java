@@ -1,15 +1,17 @@
 package com.xrdev.musicast;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
-import android.widget.ListAdapter;
 
 import com.google.android.gms.cast.ApplicationMetadata;
+import com.google.gson.Gson;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.xrdev.musicast.model.PlaylistItem;
+import com.xrdev.musicast.activity.MusicastActivity;
+import com.xrdev.musicast.model.JsonModel;
 import com.xrdev.musicast.model.QueueList;
 
 /**
@@ -19,9 +21,17 @@ public class Application extends MultiDexApplication {
 
     private static String CAST_APPLICATION_ID;
     private static String CHANNEL_NAMESPACE;
+    private static final String TAG = "Application";
     private static VideoCastManager mCastMgr = null;
     private static VideoCastConsumerImpl mCastConsumer = null;
     private static QueueList mQueue = null;
+    private static OnMessageReceived mCallback;
+
+
+
+    public interface OnMessageReceived {
+        public void onMessageReceived(String message);
+    }
     
 
     @Override
@@ -46,6 +56,10 @@ public class Application extends MultiDexApplication {
     @Override
     public void onConfigurationChanged(Configuration newConfig){
 
+    }
+
+    public static void setListener(Activity activity) {
+        mCallback = (OnMessageReceived) activity;
     }
 
     public static QueueList getQueue(String playlistId){
@@ -84,18 +98,18 @@ public class Application extends MultiDexApplication {
             @Override
             public void onApplicationConnected(ApplicationMetadata appMetadata,
                                                String sessionId, boolean wasLaunched) {
-                Log.i("APPLICATION", "CAST APPLICATION CONNECTED");
+                Log.i(TAG, "CAST APPLICATION CONNECTED");
             }
 
             @Override
             public void onDataMessageReceived(String message) {
-                Log.i("APPLICATION", "CAST RECEIVED MESSAGE:" + message);
+                Log.i(TAG, "CAST RECEIVED MESSAGE:" + message);
+                mCallback.onMessageReceived(message);
             }
         };
 
         return mCastConsumer;
 
     }
-
 
 }

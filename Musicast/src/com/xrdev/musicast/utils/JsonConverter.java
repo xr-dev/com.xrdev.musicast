@@ -21,8 +21,10 @@ public class JsonConverter {
     public static String TYPE_PLAY_VIDEO_AT = "playVideoAt";
     public static String TYPE_PLAY_VIDEO = "playVideo";
     public static String TYPE_PAUSE_VIDEO = "pauseVideo";
-    public static String TYPE_STOP_VIDEO = "stopVideo";
     public static String TYPE_GET_STATUS = "getStatus";
+    public static String TYPE_PLAY_PREVIOUS = "previousVideo";
+    public static String TYPE_PLAY_NEXT = "nextVideo";
+    public static String TYPE_SHOW_OVERLAY = "showOverlay";
 
     public String makeJson(String type, Object obj){
 
@@ -54,6 +56,14 @@ public class JsonConverter {
         jsonString = gson.toJson(jsonModel);
 
         writeLog();
+
+        return jsonString;
+    }
+
+    public String makeGenericTypeJson(String type) {
+        jsonModel = new JsonModel();
+        jsonModel.setType(type);
+        jsonString = gson.toJson(jsonModel);
 
         return jsonString;
     }

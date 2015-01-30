@@ -11,6 +11,7 @@ public class JsonModel {
     String videoId;
     ArrayList<String> videoIds;
     ArrayList<TrackItem> tracksMetadata;
+    String message;
 
     public String getType() {
         return type;
@@ -50,5 +51,13 @@ public class JsonModel {
 
     public void setTracksMetadata(ArrayList<TrackItem> tracksMetadata) {
         this.tracksMetadata = tracksMetadata;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

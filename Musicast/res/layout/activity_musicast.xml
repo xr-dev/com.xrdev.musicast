@@ -8,6 +8,9 @@
     sothree:panelHeight="68dp"
     sothree:shadowHeight="4dp">
 
+
+
+
     <FrameLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -22,17 +25,57 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:gravity="center|top"
-        tools:context="com.xrdev.musicast.activity.MusicastActivity"
-        android:id="@+id/button_test_logout">
+        tools:context="com.xrdev.musicast.activity.MusicastActivity">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play/Pause"
+            android:id="@+id/play_button"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&gt;|"
+            android:id="@+id/fwd_button"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/play_button"
+            android:layout_toEndOf="@+id/play_button" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="|&lt;"
+            android:id="@+id/rev_button"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/play_button"
+            android:layout_toStartOf="@+id/play_button" />
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center|top"
-            android:text="Teste SlidingUp Panel"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="[Artists] - [Track Name]"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/trackinfo_queue_text"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test Overlay"
+            android:id="@+id/test_overlay_button"
+            android:layout_below="@+id/play_button"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 
