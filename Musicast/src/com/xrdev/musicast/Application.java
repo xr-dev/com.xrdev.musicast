@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.gson.Gson;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
+import com.google.sample.castcompanionlibrary.cast.callbacks.BaseCastConsumerImpl;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.xrdev.musicast.activity.MusicastActivity;
 import com.xrdev.musicast.model.JsonModel;
@@ -24,6 +25,7 @@ public class Application extends MultiDexApplication {
     private static final String TAG = "Application";
     private static VideoCastManager mCastMgr = null;
     private static VideoCastConsumerImpl mCastConsumer = null;
+    private static BaseCastConsumerImpl mBaseConsumer = null;
     private static QueueList mQueue = null;
     private static OnMessageReceived mCallback;
 
@@ -31,6 +33,7 @@ public class Application extends MultiDexApplication {
 
     public interface OnMessageReceived {
         public void onMessageReceived(String message);
+        public void onDisconnected();
     }
     
 
@@ -87,7 +90,10 @@ public class Application extends MultiDexApplication {
 
         mCastConsumer = getConsumerImpl();
 
+        mBaseConsumer = getBaseImpl();
+
         mCastMgr.addVideoCastConsumer(mCastConsumer);
+        mCastMgr.addBaseCastConsumer(mBaseConsumer);
 
         return mCastMgr;
     }
@@ -106,10 +112,26 @@ public class Application extends MultiDexApplication {
                 Log.i(TAG, "CAST RECEIVED MESSAGE:" + message);
                 mCallback.onMessageReceived(message);
             }
+
+            @Override
+            public void onApplicationDisconnected(int errorCode) {
+                Log.i(TAG, "CAST APPLICATION DISCONNECTED");
+            }
         };
 
         return mCastConsumer;
 
+    }
+
+    public static BaseCastConsumerImpl getBaseImpl() {
+        mBaseConsumer = new BaseCastConsumerImpl() {
+            @Override
+        public void onDisconnected(){
+                Log.i(TAG, "CAST APPLICATION DISCONNECTED");
+                mCallback.onDisconnected();
+            }
+        };
+        return mBaseConsumer;
     }
 
 }

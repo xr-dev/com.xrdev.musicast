@@ -27,5 +27,6 @@
     <string name="title_text">Musicast Debug Activity</string>
     <string name="string_video_found">FOUND</string>
     <string name="string_video_not_found">NOT FOUND</string>
+    <string name="string_video_not_playing">No video currently playing or Chromecast disconnected.</string>
 
 </resources>

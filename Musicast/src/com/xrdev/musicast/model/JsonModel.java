@@ -12,6 +12,7 @@ public class JsonModel {
     ArrayList<String> videoIds;
     ArrayList<TrackItem> tracksMetadata;
     String message;
+    TrackItem trackInfo;
 
     public String getType() {
         return type;
@@ -59,5 +60,13 @@ public class JsonModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public TrackItem getTrackInfo() {
+        return trackInfo;
+    }
+
+    public void setTrackInfo(TrackItem trackInfo) {
+        this.trackInfo = trackInfo;
     }
 }

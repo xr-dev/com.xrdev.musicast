@@ -17,11 +17,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.api.client.json.Json;
 import com.google.gson.Gson;
 import com.google.sample.castcompanionlibrary.cast.BaseCastManager;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
 import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.PlaylistAdapter;
@@ -50,6 +52,7 @@ public class MusicastActivity extends ActionBarActivity
     private TrackAdapter mTrackAdapter;
     private PlaylistAdapter mPlaylistAdapter;
 
+    private SlidingUpPanelLayout mSlidingUpLayout;
     private FragmentManager mFragmentManager;
     private PlaylistsFragment mPlaylistsFragment;
     private TracksFragment mTracksFragment;
@@ -88,6 +91,9 @@ public class MusicastActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_musicast);
+        mSlidingUpLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        mSlidingUpLayout.hidePanel();
+
         /**
          * ONCREATE DA ACTIVITY: Instanciar apenas objetos que serão comuns aos dois Fragments.
          */
@@ -153,19 +159,17 @@ public class MusicastActivity extends ActionBarActivity
 
         // -------------------- INSTANCIAR VIEWS DO SLIDING PANEL --------------------
 
+
         this.status = UNSTARTED;
+
 
         mPlayButton = (Button) findViewById(R.id.play_button);
         mRevButton = (Button) findViewById(R.id.rev_button);
         mFwdButton = (Button) findViewById(R.id.fwd_button);
         mTestOverlayButton = (Button) findViewById(R.id.test_overlay_button);
 
-        mPlayButton.setVisibility(View.INVISIBLE);
-        mRevButton.setVisibility(View.INVISIBLE);
-        mFwdButton.setVisibility(View.INVISIBLE);
-
         mTrackInfo = (TextView) findViewById(R.id.trackinfo_queue_text);
-        mTrackInfo.setText("No video currently playing.");
+        mTrackInfo.setText(R.string.string_video_not_playing);
 
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,6 +221,9 @@ public class MusicastActivity extends ActionBarActivity
         super.onResume();
         mCastMgr = Application.getCastManager(this);
         mCastMgr.incrementUiCounter();
+        if (mCastMgr.isConnected()) {
+            sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
+        }
     }
 
     @Override
@@ -306,14 +313,28 @@ public class MusicastActivity extends ActionBarActivity
         Gson gson = new Gson();
         JsonModel obj = gson.fromJson(message, JsonModel.class);
         String type = obj.getType();
+        if (type.equals("session")) {
+            String connection = obj.getMessage();
+            if (connection.equals("connected")) {
+                // Chromecast acabou de avisar que está conectado. Solicitar o status de reprodução e metadados.
+                sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
+            }
+        }
         if (type.equals("stateChange") || type.equals("statusCheck")) {
+            // Chromecast enviou alteração de estado do player, atualizar o app.
             int status = Integer.parseInt(obj.getMessage());
             updateStatus(status);
         }
         if (type.equals("trackInfo")) {
-            int index = Integer.parseInt(obj.getMessage());
-            updateTrackInfo(index);
+            // Pega o JSON encapsulado no campo "message" e o transforma num objeto TrackItem.
+            TrackItem trackInfo = obj.getTrackInfo();
+            updateTrackInfo(trackInfo);
         }
+    }
+
+
+    public void onDisconnected() {
+        updateTrackInfo(null);
     }
 
     private void updateStatus(int status) {
@@ -335,14 +356,15 @@ public class MusicastActivity extends ActionBarActivity
         }
     }
 
-    private void updateTrackInfo(int index) {
-        TrackItem track = mQueue.getValidTracks().get(index);
-        String artists = track.getArtists();
-        String name = track.getName();
-        mTrackInfo.setText(artists + " - " + name);
-        mPlayButton.setVisibility(View.VISIBLE);
-        mRevButton.setVisibility(View.VISIBLE);
-        mFwdButton.setVisibility(View.VISIBLE);
+    private void updateTrackInfo(TrackItem track) {
+        if (null != track) {
+            String artists = track.getArtists();
+            String name = track.getName();
+            mSlidingUpLayout.showPanel();
+            mTrackInfo.setText(artists + " - " + name);
+        } else {
+            mSlidingUpLayout.hidePanel();
+        }
     }
 
 
