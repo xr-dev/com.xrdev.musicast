@@ -5,11 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    sothree:panelHeight="68dp"
+    sothree:panelHeight="60dp"
     sothree:shadowHeight="4dp">
-
-
-
 
     <FrameLayout
         xmlns:tools="http://schemas.android.com/tools"
@@ -17,7 +14,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         tools:context="com.xrdev.musicast.activity.MusicastActivity"
-        android:id="@+id/fragment_container">
+        android:id="@+id/main_container">
 
     </FrameLayout>
 
@@ -25,58 +22,87 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:gravity="center|top"
         tools:context="com.xrdev.musicast.activity.MusicastActivity">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Play/Pause"
-            android:id="@+id/play_button"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&gt;|"
-            android:id="@+id/fwd_button"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/play_button"
-            android:layout_toEndOf="@+id/play_button" />
+        <FrameLayout
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/playing_track_container"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center|top"
+            tools:context="com.xrdev.musicast.activity.MusicastActivity">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="|&lt;"
-            android:id="@+id/rev_button"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/play_button"
-            android:layout_toStartOf="@+id/play_button" />
+        </FrameLayout>
 
-        <TextView
+        <RelativeLayout
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/media_controls_layout"
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="[Artists] - [Track Name]"
-            android:gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:id="@+id/trackinfo_queue_text"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_below="@+id/playing_track_container"
+            android:gravity="center|top"
+            tools:context="com.xrdev.musicast.activity.MusicastActivity">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Test Overlay"
-            android:id="@+id/test_overlay_button"
-            android:layout_below="@+id/play_button"
-            android:layout_centerHorizontal="true" />
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:id="@+id/imagebutton_play_pause"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_action_play"
+                android:contentDescription="@string/play_pause" />
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:id="@+id/imagebutton_next"
+                android:src="@drawable/ic_action_next"
+                android:layout_toEndOf="@+id/imagebutton_play_pause"
+                android:layout_alignTop="@+id/imagebutton_play_pause"
+                android:layout_toRightOf="@+id/imagebutton_play_pause"
+                android:contentDescription="@string/next" />
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                android:layout_marginRight="20dp"
+                android:background="@android:color/transparent"
+                android:id="@+id/imagebutton_previous"
+                android:src="@drawable/ic_action_previous"
+                android:layout_toStartOf="@+id/imagebutton_play_pause"
+                android:layout_alignTop="@+id/imagebutton_play_pause"
+                android:layout_toLeftOf="@+id/imagebutton_play_pause"
+                android:contentDescription="@string/previous" />
+
+        </RelativeLayout>
+
+        <FrameLayout
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            tools:context="com.xrdev.musicast.activity.MusicastActivity"
+            android:id="@+id/vote_container"
+            android:background="@drawable/vote_container_bg">
+
+        </FrameLayout>
+
+
 
     </RelativeLayout>
+
+
+
+
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

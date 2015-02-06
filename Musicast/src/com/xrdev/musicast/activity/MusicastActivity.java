@@ -15,9 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.api.client.json.Json;
 import com.google.gson.Gson;
 import com.google.sample.castcompanionlibrary.cast.BaseCastManager;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
@@ -56,12 +56,13 @@ public class MusicastActivity extends ActionBarActivity
     private FragmentManager mFragmentManager;
     private PlaylistsFragment mPlaylistsFragment;
     private TracksFragment mTracksFragment;
+    private PlayingTrackFragment mPlayingTrackFragment;
 
-    private Button mPlayButton;
-    private Button mRevButton;
-    private Button mFwdButton;
-    private Button mTestOverlayButton;
-    private TextView mTrackInfo;
+    private ImageButton mPlayPauseButton;
+    private ImageButton mPrevButton;
+    private ImageButton mNextButton;
+    private TextView mTrackName;
+    private TextView mArtistsAlbumName;
 
     private ActionBar actionBar;
     private MenuItem mediaRouteMenuItem;
@@ -136,12 +137,21 @@ public class MusicastActivity extends ActionBarActivity
             mPlaylistsFragment = PlaylistsFragment.newInstance();
         }
 
+        if (mPlayingTrackFragment == null) {
+            mPlayingTrackFragment = PlayingTrackFragment.newInstance();
+        }
+
+
         // mPlaylistsFragment.setArguments(getIntent().getExtras()); - LINHA NECESSÁRIA?
         mPlaylistsFragment.setListAdapter(mPlaylistAdapter);
 
         // Attach no fragment:
         mFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, mPlaylistsFragment)
+                .add(R.id.main_container, mPlaylistsFragment)
+                .commit();
+
+        mFragmentManager.beginTransaction()
+                .add(R.id.playing_track_container, mPlayingTrackFragment)
                 .commit();
 
         displayBackStack(mFragmentManager);
@@ -163,15 +173,14 @@ public class MusicastActivity extends ActionBarActivity
         this.status = UNSTARTED;
 
 
-        mPlayButton = (Button) findViewById(R.id.play_button);
-        mRevButton = (Button) findViewById(R.id.rev_button);
-        mFwdButton = (Button) findViewById(R.id.fwd_button);
-        mTestOverlayButton = (Button) findViewById(R.id.test_overlay_button);
+        mPlayPauseButton = (ImageButton) findViewById(R.id.imagebutton_play_pause);
+        mPrevButton = (ImageButton) findViewById(R.id.imagebutton_previous);
+        mNextButton = (ImageButton) findViewById(R.id.imagebutton_next);
 
-        mTrackInfo = (TextView) findViewById(R.id.trackinfo_queue_text);
-        mTrackInfo.setText(R.string.string_video_not_playing);
+        mTrackName = mPlayingTrackFragment.getTrackNameTextView();
+        mArtistsAlbumName = mPlayingTrackFragment.getArtistsAlbumNameTextView();
 
-        mPlayButton.setOnClickListener(new View.OnClickListener() {
+        mPlayPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -183,29 +192,23 @@ public class MusicastActivity extends ActionBarActivity
             }
         });
 
-        mRevButton.setOnClickListener(new View.OnClickListener() {
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_PLAY_PREVIOUS));
             }
         });
 
-        mFwdButton.setOnClickListener(new View.OnClickListener() {
+        mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_PLAY_NEXT));
             }
         });
 
-        mTestOverlayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_SHOW_OVERLAY));
-            }
-        });
-
 
     }
+
 
 
 
@@ -295,7 +298,7 @@ public class MusicastActivity extends ActionBarActivity
         mTracksFragment.setListAdapter(mTrackAdapter);
 
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, mTracksFragment);
+        transaction.replace(R.id.main_container, mTracksFragment);
         transaction.addToBackStack(null);
         transaction.commit();
 
@@ -343,13 +346,13 @@ public class MusicastActivity extends ActionBarActivity
             case UNSTARTED:
                 break;
             case IDLE:
-                mPlayButton.setText("Play");
+                mPlayPauseButton.setImageResource(R.drawable.ic_action_play);
                 break;
             case PLAYING:
-                mPlayButton.setText("Pause");
+                mPlayPauseButton.setImageResource(R.drawable.ic_action_pause);
                 break;
             case PAUSED:
-                mPlayButton.setText("Play");
+                mPlayPauseButton.setImageResource(R.drawable.ic_action_play);
                 break;
             case BUFFERING:
                 break;
@@ -360,8 +363,12 @@ public class MusicastActivity extends ActionBarActivity
         if (null != track) {
             String artists = track.getArtists();
             String name = track.getName();
+            String album = track.getAlbum();
             mSlidingUpLayout.showPanel();
-            mTrackInfo.setText(artists + " - " + name);
+            mPlayingTrackFragment.setTrackName(name);
+            mPlayingTrackFragment.setArtistsAlbumName(artists + " - " + album);
+            //mTrackName.setText(name);
+            //mArtistsAlbumName.setText(artists + " - " + album);
         } else {
             mSlidingUpLayout.hidePanel();
         }
@@ -526,17 +533,17 @@ public class MusicastActivity extends ActionBarActivity
                 }
             }
 
-            mTracksBackgroundTask = new backgroundDownloader(mTrackAdapter).execute();
+            mTracksBackgroundTask = new BackgroundDownloader(mTrackAdapter).execute();
 
 		}
 
 	}
 
-    public class backgroundDownloader extends AsyncTask<String, Void, Void>{
+    public class BackgroundDownloader extends AsyncTask<String, Void, Void>{
 
         private TrackAdapter adapter;
 
-        public backgroundDownloader(TrackAdapter adapter) {
+        public BackgroundDownloader(TrackAdapter adapter) {
             super();
             this.adapter = adapter;
         }
