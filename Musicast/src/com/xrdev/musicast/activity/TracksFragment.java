@@ -11,7 +11,7 @@ import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionExcept
 import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.model.PlaylistItem;
-import com.xrdev.musicast.model.QueueList;
+import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.utils.JsonConverter;
 
@@ -24,15 +24,15 @@ public class TracksFragment extends ListFragment {
     Context mContext;
     PlaylistItem mPlaylist;
     JsonConverter jsonConverter = new JsonConverter();
-    QueueList mQueue;
+    LocalQueue mLocalQueue;
 
     public static TracksFragment newInstance() {
         TracksFragment tf = new TracksFragment();
         return tf;
     }
 
-    public void setQueue(QueueList queue) {
-        this.mQueue = queue;
+    public void setQueue(LocalQueue queue) {
+        this.mLocalQueue = queue;
     }
 
     public PlaylistItem getPlaylist() {
@@ -84,7 +84,7 @@ public class TracksFragment extends ListFragment {
                 // Foi encontrado vídeo, enviar mensagem.
                 try {
                     mCastMgr.sendDataMessage(
-                            jsonConverter.makeLoadPlaylistJson(JsonConverter.TYPE_LOAD_PLAYLIST, mQueue, selectedTrack.getQueueIndex())
+                            jsonConverter.makeLoadPlaylistJson(JsonConverter.TYPE_LOAD_PLAYLIST, mLocalQueue, selectedTrack.getQueueIndex())
                     );
 
                 /*mCastMgr.sendDataMessage(

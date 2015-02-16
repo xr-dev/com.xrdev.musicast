@@ -1,26 +1,24 @@
 package com.xrdev.musicast.model;
 
-import android.widget.ListAdapter;
-
 import java.util.ArrayList;
 
 /**
  * Created by Guilherme on 22/01/2015.
  */
-public class QueueList {
+public class LocalQueue {
     private static String mPlaylistId;
-    private static QueueList sInstance;
+    private static LocalQueue sInstance;
     private ArrayList<TrackItem> mValidTracks;
 
-    public static QueueList initialize(String playlistId){
+    public static LocalQueue initialize(String playlistId){
 
-        sInstance = new QueueList(playlistId);
+        sInstance = new LocalQueue(playlistId);
 
         return sInstance;
 
     }
 
-    public QueueList(String playlistId) {
+    public LocalQueue(String playlistId) {
         mPlaylistId = playlistId;
         mValidTracks = new ArrayList<TrackItem>();
     }

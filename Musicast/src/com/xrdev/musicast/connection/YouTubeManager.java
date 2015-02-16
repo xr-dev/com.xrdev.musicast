@@ -1,9 +1,7 @@
 package com.xrdev.musicast.connection;
 
 import android.text.TextUtils;
-import android.widget.Toast;
 
-import com.google.android.gms.cast.MediaInfo;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
@@ -16,8 +14,7 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
-import com.xrdev.musicast.Application;
-import com.xrdev.musicast.model.QueueList;
+import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.model.VideoItem;
 
@@ -27,7 +24,6 @@ import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.PeriodFormatter;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -180,7 +176,7 @@ public class YouTubeManager {
 		return resultVideo;
 	}
 
-    public static void associateYouTubeData(TrackItem item, QueueList queue){
+    public static void associateYouTubeData(TrackItem item, LocalQueue queue){
         String artists;
         String trackName;
 

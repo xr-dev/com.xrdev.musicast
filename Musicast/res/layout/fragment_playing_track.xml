@@ -18,7 +18,6 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="[Track Name]"
             android:textStyle="bold"
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:id="@+id/text_playing_track_name"

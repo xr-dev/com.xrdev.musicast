@@ -14,8 +14,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -27,12 +29,13 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.PlaylistAdapter;
+import com.xrdev.musicast.adapter.QueueAdapter;
 import com.xrdev.musicast.adapter.TrackAdapter;
 import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.connection.YouTubeManager;
 import com.xrdev.musicast.model.JsonModel;
 import com.xrdev.musicast.model.PlaylistItem;
-import com.xrdev.musicast.model.QueueList;
+import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.utils.JsonConverter;
 
@@ -47,20 +50,25 @@ public class MusicastActivity extends ActionBarActivity
     private final static String CAST_APP_ID = "E3FA9FF0";
 
     private PlaylistItem mPlaylistSelected;
-    private QueueList mQueue;
+    private LocalQueue mLocalQueue;
 
     private TrackAdapter mTrackAdapter;
     private PlaylistAdapter mPlaylistAdapter;
+    private QueueAdapter mQueueAdapter;
 
+    private RelativeLayout mTopSlidingContainer;
     private SlidingUpPanelLayout mSlidingUpLayout;
     private FragmentManager mFragmentManager;
     private PlaylistsFragment mPlaylistsFragment;
     private TracksFragment mTracksFragment;
     private PlayingTrackFragment mPlayingTrackFragment;
+    private VoteFragment mVoteFragment;
+    private ListView mPlayQueueListView;
 
     private ImageButton mPlayPauseButton;
     private ImageButton mPrevButton;
     private ImageButton mNextButton;
+    private ImageView mCollapseExpandImg;
     private TextView mTrackName;
     private TextView mArtistsAlbumName;
 
@@ -91,16 +99,15 @@ public class MusicastActivity extends ActionBarActivity
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d(TAG, "MusicastActivity.onCreate()");
+
         setContentView(R.layout.activity_musicast);
         mSlidingUpLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mSlidingUpLayout.hidePanel();
 
         /**
-         * ONCREATE DA ACTIVITY: Instanciar apenas objetos que serão comuns aos dois Fragments.
+         * ONCREATE DA ACTIVITY: Instanciar apenas objetos que serão comuns aos Fragments.
          */
-
-        Log.d(TAG, "MusicastActivity.onCreate()");
-
 
         if (savedInstanceState != null) {
             Log.d(TAG, "MusicastActivity: retornando de uma instância salva, pulando o onCreate().");
@@ -110,25 +117,95 @@ public class MusicastActivity extends ActionBarActivity
         Application.setListener(this);
         Log.d(TAG,"Listener configurado à classe global.");
 
-        actionBar = getSupportActionBar();
-
-        // -------------------- VERIFICAR GOOGLE PLAY SERVICES, PREPARAR CAST --------------------
-
-        BaseCastManager.checkGooglePlayServices(this);
-
-        mCastMgr = Application.getCastManager(this);
-
-        //mMiniController = (MiniController) findViewById(R.id.miniController1);
-        //mCastMgr.addMiniController(mMiniController);
-
-
-        // -------------------- PREPARAR LISTFRAGMENTS E OBJETOS BÁSICOS --------------------
-
         setTitle(R.string.title_activity_spotify_playlists);
 
+        initializeCastUi();
+        initializeFragments();
+
+        // Estabelecer sessão com o chromecast:
+        mCastMgr.reconnectSessionIfPossible(getApplicationContext(), false, 10); // context, showDialog, timeout.
+
+        mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
+
+        this.status = UNSTARTED;
+
+        initializeSlidingPanel();
+
+    }
+
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mCastMgr != null)
+            mCastMgr.decrementUiCounter();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+/*        mCastMgr = Application.getCastManager(this);
+        mCastMgr.incrementUiCounter();
+        if (mCastMgr.isConnected()) {
+            sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
+        }*/
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragmentManager.getBackStackEntryCount() > 0) {
+            mFragmentManager.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.result, menu);
+
+        mCastMgr.addMediaRouterButton(menu, R.id.media_route_menu_item);
+
+        return true;
+	}
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        //mCastMgr.removeMiniController(mMiniController);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
+        if (mFirstTracksTask != null)
+            mFirstTracksTask.cancel(true);
+
+        if (mTracksBackgroundTask != null)
+            mTracksBackgroundTask.cancel(true);
+    }
+
+    private void initializeCastUi(){
+        actionBar = getSupportActionBar();
+        // -------------------- VERIFICAR GOOGLE PLAY SERVICES, PREPARAR CAST --------------------
+        BaseCastManager.checkGooglePlayServices(this);
+        mCastMgr = Application.getCastManager(this);
+    }
+
+    private void initializeFragments(){
+        // -------------------- PREPARAR LISTFRAGMENTS E OBJETOS BÁSICOS --------------------
         // Inicializar adapters:
         mPlaylistAdapter = new PlaylistAdapter(this);
         mTrackAdapter = new TrackAdapter(this);
+        mQueueAdapter = new QueueAdapter(this);
+
+        mPlayQueueListView = (ListView) findViewById(R.id.play_queue_list);
 
         mFragmentManager = getFragmentManager();
 
@@ -141,9 +218,12 @@ public class MusicastActivity extends ActionBarActivity
             mPlayingTrackFragment = PlayingTrackFragment.newInstance();
         }
 
+        if (mVoteFragment == null) {
+            mVoteFragment = VoteFragment.newInstance();
+        }
 
-        // mPlaylistsFragment.setArguments(getIntent().getExtras()); - LINHA NECESSÁRIA?
         mPlaylistsFragment.setListAdapter(mPlaylistAdapter);
+        mPlayQueueListView.setAdapter(mQueueAdapter);
 
         // Attach no fragment:
         mFragmentManager.beginTransaction()
@@ -154,24 +234,16 @@ public class MusicastActivity extends ActionBarActivity
                 .add(R.id.playing_track_container, mPlayingTrackFragment)
                 .commit();
 
+        mFragmentManager.beginTransaction()
+                .add(R.id.vote_container, mVoteFragment)
+                .commit();
+
         displayBackStack(mFragmentManager);
 
-        // Estabelecer sessão com o chromecast:
-        mCastMgr.reconnectSessionIfPossible(getApplicationContext(), false, 10); // context, showDialog, timeout.
+    }
 
-        // mFirstTracksTask = new TrackDownloader().execute();
-
-        mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
-
-        // mFirstTracksTask = new TrackDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
-
-
-
+    private void initializeSlidingPanel(){
         // -------------------- INSTANCIAR VIEWS DO SLIDING PANEL --------------------
-
-
-        this.status = UNSTARTED;
-
 
         mPlayPauseButton = (ImageButton) findViewById(R.id.imagebutton_play_pause);
         mPrevButton = (ImageButton) findViewById(R.id.imagebutton_previous);
@@ -179,6 +251,10 @@ public class MusicastActivity extends ActionBarActivity
 
         mTrackName = mPlayingTrackFragment.getTrackNameTextView();
         mArtistsAlbumName = mPlayingTrackFragment.getArtistsAlbumNameTextView();
+
+        mCollapseExpandImg = (ImageView) findViewById(R.id.collapse_expand_img);
+
+        mTopSlidingContainer = (RelativeLayout) findViewById(R.id.top_container);
 
         mPlayPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,95 +282,51 @@ public class MusicastActivity extends ActionBarActivity
             }
         });
 
+        mSlidingUpLayout.setDragView(mTopSlidingContainer);
+
+        /**
+         * Listener para o SlidingPanel, checando quando o painel é expandido ou recolhido.
+         */
+        mSlidingUpLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+            }
+
+            @Override
+            public void onPanelExpanded(View panel) {
+                Log.i(TAG, "onPanelExpanded");
+                mCollapseExpandImg.setImageResource(R.drawable.ic_action_collapse);
+            }
+
+            @Override
+            public void onPanelCollapsed(View panel) {
+                Log.i(TAG, "onPanelCollapsed");
+                mCollapseExpandImg.setImageResource(R.drawable.ic_action_expand);
+            }
+
+            @Override
+            public void onPanelAnchored(View panel) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View panel) {
+
+            }
+        });
 
     }
-
-
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mCastMgr != null)
-            mCastMgr.decrementUiCounter();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mCastMgr = Application.getCastManager(this);
-        mCastMgr.incrementUiCounter();
-        if (mCastMgr.isConnected()) {
-            sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mFragmentManager.getBackStackEntryCount() > 0) {
-            mFragmentManager.popBackStack();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-        super.onCreateOptionsMenu(menu);
-
-        getMenuInflater().inflate(R.menu.result, menu);
-
-        // Usar o CastManager para adicionar o action provider ao botão do menu.
-
-        //mediaRouteMenuItem = mCastMgr.addMediaRouterButton(menu, R.id.media_route_menu_item);
-
-        mCastMgr.addMediaRouterButton(menu, R.id.media_route_menu_item);
-/*
-        // Construir o seletor que será usado no menu.
-        mMediaRouteSelector = new MediaRouteSelector.Builder()
-                .addControlCategory(CastMediaControlIntent.categoryForCast(CAST_APP_ID))
-                .build();
-
-        // Designar um ActionProvider ao botão do menu:
-        MenuItem mediaRouteMenuItem = menu.findItem(R.id.media_route_menu_item);
-
-        MediaRouteActionProvider mediaRouteActionProvider =
-                (MediaRouteActionProvider) MenuItemCompat.getActionProvider(mediaRouteMenuItem);
-        mediaRouteActionProvider.setRouteSelector(mMediaRouteSelector);
-*/
-
-        return true;
-	}
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        //mCastMgr.removeMiniController(mMiniController);
-    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
-
-        if (mFirstTracksTask != null)
-            mFirstTracksTask.cancel(true);
-
-        if (mTracksBackgroundTask != null)
-            mTracksBackgroundTask.cancel(true);
-    }
-
 
     public void onPlaylistSelected(PlaylistItem clickedPlaylist) {
         mPlaylistSelected = clickedPlaylist;
 
-        mQueue = Application.getQueue(clickedPlaylist.getPlaylistId());
+        mLocalQueue = Application.getQueue(clickedPlaylist.getPlaylistId());
 
         if (mTracksFragment == null) {
             mTracksFragment = TracksFragment.newInstance();
         }
 
-        mTracksFragment.setQueue(mQueue);
+        mTracksFragment.setQueue(mLocalQueue);
         mTracksFragment.setListAdapter(mTrackAdapter);
 
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
@@ -333,11 +365,29 @@ public class MusicastActivity extends ActionBarActivity
             TrackItem trackInfo = obj.getTrackInfo();
             updateTrackInfo(trackInfo);
         }
+        if (type.equals("queueInfo")) {
+            // Pega o JSON encapsulado no campo "message" e o transforma num objeto TrackItem.
+            ArrayList<TrackItem> remoteTracks = obj.getTracksMetadata();
+            updatePlayQueue(remoteTracks);
+        }
+        if (type.equals("trackIndex")) {
+            // Pega o JSON encapsulado no campo "message" e o transforma num objeto TrackItem.
+            String index = obj.getMessage();
+            highlightPlayingNow(index);
+        }
     }
 
 
     public void onDisconnected() {
         updateTrackInfo(null);
+    }
+
+    public void onConnected() {
+        mCastMgr = Application.getCastManager(this);
+        mCastMgr.incrementUiCounter();
+        if (mCastMgr.isConnected()) {
+            sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
+        }
     }
 
     private void updateStatus(int status) {
@@ -367,13 +417,22 @@ public class MusicastActivity extends ActionBarActivity
             mSlidingUpLayout.showPanel();
             mPlayingTrackFragment.setTrackName(name);
             mPlayingTrackFragment.setArtistsAlbumName(artists + " - " + album);
-            //mTrackName.setText(name);
-            //mArtistsAlbumName.setText(artists + " - " + album);
         } else {
             mSlidingUpLayout.hidePanel();
         }
     }
 
+    private void updatePlayQueue(ArrayList<TrackItem> tracks) {
+        mQueueAdapter.clear();
+        for (TrackItem track : tracks) {
+            mQueueAdapter.add(track);
+        }
+    }
+
+    private void highlightPlayingNow(String index) {
+        int i = Integer.parseInt(index);
+        mQueueAdapter.setHighlight(i);
+    }
 
     private void displayBackStack(FragmentManager fm) {
         int count = fm.getBackStackEntryCount();
@@ -591,7 +650,7 @@ public class MusicastActivity extends ActionBarActivity
                     break;
 
                 TrackItem currentItem = adapter.getItem(i);
-                YouTubeManager.associateYouTubeData(currentItem, mQueue);
+                YouTubeManager.associateYouTubeData(currentItem, mLocalQueue);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

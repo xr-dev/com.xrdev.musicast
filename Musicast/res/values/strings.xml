@@ -25,8 +25,18 @@
     <string name="string_video_not_found">NOT FOUND</string>
     <string name="string_video_not_playing">No video currently playing or Chromecast disconnected.</string>
     <string name="play_pause">Play/Pause</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="play_queue">PLAY QUEUE</string>
+    <string name="vote_fragment_text_solo">No voting available in Solo Mode.</string>
+    <string name="host_party">Host Party</string>
+    <string name="no_pending_votes">No pending votes.</string>
+    <string name="vote_fragment_text_change_track">Play %1$s next?</string>
+    <string name="vote_fragment_text_change_playlist">Play %1$s playlist?</string>
+    <string name="vote_fragment_text_load_play">Looking for videos before playing your playlist: %1$d/%2$d.</string>
+    <string name="vote_fragment_text_load_vote">Looking for videos before sending your playlist to vote: %1$d/%2$d.</string>
 
 </resources>

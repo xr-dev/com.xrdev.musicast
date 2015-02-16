@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.xrdev.musicast.model.JsonModel;
-import com.xrdev.musicast.model.QueueList;
+import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.model.TrackItem;
 
 /**
@@ -45,7 +45,7 @@ public class JsonConverter {
         return jsonString;
     }
 
-    public String makeLoadPlaylistJson(String type, QueueList queue, int index){
+    public String makeLoadPlaylistJson(String type, LocalQueue queue, int index){
 
         jsonModel = new JsonModel();
         jsonModel.setType(type);

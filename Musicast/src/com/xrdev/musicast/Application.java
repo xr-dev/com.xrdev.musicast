@@ -7,13 +7,10 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.google.android.gms.cast.ApplicationMetadata;
-import com.google.gson.Gson;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.callbacks.BaseCastConsumerImpl;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.xrdev.musicast.activity.MusicastActivity;
-import com.xrdev.musicast.model.JsonModel;
-import com.xrdev.musicast.model.QueueList;
+import com.xrdev.musicast.model.LocalQueue;
 
 /**
  * Created by Guilherme on 07/10/2014.
@@ -26,7 +23,7 @@ public class Application extends MultiDexApplication {
     private static VideoCastManager mCastMgr = null;
     private static VideoCastConsumerImpl mCastConsumer = null;
     private static BaseCastConsumerImpl mBaseConsumer = null;
-    private static QueueList mQueue = null;
+    private static LocalQueue mLocalQueue = null;
     private static OnMessageReceived mCallback;
 
 
@@ -34,6 +31,7 @@ public class Application extends MultiDexApplication {
     public interface OnMessageReceived {
         public void onMessageReceived(String message);
         public void onDisconnected();
+        public void onConnected();
     }
     
 
@@ -65,11 +63,11 @@ public class Application extends MultiDexApplication {
         mCallback = (OnMessageReceived) activity;
     }
 
-    public static QueueList getQueue(String playlistId){
-        if (null == mQueue || !mQueue.getPlaylistId().equals(playlistId))
-            mQueue = QueueList.initialize(playlistId);
+    public static LocalQueue getQueue(String playlistId){
+        if (null == mLocalQueue || !mLocalQueue.getPlaylistId().equals(playlistId))
+            mLocalQueue = LocalQueue.initialize(playlistId);
 
-        return mQueue;
+        return mLocalQueue;
 
     }
 
@@ -105,6 +103,7 @@ public class Application extends MultiDexApplication {
             public void onApplicationConnected(ApplicationMetadata appMetadata,
                                                String sessionId, boolean wasLaunched) {
                 Log.i(TAG, "CAST APPLICATION CONNECTED");
+                mCallback.onConnected();
             }
 
             @Override
