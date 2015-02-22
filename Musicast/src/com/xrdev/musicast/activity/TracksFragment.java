@@ -23,7 +23,7 @@ public class TracksFragment extends ListFragment {
     VideoCastManager mCastMgr;
     Context mContext;
     PlaylistItem mPlaylist;
-    JsonConverter jsonConverter = new JsonConverter();
+    JsonConverter jsonConverter = Application.getConverter();
     LocalQueue mLocalQueue;
 
     public static TracksFragment newInstance() {
@@ -84,7 +84,7 @@ public class TracksFragment extends ListFragment {
                 // Foi encontrado vídeo, enviar mensagem.
                 try {
                     mCastMgr.sendDataMessage(
-                            jsonConverter.makeLoadPlaylistJson(JsonConverter.TYPE_LOAD_PLAYLIST, mLocalQueue, selectedTrack.getQueueIndex())
+                            jsonConverter.makeLoadPlaylistJson(mLocalQueue, selectedTrack.getQueueIndex())
                     );
 
                 /*mCastMgr.sendDataMessage(

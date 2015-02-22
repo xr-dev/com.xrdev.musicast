@@ -42,7 +42,7 @@ import com.xrdev.musicast.utils.JsonConverter;
 import java.util.ArrayList;
 
 public class MusicastActivity extends ActionBarActivity
-    implements PlaylistsFragment.OnPlaylistSelectedListener, Application.OnMessageReceived {
+    implements PlaylistsFragment.OnPlaylistSelectedListener, Application.OnMessageReceived, ModeFragment.OnModeSelectedListener {
 
 
     private final static String TAG = "MusicastActivity";
@@ -63,6 +63,7 @@ public class MusicastActivity extends ActionBarActivity
     private TracksFragment mTracksFragment;
     private PlayingTrackFragment mPlayingTrackFragment;
     private VoteFragment mVoteFragment;
+    private ModeFragment mModeFragment;
     private ListView mPlayQueueListView;
 
     private ImageButton mPlayPauseButton;
@@ -93,7 +94,10 @@ public class MusicastActivity extends ActionBarActivity
     private static final int PAUSED = 2;
     private static final int BUFFERING = 3;
 
-    JsonConverter jsonConverter = new JsonConverter();
+    private static final int LAYOUT_INIT = -1;
+    private int mLayoutMode = LAYOUT_INIT;
+
+    JsonConverter jsonConverter = Application.getConverter();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,8 +128,6 @@ public class MusicastActivity extends ActionBarActivity
 
         // Estabelecer sessão com o chromecast:
         mCastMgr.reconnectSessionIfPossible(getApplicationContext(), false, 10); // context, showDialog, timeout.
-
-        mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
 
         this.status = UNSTARTED;
 
@@ -222,13 +224,14 @@ public class MusicastActivity extends ActionBarActivity
             mVoteFragment = VoteFragment.newInstance();
         }
 
+        if (mModeFragment == null) {
+            mModeFragment = ModeFragment.newInstance();
+        }
+
         mPlaylistsFragment.setListAdapter(mPlaylistAdapter);
         mPlayQueueListView.setAdapter(mQueueAdapter);
 
         // Attach no fragment:
-        mFragmentManager.beginTransaction()
-                .add(R.id.main_container, mPlaylistsFragment)
-                .commit();
 
         mFragmentManager.beginTransaction()
                 .add(R.id.playing_track_container, mPlayingTrackFragment)
@@ -360,6 +363,11 @@ public class MusicastActivity extends ActionBarActivity
             int status = Integer.parseInt(obj.getMessage());
             updateStatus(status);
         }
+        if (type.equals("modeInfo")) {
+            // Modo atual (SOLO ou PARTY)
+            int mode = Integer.parseInt(obj.getMessage());
+            updateMode(mode);
+        }
         if (type.equals("trackInfo")) {
             // Pega o JSON encapsulado no campo "message" e o transforma num objeto TrackItem.
             TrackItem trackInfo = obj.getTrackInfo();
@@ -390,6 +398,11 @@ public class MusicastActivity extends ActionBarActivity
         }
     }
 
+    public void onModeChanged(){
+        int newMode = Application.getMode();
+        updateLayout(mLayoutMode, newMode);
+    }
+
     private void updateStatus(int status) {
         this.status = status;
         switch (status) {
@@ -407,6 +420,10 @@ public class MusicastActivity extends ActionBarActivity
             case BUFFERING:
                 break;
         }
+    }
+
+    private void updateMode(int mode){
+        Application.setMode(mode);
     }
 
     private void updateTrackInfo(TrackItem track) {
@@ -444,7 +461,7 @@ public class MusicastActivity extends ActionBarActivity
         }
     }
 
-    private void sendMessage(String message) {
+    protected void sendMessage(String message) {
         try {
             mCastMgr.sendDataMessage(message);
             Log.d(TAG, "Message sent: " + message);
@@ -453,6 +470,35 @@ public class MusicastActivity extends ActionBarActivity
         } catch (NoConnectionException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateLayout(int fromLayout, int toLayout) {
+
+        if (fromLayout != toLayout) {
+            switch (toLayout) {
+                case Application.MODE_UNSTARTED :
+                    //TODO: abrir fragment para escolha do modo.
+                    mFragmentManager.beginTransaction()
+                            .replace(R.id.main_container, mModeFragment)
+                            .commit();
+                    break;
+                case Application.MODE_SOLO :
+                    // TODO: abrir direto o PlaylistFragment.
+                    mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
+                    mFragmentManager.beginTransaction()
+                            .replace(R.id.main_container, mPlaylistsFragment)
+                            .commit();
+                    break;
+                case Application.MODE_PARTY :
+                    // TODO: abrir o GuestFragment.
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onModeSelected(int mode) {
+        sendMessage(jsonConverter.makeModeJson(mode));
     }
 
     /**

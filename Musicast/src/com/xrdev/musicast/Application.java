@@ -11,6 +11,7 @@ import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.callbacks.BaseCastConsumerImpl;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.xrdev.musicast.model.LocalQueue;
+import com.xrdev.musicast.utils.JsonConverter;
 
 /**
  * Created by Guilherme on 07/10/2014.
@@ -19,19 +20,28 @@ public class Application extends MultiDexApplication {
 
     private static String CAST_APPLICATION_ID;
     private static String CHANNEL_NAMESPACE;
+
     private static final String TAG = "Application";
+
     private static VideoCastManager mCastMgr = null;
     private static VideoCastConsumerImpl mCastConsumer = null;
     private static BaseCastConsumerImpl mBaseConsumer = null;
     private static LocalQueue mLocalQueue = null;
     private static OnMessageReceived mCallback;
 
+    public static final int MODE_UNSTARTED = 0;
+    public static final int MODE_SOLO = 1;
+    public static final int MODE_PARTY = 2;
+    private static int mMode;
+
+    private static JsonConverter mJsonConverter;
 
 
     public interface OnMessageReceived {
         public void onMessageReceived(String message);
         public void onDisconnected();
         public void onConnected();
+        public void onModeChanged();
     }
     
 
@@ -48,7 +58,7 @@ public class Application extends MultiDexApplication {
                 // Lógica caso necessária. Usar mContext ao invés de this.
                 CAST_APPLICATION_ID = getString(R.string.cast_app_id);
                 CHANNEL_NAMESPACE = getString(R.string.cast_channel_namespace);
-
+                mMode = MODE_UNSTARTED;
             }
         }.run();
 
@@ -83,15 +93,15 @@ public class Application extends MultiDexApplication {
                             VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
                             VideoCastManager.FEATURE_DEBUGGING);
 
+            mCastConsumer = getConsumerImpl();
+
+            mBaseConsumer = getBaseImpl();
+
+            mCastMgr.addVideoCastConsumer(mCastConsumer);
+            mCastMgr.addBaseCastConsumer(mBaseConsumer);
+
         }
         mCastMgr.setContext(context);
-
-        mCastConsumer = getConsumerImpl();
-
-        mBaseConsumer = getBaseImpl();
-
-        mCastMgr.addVideoCastConsumer(mCastConsumer);
-        mCastMgr.addBaseCastConsumer(mBaseConsumer);
 
         return mCastMgr;
     }
@@ -133,4 +143,21 @@ public class Application extends MultiDexApplication {
         return mBaseConsumer;
     }
 
+    public static void setMode(int mode){
+        mCallback.onModeChanged();
+        mMode = mode;
+    }
+
+    public static int getMode() {
+        return mMode;
+    }
+
+    public static JsonConverter getConverter() {
+
+        if (mJsonConverter == null) {
+            mJsonConverter = new JsonConverter();
+        }
+
+        return mJsonConverter;
+    }
 }

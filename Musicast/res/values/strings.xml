@@ -38,5 +38,8 @@
     <string name="vote_fragment_text_change_playlist">Play %1$s playlist?</string>
     <string name="vote_fragment_text_load_play">Looking for videos before playing your playlist: %1$d/%2$d.</string>
     <string name="vote_fragment_text_load_vote">Looking for videos before sending your playlist to vote: %1$d/%2$d.</string>
+    <string name="string_solo_mode_button">SOLO MODE</string>
+    <string name="string_host_party_button">HOST PARTY</string>
+    <string name="string_solo_mode_selection">It looks like there is nobody casting on Party Mode.\n\n You can control your Chromecast using Solo Mode or start hosting a Party.</string>
 
 </resources>

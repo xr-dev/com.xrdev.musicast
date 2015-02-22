@@ -25,6 +25,7 @@ public class JsonConverter {
     public static String TYPE_PLAY_PREVIOUS = "previousVideo";
     public static String TYPE_PLAY_NEXT = "nextVideo";
     public static String TYPE_SHOW_OVERLAY = "showOverlay";
+    public static String TYPE_CHANGE_MODE = "changeMode";
 
     public String makeJson(String type, Object obj){
 
@@ -45,10 +46,10 @@ public class JsonConverter {
         return jsonString;
     }
 
-    public String makeLoadPlaylistJson(String type, LocalQueue queue, int index){
+    public String makeLoadPlaylistJson(LocalQueue queue, int index){
 
         jsonModel = new JsonModel();
-        jsonModel.setType(type);
+        jsonModel.setType(TYPE_LOAD_PLAYLIST);
         jsonModel.setVideoIds(queue.getValidIds());
         jsonModel.setIndex(String.valueOf(index));
         jsonModel.setTracksMetadata(queue.getValidTracks());
@@ -64,6 +65,18 @@ public class JsonConverter {
         jsonModel = new JsonModel();
         jsonModel.setType(type);
         jsonString = gson.toJson(jsonModel);
+
+        return jsonString;
+    }
+
+    public String makeModeJson(int mode) {
+        jsonModel = new JsonModel();
+        jsonModel.setType(TYPE_CHANGE_MODE);
+        jsonModel.setMessage(String.valueOf(mode));
+
+        jsonString = gson.toJson(jsonModel);
+
+        writeLog();
 
         return jsonString;
     }
