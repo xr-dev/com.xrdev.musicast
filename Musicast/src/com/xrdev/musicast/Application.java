@@ -12,14 +12,15 @@ import com.google.sample.castcompanionlibrary.cast.callbacks.BaseCastConsumerImp
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.utils.JsonConverter;
+import com.xrdev.musicast.utils.PrefsManager;
 
 /**
  * Created by Guilherme on 07/10/2014.
  */
 public class Application extends MultiDexApplication {
 
-    private static String CAST_APPLICATION_ID;
-    private static String CHANNEL_NAMESPACE;
+    private static final String CAST_APPLICATION_ID = "E7378308";
+    private static final String CHANNEL_NAMESPACE = "urn:x-cast:com.xrdev.musicast";
 
     private static final String TAG = "Application";
 
@@ -49,20 +50,17 @@ public class Application extends MultiDexApplication {
     public void onCreate(){
         super.onCreate();
 
-        final Context mContext = this;
-
         new Runnable() {
 
             @Override
             public void run() {
                 // Lógica caso necessária. Usar mContext ao invés de this.
-                CAST_APPLICATION_ID = getString(R.string.cast_app_id);
-                CHANNEL_NAMESPACE = getString(R.string.cast_channel_namespace);
                 mMode = MODE_UNSTARTED;
             }
         }.run();
 
     }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig){
@@ -142,6 +140,7 @@ public class Application extends MultiDexApplication {
         };
         return mBaseConsumer;
     }
+
 
     public static void setMode(int mode){
         mCallback.onModeChanged();

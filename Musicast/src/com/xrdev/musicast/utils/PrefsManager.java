@@ -46,6 +46,14 @@ public class PrefsManager {
         editor.apply();
     }
 
+    public static void setAccessToken(Context context, String accessToken) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString(KEY_ACCESS_TOKEN, accessToken);
+        editor.apply();
+    }
+
     public static Token getTokenFromPrefs(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         String accessString = prefs.getString(KEY_ACCESS_TOKEN, null);
@@ -53,6 +61,11 @@ public class PrefsManager {
         String expirationString = prefs.getString(KEY_EXPIRATION_DATETIME, null);
 
         return new Token(accessString, refreshString, expirationString);
+    }
+
+    public static String getAccessToken(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getString(KEY_ACCESS_TOKEN, null);
     }
 
     public static Token getValidToken(Context context) {

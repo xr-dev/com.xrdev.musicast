@@ -64,6 +64,7 @@ public class MusicastActivity extends ActionBarActivity
     private PlayingTrackFragment mPlayingTrackFragment;
     private VoteFragment mVoteFragment;
     private ModeFragment mModeFragment;
+    private CastSelectorFragment mCastSelectorFragment;
     private ListView mPlayQueueListView;
 
     private ImageButton mPlayPauseButton;
@@ -97,6 +98,8 @@ public class MusicastActivity extends ActionBarActivity
     private static final int LAYOUT_INIT = -1;
     private int mLayoutMode = LAYOUT_INIT;
 
+    boolean isChromecastConnected;
+
     JsonConverter jsonConverter = Application.getConverter();
 
 	@Override
@@ -108,6 +111,8 @@ public class MusicastActivity extends ActionBarActivity
         setContentView(R.layout.activity_musicast);
         mSlidingUpLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mSlidingUpLayout.hidePanel();
+
+        isChromecastConnected = false;
 
         /**
          * ONCREATE DA ACTIVITY: Instanciar apenas objetos que serão comuns aos Fragments.
@@ -121,21 +126,20 @@ public class MusicastActivity extends ActionBarActivity
         Application.setListener(this);
         Log.d(TAG,"Listener configurado à classe global.");
 
-        setTitle(R.string.title_activity_spotify_playlists);
+        setTitle(R.string.app_name);
 
         initializeCastUi();
-        initializeFragments();
 
         // Estabelecer sessão com o chromecast:
         mCastMgr.reconnectSessionIfPossible(getApplicationContext(), false, 10); // context, showDialog, timeout.
+
+        initializeFragments();
 
         this.status = UNSTARTED;
 
         initializeSlidingPanel();
 
     }
-
-
 
 
     @Override
@@ -153,15 +157,33 @@ public class MusicastActivity extends ActionBarActivity
         if (mCastMgr.isConnected()) {
             sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
         }*/
+
+        mCastMgr = Application.getCastManager(this);
+
+        if (mCastMgr.isConnected()) {
+            sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
+        }
     }
 
     @Override
     public void onBackPressed() {
-        if (mFragmentManager.getBackStackEntryCount() > 0) {
-            mFragmentManager.popBackStack();
+
+        if (mFirstTracksTask != null)
+            mFirstTracksTask.cancel(true);
+
+        if (mTracksBackgroundTask != null)
+            mTracksBackgroundTask.cancel(true);
+
+        if (mSlidingUpLayout.isPanelExpanded()) {
+            mSlidingUpLayout.collapsePanel();
         } else {
-            super.onBackPressed();
+            if (mFragmentManager.getBackStackEntryCount() > 0) {
+                mFragmentManager.popBackStack();
+            } else {
+                super.onBackPressed();
+            }
         }
+
     }
 
     @Override
@@ -228,6 +250,10 @@ public class MusicastActivity extends ActionBarActivity
             mModeFragment = ModeFragment.newInstance();
         }
 
+        if (mCastSelectorFragment == null) {
+            mCastSelectorFragment = CastSelectorFragment.newInstance();
+        }
+
         mPlaylistsFragment.setListAdapter(mPlaylistAdapter);
         mPlayQueueListView.setAdapter(mQueueAdapter);
 
@@ -239,6 +265,10 @@ public class MusicastActivity extends ActionBarActivity
 
         mFragmentManager.beginTransaction()
                 .add(R.id.vote_container, mVoteFragment)
+                .commit();
+
+        mFragmentManager.beginTransaction()
+                .add(R.id.main_container, mCastSelectorFragment)
                 .commit();
 
         displayBackStack(mFragmentManager);
@@ -394,6 +424,7 @@ public class MusicastActivity extends ActionBarActivity
         mCastMgr = Application.getCastManager(this);
         mCastMgr.incrementUiCounter();
         if (mCastMgr.isConnected()) {
+            isChromecastConnected = true;
             sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
         }
     }
@@ -475,9 +506,9 @@ public class MusicastActivity extends ActionBarActivity
     private void updateLayout(int fromLayout, int toLayout) {
 
         if (fromLayout != toLayout) {
+
             switch (toLayout) {
                 case Application.MODE_UNSTARTED :
-                    //TODO: abrir fragment para escolha do modo.
                     mFragmentManager.beginTransaction()
                             .replace(R.id.main_container, mModeFragment)
                             .commit();
@@ -493,6 +524,8 @@ public class MusicastActivity extends ActionBarActivity
                     // TODO: abrir o GuestFragment.
                     break;
             }
+
+            mLayoutMode = toLayout;
         }
     }
 

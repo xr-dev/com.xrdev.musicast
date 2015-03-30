@@ -1,6 +1,7 @@
 package com.xrdev.musicast.activity;
 
 import com.xrdev.musicast.R;
+import com.xrdev.musicast.connection.SpotifyManager;
 import com.xrdev.musicast.utils.PrefsManager;
 
 import android.os.Bundle;
@@ -60,6 +61,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 PrefsManager.clearPrefs(getApplicationContext());
+                SpotifyManager.logoutFromWebView(getApplicationContext());
                 Toast.makeText(getApplicationContext(),"Logged out successfully",Toast.LENGTH_SHORT).show();
             }
 

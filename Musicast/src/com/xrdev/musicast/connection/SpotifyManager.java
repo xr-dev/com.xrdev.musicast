@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.spotify.sdk.android.authentication.SpotifyAuthentication;
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.xrdev.musicast.activity.SpotifyAuthActivity;
 import com.xrdev.musicast.connection.spotifywrapper.Api;
 import com.xrdev.musicast.connection.spotifywrapper.methods.PlaylistTracksRequest;
@@ -34,6 +36,7 @@ public class SpotifyManager {
     private static final String CLIENT_ID = "befa95e4d007494ea40efcdbd3e1fff7";
     private static final String REDIRECT_URI = "musicast://callback";
     private static final String CLIENT_SECRET = "cffb5db7d8eb4910b3a95527fcee6899";
+    public static final int REQUEST_CODE = 9000;
 
 
     // Api:
@@ -63,7 +66,6 @@ public class SpotifyManager {
                 final Page<PlaylistTrack> tracksPage = request.get();
 
                 for (PlaylistTrack playlistTrack : tracksPage.getItems()) {
-                    // TODO: Melhorar os dados que vão ser incluídos no Adapter de tracks.
 
                     Track track = playlistTrack.getTrack();
 
@@ -98,7 +100,6 @@ public class SpotifyManager {
             final Page<SimplePlaylist> playlistsPage = request.get();
 
             for (SimplePlaylist playlist : playlistsPage.getItems()) {
-                // TODO: Melhorar os dados que vão ser incluídos no Adapter de playlists.
 
                 String name = playlist.getName();
                 int numTracks = playlist.getTracks().getTotal();
@@ -131,6 +132,18 @@ public class SpotifyManager {
                 Log.d(TAG, "Access token obtido pelo getCurrentUser(): / Access token obtained on getCurrentUser(): " + accessString);
                 return api.getMe().accessToken(accessString).build().get();
             }
+
+
+/*            String accessToken = PrefsManager.getAccessToken(context);
+
+            if (accessToken == null) {
+                Log.d(TAG, "Não foi possível obter um token válido. / Unable to obtain valid token.");
+                return null;
+            } else {
+                Log.d(TAG, "Access token obtido pelo getCurrentUser(): / Access token obtained on getCurrentUser(): " + accessToken);
+                return api.getMe().accessToken(accessToken).build().get();
+            }*/
+
         } catch (Exception e) {
             Log.e(TAG, "EXCEPTION: Não foi possível obter os dados do usuário atual. / Unable to get data about current user. Error: " + e.getMessage());
             e.printStackTrace();
@@ -200,8 +213,23 @@ public class SpotifyManager {
 
     public static void openLoginPrompt(Activity activity) {
         Log.d(TAG, "Abrindo browser pelo SpotifyHandler. / Opening browser via SpotifyHandler.");
-        SpotifyAuthentication.openAuthWindow(CLIENT_ID, "code", REDIRECT_URI,
-                new String[]{"user-read-private", "playlist-read-private", "playlist-modify", "playlist-modify-private"}, null, activity);
+        //SpotifyAuthentication.openAuthWindow(CLIENT_ID, "code", REDIRECT_URI,
+        //        new String[]{"user-read-private", "playlist-read-private", "playlist-modify", "playlist-modify-private"}, null, activity);
+
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
+                AuthenticationResponse.Type.CODE,
+                REDIRECT_URI);
+
+        builder.setScopes(new String[]{"user-read-private", "playlist-read-private"});
+
+        AuthenticationRequest request = builder.build();
+
+        AuthenticationClient.openLoginActivity(activity, REQUEST_CODE, request);
+
+    }
+
+    public static void logoutFromWebView(Context context) {
+        AuthenticationClient.logout(context);
     }
 
 

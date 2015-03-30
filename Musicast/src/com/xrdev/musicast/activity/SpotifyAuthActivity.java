@@ -2,7 +2,6 @@ package com.xrdev.musicast.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,20 +9,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.xrdev.musicast.R;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
-import com.spotify.sdk.android.authentication.SpotifyAuthentication;
-import com.spotify.sdk.android.playback.ConnectionStateCallback;
 import com.xrdev.musicast.utils.PrefsManager;
 import com.xrdev.musicast.connection.SpotifyManager;
 
 
-public class SpotifyAuthActivity extends Activity implements
-        ConnectionStateCallback {
+public class SpotifyAuthActivity extends Activity {
 
     private static final String TAG = "SpotifyAuthActivity";
     private static final String EXTRA_CODE = "code";
+    private static final String EXTRA_TOKEN = "token";
     private Button mLoginButton;
+    private int REQUEST_CODE = SpotifyManager.REQUEST_CODE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +30,6 @@ public class SpotifyAuthActivity extends Activity implements
         setContentView(R.layout.activity_spotify_auth);
 
         mLoginButton = (Button) findViewById(R.id.spotify_login_button);
-
-        //mSpotifyBinder = new SpotifyServiceBinder(this);
-        //mSpotifyBinder.bindService();
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +63,7 @@ public class SpotifyAuthActivity extends Activity implements
     }
 
 
-    @Override
+/*    @Override
     protected void onNewIntent(Intent intent) {
         // Será executado quando o usuário JÁ tiver logado pelo browser, por meio do IntentFilter.
         super.onNewIntent(intent);
@@ -78,65 +74,48 @@ public class SpotifyAuthActivity extends Activity implements
         if (uri != null) {
             Log.d(TAG, uri.toString());
             AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
-            // Spotify spotify = new Spotify(response.getAccessToken());
-
             String accessToken = response.getAccessToken();
             String code = response.getCode();
 
             PrefsManager.setCodeToPrefs(this, code);
 
-            // mSpotifyBinder.getService().setAccessToken(accessToken);
-            // mSpotifyBinder.getService().setCode(code);
-
             Intent playlistIntent = new Intent(SpotifyAuthActivity.this, MusicastActivity.class);
             playlistIntent.putExtra(EXTRA_CODE, code);
             startActivity(playlistIntent);
 
-            // SpotifyHandler.setAuthCredentials(getApplicationContext(), code);
-
-
-
-
             Log.i(TAG, "Access token obtido: " + accessToken);
             Log.i(TAG, "Code obtido: " + code);
 
-
-            // Iniciar o serviço que manterá a Spotify Web API.
-            // mSpotifyBinder.getService().initWebApi();
-
         }
 
-    }
+    }*/
 
     @Override
-    public void onLoggedIn() {
-        Log.d(TAG, "User logged in");
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
 
+        // Check if result comes from the correct activity
+        if (requestCode == REQUEST_CODE) {
+            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+            if (response.getType() == AuthenticationResponse.Type.CODE) {
+
+                String accessToken = response.getAccessToken();
+                String code = response.getCode();
+
+                PrefsManager.setCodeToPrefs(this, code);
+
+                Intent redirectIntent = new Intent(SpotifyAuthActivity.this, MusicastActivity.class);
+                redirectIntent.putExtra(EXTRA_CODE, code);
+
+
+                Log.i(TAG, "Access token obtido: " + accessToken);
+                Log.i(TAG, "Code obtido: " + code);
+
+                startActivity(redirectIntent);
+            }
+        }
     }
 
-    @Override
-    public void onLoggedOut() {
-        Log.d(TAG, "User logged out");
-
-    }
-
-    @Override
-    public void onTemporaryError() {
-        Log.d(TAG, "Temporary error occurred");
-
-    }
-
-    @Override
-    public void onNewCredentials(String s) {
-        Log.d(TAG, "User credentials blob received");
-
-    }
-
-    @Override
-    public void onConnectionMessage(String s) {
-        Log.d(TAG, "Received connection message: " + s);
-
-    }
 
     @Override
     protected void onDestroy() {

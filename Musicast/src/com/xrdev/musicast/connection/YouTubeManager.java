@@ -141,8 +141,6 @@ public class YouTubeManager {
 				 for (Video video : vlr.getItems()) {
 					 /**
 					  * Para cada video, buscar as informações relevantes e instanciar um VideoItem.
-					  * @TODO
-					  * Isso deve ser alterado na versão final. Trabalhar diretamente com os videos e enviá-los ao Chromecast?
 					  */
 					 String videoId = video.getId();
 					 //String title = video.getSnippet().getTitle();

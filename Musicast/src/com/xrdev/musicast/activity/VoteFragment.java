@@ -28,7 +28,6 @@ public class VoteFragment extends Fragment {
     private ImageView mDislikeImage;
     private ImageView mLikeImage;
 
-    // TODO: Rename and change types and number of parameters
     public static VoteFragment newInstance() {
         VoteFragment fragment = new VoteFragment();
         return fragment;

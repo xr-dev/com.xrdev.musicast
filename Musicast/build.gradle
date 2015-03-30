@@ -11,7 +11,8 @@ apply plugin: 'maven'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile project(':spotifysdk-1.0.0-beta1')
+    //compile project(':spotifysdk-1.0.0-beta1')
+    compile 'com.spotify.sdk:spotify-auth:1.0.0-beta9@aar'
 
     compile project(':CastCompanionLibrary')
     // releaseCompile project(path: ':CastCompanionLibrary', configuration: 'release')
@@ -50,6 +51,9 @@ repositories {
     maven { url 'http://repo.maven.apache.org/maven2' }
     mavenCentral()
     jcenter() // Biblioteca multi-dex
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 android {
