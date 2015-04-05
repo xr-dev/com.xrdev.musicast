@@ -21,9 +21,8 @@ import com.xrdev.musicast.utils.JsonConverter;
 public class TracksFragment extends ListFragment {
 
     VideoCastManager mCastMgr;
-    Context mContext;
     PlaylistItem mPlaylist;
-    JsonConverter jsonConverter = Application.getConverter();
+    JsonConverter jsonConverter;
     LocalQueue mLocalQueue;
 
     public static TracksFragment newInstance() {
@@ -76,9 +75,9 @@ public class TracksFragment extends ListFragment {
 
 
             if (selectedTrack.wasFound()) {
+                mCastMgr = Application.getCastManager(getActivity().getApplicationContext());
 
-                mContext = getActivity().getApplicationContext();
-                mCastMgr = Application.getCastManager(mContext);
+                jsonConverter = Application.getConverter(getActivity().getApplicationContext());
 
 
                 // Foi encontrado vídeo, enviar mensagem.

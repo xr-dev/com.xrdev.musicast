@@ -208,42 +208,9 @@ public class YouTubeManager {
         } else {
             item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
         }
-    }
 
-    public static ArrayList<TrackItem> associateYouTubeData(ArrayList<TrackItem> arrayList){
-        String artists;
-        String trackName;
-
-        // Recuperar dados de cada item da playlist.
-
-        for (TrackItem item : arrayList) {
-
-            if (item.getArtists() == null)
-                artists = "";
-            else
-                artists = item.getArtists();
-
-            if (item.getName() == null)
-                trackName = "";
-            else
-                trackName = item.getName();
-
-            // Buscar no Youtube por vídeos correspondentes.
-            VideoItem video = searchVideo(artists + " - " + trackName);
-
-            // Procurar correlação usando a duração dos vídeos.
-                // Configurar a tolerância na duração pelo if abaixo.
-                if (video.getDurationInt() <= (item.getDuration() + 15)
-                        && video.getDurationInt() >= (item.getDuration() - 15)){
-                    item.setYoutubeId(video.getVideoId());
-                } else {
-                    item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
-                }
-            }
-
-        return arrayList;
+        queue.setPositions();
 
     }
-	  
-	  
+
 }

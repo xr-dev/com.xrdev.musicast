@@ -13,6 +13,7 @@ public class JsonModel {
     ArrayList<TrackItem> tracksMetadata;
     String message;
     TrackItem trackInfo;
+    String uuid;
 
     public String getType() {
         return type;
@@ -68,5 +69,13 @@ public class JsonModel {
 
     public void setTrackInfo(TrackItem trackInfo) {
         this.trackInfo = trackInfo;
+    }
+
+    public String getUUID() {
+        return uuid;
+    }
+
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
     }
 }

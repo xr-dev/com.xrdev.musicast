@@ -47,7 +47,9 @@ public class SpotifyManager {
             .build();
 
 
-    public static ArrayList<TrackItem> getPlaylistTracks(PlaylistItem playlist, int limit, int offset) {
+    public static ArrayList<TrackItem> getPlaylistTracks(PlaylistItem playlist, int limit, int offset, Context context) {
+
+        User currentUser = getCurrentUser(context);
 
         int totalTracks = playlist.getNumTracksInt();
 

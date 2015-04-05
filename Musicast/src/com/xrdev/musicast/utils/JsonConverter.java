@@ -1,5 +1,6 @@
 package com.xrdev.musicast.utils;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -12,6 +13,7 @@ import com.xrdev.musicast.model.TrackItem;
  */
 public class JsonConverter {
     private static String TAG = "JSON_CONVERTER";
+    private Context mContext;
     private Gson gson = new Gson();
     private String type;
     private String jsonString;
@@ -27,6 +29,10 @@ public class JsonConverter {
     public static String TYPE_SHOW_OVERLAY = "showOverlay";
     public static String TYPE_CHANGE_MODE = "changeMode";
 
+    public JsonConverter(Context context) {
+        mContext = context;
+    }
+
     public String makeJson(String type, Object obj){
 
         if (type.equals(TYPE_LOAD_VIDEO) && obj instanceof TrackItem) {
@@ -34,6 +40,7 @@ public class JsonConverter {
             jsonModel = new JsonModel();
             jsonModel.setType(type);
             jsonModel.setVideoId(((TrackItem) obj).getYoutubeId());
+            jsonModel.setUUID(PrefsManager.getUUID(mContext));
 
             jsonString = gson.toJson(jsonModel);
 
@@ -53,6 +60,7 @@ public class JsonConverter {
         jsonModel.setVideoIds(queue.getValidIds());
         jsonModel.setIndex(String.valueOf(index));
         jsonModel.setTracksMetadata(queue.getValidTracks());
+        jsonModel.setUUID(PrefsManager.getUUID(mContext));
 
         jsonString = gson.toJson(jsonModel);
 
@@ -64,6 +72,7 @@ public class JsonConverter {
     public String makeGenericTypeJson(String type) {
         jsonModel = new JsonModel();
         jsonModel.setType(type);
+        jsonModel.setUUID(PrefsManager.getUUID(mContext));
         jsonString = gson.toJson(jsonModel);
 
         return jsonString;
@@ -73,6 +82,7 @@ public class JsonConverter {
         jsonModel = new JsonModel();
         jsonModel.setType(TYPE_CHANGE_MODE);
         jsonModel.setMessage(String.valueOf(mode));
+        jsonModel.setUUID(PrefsManager.getUUID(mContext));
 
         jsonString = gson.toJson(jsonModel);
 

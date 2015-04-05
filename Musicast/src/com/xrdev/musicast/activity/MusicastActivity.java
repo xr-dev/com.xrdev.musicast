@@ -100,11 +100,14 @@ public class MusicastActivity extends ActionBarActivity
 
     boolean isChromecastConnected;
 
-    JsonConverter jsonConverter = Application.getConverter();
+
+    JsonConverter jsonConverter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        jsonConverter = Application.getConverter(getApplicationContext());
 
         Log.d(TAG, "MusicastActivity.onCreate()");
 
@@ -160,8 +163,12 @@ public class MusicastActivity extends ActionBarActivity
 
         mCastMgr = Application.getCastManager(this);
 
-        if (mCastMgr.isConnected()) {
-            sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
+        try {
+            if (mCastMgr.isConnected()) {
+                sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Erro ao enviar mensagem no onResume. SEM DATANAMESPACE?" );
         }
     }
 
@@ -500,6 +507,8 @@ public class MusicastActivity extends ActionBarActivity
             e.printStackTrace();
         } catch (NoConnectionException e) {
             e.printStackTrace();
+        } catch (IllegalStateException e) {
+
         }
     }
 
@@ -644,7 +653,8 @@ public class MusicastActivity extends ActionBarActivity
                 Log.d(TAG, "Buscando músicas da Playlist ID / Fetching tracks from Playlist ID: " + mPlaylistSelected.getPlaylistId());
                 Log.d(TAG, "Owner ID: " + mPlaylistSelected.getOwnerId());
                 // Buscar IDs e metadados do Spotify.
-                ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(mPlaylistSelected, REQUEST_LIMIT, mRequestOffset);
+                ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(mPlaylistSelected, REQUEST_LIMIT, mRequestOffset, getApplicationContext()
+                );
 
                 mRequestOffset += REQUEST_LIMIT;
 
@@ -697,6 +707,7 @@ public class MusicastActivity extends ActionBarActivity
             Log.i(TAG, "AsyncTask em Background: Entrando no doInBackground.");
 
 
+            int mFoundCount = 0;
 
             if (mPlaylistSelected != null){
                 int totalTracks = mPlaylistSelected.getNumTracksInt();
@@ -705,7 +716,7 @@ public class MusicastActivity extends ActionBarActivity
                     if (isCancelled())
                         break;
 
-                    final ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(mPlaylistSelected, REQUEST_LIMIT, mRequestOffset);
+                    final ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(mPlaylistSelected, REQUEST_LIMIT, mRequestOffset, getApplicationContext());
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -737,6 +748,20 @@ public class MusicastActivity extends ActionBarActivity
                     }
                 });
             }
+
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if(isCancelled())
+                    break;
+
+                TrackItem currentItem = adapter.getItem(i);
+
+                if (currentItem.wasFound())
+                    mFoundCount++;
+            }
+
+
+            Log.d(TAG, "Videos found: " + mFoundCount);
+
 
             return null;
         }

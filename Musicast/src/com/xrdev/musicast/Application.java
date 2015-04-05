@@ -98,6 +98,7 @@ public class Application extends MultiDexApplication {
             mCastMgr.addVideoCastConsumer(mCastConsumer);
             mCastMgr.addBaseCastConsumer(mBaseConsumer);
 
+
         }
         mCastMgr.setContext(context);
 
@@ -151,10 +152,10 @@ public class Application extends MultiDexApplication {
         return mMode;
     }
 
-    public static JsonConverter getConverter() {
+    public static JsonConverter getConverter(Context context) {
 
         if (mJsonConverter == null) {
-            mJsonConverter = new JsonConverter();
+            mJsonConverter = new JsonConverter(context);
         }
 
         return mJsonConverter;

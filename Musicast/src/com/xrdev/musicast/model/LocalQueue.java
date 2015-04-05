@@ -54,4 +54,13 @@ public class LocalQueue {
         return validIds;
     }
 
+    public void setPositions(){
+        int count = 0;
+        for (TrackItem trackItem : mValidTracks) {
+            trackItem.setInitialPos(count);
+            trackItem.setCurrentPos(count);
+            count++;
+        }
+    }
+
 }

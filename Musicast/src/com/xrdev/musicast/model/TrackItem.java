@@ -17,6 +17,8 @@ public class TrackItem {
     private String artists;
     private int duration;
     private String album;
+    private int initialPos;
+    private int currentPos;
 
     private String youtubeId;
     public static String VIDEO_NOT_FOUND = "0";
@@ -114,4 +116,19 @@ public class TrackItem {
             return true;
     }
 
+    public int getInitialPos() {
+        return initialPos;
+    }
+
+    public void setInitialPos(int initialPos) {
+        this.initialPos = initialPos;
+    }
+
+    public int getCurrentPos() {
+        return currentPos;
+    }
+
+    public void setCurrentPos(int currentPos) {
+        this.currentPos = currentPos;
+    }
 }

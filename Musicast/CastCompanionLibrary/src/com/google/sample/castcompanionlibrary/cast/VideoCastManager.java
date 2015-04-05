@@ -189,6 +189,7 @@ public class VideoCastManager extends BaseCastManager
             sInstance = new VideoCastManager(context, applicationId, targetActivity, dataNamespace);
             mCastManager = sInstance;
         }
+
         return sInstance;
 
     }

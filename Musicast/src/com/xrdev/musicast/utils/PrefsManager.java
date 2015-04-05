@@ -8,6 +8,8 @@ import com.xrdev.musicast.model.Token;
 
 import org.joda.time.DateTime;
 
+import java.util.UUID;
+
 /**
  * Created by Guilherme on 03/08/2014.
  */
@@ -18,6 +20,7 @@ public class PrefsManager {
     private static final String KEY_REFRESH_TOKEN = "refreshToken";
     private static final String KEY_CODE = "code";
     private static final String KEY_EXPIRATION_DATETIME = "expirationTime";
+    private static final String KEY_UUID = "uuid";
     
     public static void setCodeToPrefs(Context context, String code) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
@@ -89,5 +92,22 @@ public class PrefsManager {
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.clear().apply();
+    }
+
+    public static String getUUID(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+
+        String uuidString = prefs.getString(KEY_UUID, null);
+
+        if (uuidString == null) {
+            // UUID ainda não foi existe no SharedPrefs. Gerar o UUID e inserí-lo no SharedPrefs.
+            UUID uuid = UUID.randomUUID();
+            SharedPreferences.Editor editor = prefs.edit();
+
+            editor.putString(KEY_UUID, uuid.toString());
+            editor.apply();
+        }
+
+        return prefs.getString(KEY_UUID, null);
     }
 }
