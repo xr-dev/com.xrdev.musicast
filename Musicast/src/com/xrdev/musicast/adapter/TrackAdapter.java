@@ -1,14 +1,16 @@
 package com.xrdev.musicast.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.model.TrackItem;
 
@@ -19,14 +21,20 @@ public class TrackAdapter extends BaseAdapter {
 
 	private final List<TrackItem> mItems = new ArrayList<TrackItem>();
 	private final Context mContext;
+    public OnAddedTrackListener mCallback;
 	private final static String TAG = "TrackAdapter";
 
 
 	public TrackAdapter(Context context) {
 		mContext = context;
+        mCallback = (OnAddedTrackListener) context;
 	}
 	
-	
+
+    public interface OnAddedTrackListener {
+        public void onTrackVoted(TrackItem track);
+    }
+
 	// Adiciona um item a lista
 	
 	public void add(TrackItem item) {
@@ -79,6 +87,8 @@ public class TrackAdapter extends BaseAdapter {
 		final TrackItem trackItem = mItems.get(position);
 
         // Inflar o layout para cada item:
+        int currentMode = Application.getMode();
+
         TrackHolder holder = new TrackHolder();
 
         if (convertView == null) {
@@ -87,9 +97,8 @@ public class TrackAdapter extends BaseAdapter {
 
             holder.titleView = (TextView) convertView.findViewById(R.id.text_track_name);
             holder.artistsView = (TextView) convertView.findViewById(R.id.text_track_artists);
-            // holder.albumView = (TextView) convertView.findViewById(R.id.text_track_album);
             holder.progressBar = (ProgressBar) convertView.findViewById(R.id.pbar_youtube_fetch);
-            holder.videoFound = (TextView) convertView.findViewById(R.id.text_video_found);
+            holder.buttonAdd = (ImageButton) convertView.findViewById(R.id.button_track_add);
 
             convertView.setTag(holder);
         } else {
@@ -97,28 +106,29 @@ public class TrackAdapter extends BaseAdapter {
         }
 
 		// Montar os textviews com os dados de cada item:
-		// final TextView titleView = (TextView) itemLayout.findViewById(R.id.text_track_name);
 		holder.titleView.setText(trackItem.getName());
-		
-		// final TextView artistsView = (TextView) itemLayout.findViewById(R.id.text_track_artists);
+
 		holder.artistsView.setText(trackItem.getArtists() + " - " + trackItem.getAlbum());
 
-        // final TextView albumView = (TextView) itemLayout.findViewById(R.id.text_track_album);
-        // holder.albumView.setText(trackItem.getAlbum());
+        if (Application.getMode() == Application.MODE_SOLO || currentMode == Application.MODE_UNSTARTED)
+            holder.buttonAdd.setVisibility(View.GONE);
 
         if (trackItem.wasSearched()) {
             holder.progressBar.setVisibility(View.GONE);
-            holder.videoFound.setVisibility(View.VISIBLE);
-            if (trackItem.wasFound()){
-                holder.videoFound.setText(R.string.string_video_found);
-            }
-            else {
-                holder.videoFound.setText(R.string.string_video_not_found);
+            if (trackItem.wasFound()) {
+                holder.titleView.setTextColor(Color.parseColor("#000000"));
+                holder.artistsView.setTextColor(Color.parseColor("#000000"));
             }
         } else {
             holder.progressBar.setVisibility(View.VISIBLE);
-            holder.videoFound.setVisibility(View.GONE);
         }
+
+        holder.buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onTrackVoted(trackItem);
+            }
+        });
 
 		// Retornar o item dentro do layout.
 		return convertView;
@@ -127,9 +137,8 @@ public class TrackAdapter extends BaseAdapter {
     static class TrackHolder {
         TextView titleView;
         TextView artistsView;
-        TextView albumView;
         ProgressBar progressBar;
-        TextView videoFound;
+        ImageButton buttonAdd;
     }
 
 	

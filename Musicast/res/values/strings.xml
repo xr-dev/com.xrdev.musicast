@@ -41,6 +41,8 @@
     <string name="string_solo_mode_button">SOLO MODE</string>
     <string name="string_host_party_button">HOST PARTY</string>
     <string name="string_solo_mode_selection">It looks like there is nobody casting on Party Mode.\n\n You can control your Chromecast using Solo Mode or start hosting a Party.</string>
+    <string name="string_party_intro">Someone started a party! \n\n You can see the play queue and vote in your favorite songs in the slider below. \n\n You can also add new songs to the current playlist or start a vote to change it for one of yours. </string>
+    <string name="string_got_it">GOT IT!</string>
     <string name="requestCode">9000</string>
     <string name="string_chromecast_selection">Welcome to Musicast!\n\n You need to be connected to a Chromecast in order to use this app. \n\n Please make sure that your Chromecast is turned on and set up and connect using the selector button in the action bar. </string>
 

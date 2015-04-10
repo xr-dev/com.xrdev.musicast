@@ -15,32 +15,25 @@
         tools:context="com.xrdev.musicast.activity.MusicastActivity">
 
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/string_party_intro"
+            android:id="@+id/text_guest_intro"
+            android:gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-        <LinearLayout
-            android:orientation="vertical"
+        <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/string_chromecast_selection"
-                android:id="@+id/textCastSelection"
-                android:gravity="center_horizontal"
-                android:layout_marginBottom="20dp"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:id="@+id/button_image"
-                android:src="@drawable/chromecast_button"/>
-
-        </LinearLayout>
-
+            android:text="@string/string_got_it"
+            android:id="@+id/button_got_it"
+            android:background="#ff9adb00"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
 
 
     </RelativeLayout>

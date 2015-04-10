@@ -28,6 +28,7 @@ public class JsonConverter {
     public static String TYPE_PLAY_NEXT = "nextVideo";
     public static String TYPE_SHOW_OVERLAY = "showOverlay";
     public static String TYPE_CHANGE_MODE = "changeMode";
+    public static String TYPE_TRACK_VOTE = "trackVote";
 
     public JsonConverter(Context context) {
         mContext = context;
@@ -82,6 +83,19 @@ public class JsonConverter {
         jsonModel = new JsonModel();
         jsonModel.setType(TYPE_CHANGE_MODE);
         jsonModel.setMessage(String.valueOf(mode));
+        jsonModel.setUUID(PrefsManager.getUUID(mContext));
+
+        jsonString = gson.toJson(jsonModel);
+
+        writeLog();
+
+        return jsonString;
+    }
+
+    public String makeTrackVoteJson(TrackItem track) {
+        jsonModel = new JsonModel();
+        jsonModel.setType(TYPE_TRACK_VOTE);
+        jsonModel.setTrackInfo(track);
         jsonModel.setUUID(PrefsManager.getUUID(mContext));
 
         jsonString = gson.toJson(jsonModel);

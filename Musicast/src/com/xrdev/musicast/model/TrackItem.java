@@ -5,6 +5,7 @@ import com.xrdev.musicast.connection.spotifywrapper.models.SimpleAlbum;
 import com.xrdev.musicast.connection.spotifywrapper.models.SimpleArtist;
 import com.xrdev.musicast.connection.spotifywrapper.models.Track;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class TrackItem {
     private String album;
     private int initialPos;
     private int currentPos;
+    private ArrayList<String> votes;
 
     private String youtubeId;
     public static String VIDEO_NOT_FOUND = "0";
@@ -130,5 +132,25 @@ public class TrackItem {
 
     public void setCurrentPos(int currentPos) {
         this.currentPos = currentPos;
+    }
+
+    public ArrayList<String> getVotes() {
+        return votes;
+    }
+
+    public boolean hasVoted(String uuid) {
+        if (votes.contains(uuid)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setVotes(ArrayList<String> votes) {
+        this.votes = votes;
+    }
+
+    public int getVoteCount() {
+        return votes.size();
     }
 }

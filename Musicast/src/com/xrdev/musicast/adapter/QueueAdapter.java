@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -85,7 +86,7 @@ public class QueueAdapter extends BaseAdapter {
             holder.titleView = (TextView) convertView.findViewById(R.id.text_track_name);
             holder.artistsView = (TextView) convertView.findViewById(R.id.text_track_artists);
             holder.progressBar = (ProgressBar) convertView.findViewById(R.id.pbar_youtube_fetch);
-            holder.videoFound = (TextView) convertView.findViewById(R.id.text_video_found);
+            holder.buttonLike = (ImageButton) convertView.findViewById(R.id.button_track_like);
 
             convertView.setTag(holder);
         } else {
@@ -98,10 +99,9 @@ public class QueueAdapter extends BaseAdapter {
 		holder.artistsView.setText(trackItem.getArtists() + " - " + trackItem.getAlbum());
 
         holder.progressBar.setVisibility(View.GONE);
-        holder.videoFound.setVisibility(View.GONE);
 
         if (playingIndex == position) {
-            holder.titleView.setTextColor(Color.parseColor("#ff9adb00"));
+            holder.titleView.setTextColor(Color.parseColor("#006600"));
         } else {
             holder.titleView.setTextColor(Color.BLACK);
         }
@@ -119,7 +119,8 @@ public class QueueAdapter extends BaseAdapter {
         TextView titleView;
         TextView artistsView;
         ProgressBar progressBar;
-        TextView videoFound;
+        ImageButton buttonLike;
+
     }
 
 	

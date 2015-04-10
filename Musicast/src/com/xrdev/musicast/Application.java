@@ -144,8 +144,8 @@ public class Application extends MultiDexApplication {
 
 
     public static void setMode(int mode){
-        mCallback.onModeChanged();
         mMode = mode;
+        mCallback.onModeChanged();
     }
 
     public static int getMode() {

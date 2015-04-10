@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.sample.castcompanionlibrary.cast.BaseCastManager;
@@ -42,7 +43,8 @@ import com.xrdev.musicast.utils.JsonConverter;
 import java.util.ArrayList;
 
 public class MusicastActivity extends ActionBarActivity
-    implements PlaylistsFragment.OnPlaylistSelectedListener, Application.OnMessageReceived, ModeFragment.OnModeSelectedListener {
+    implements PlaylistsFragment.OnPlaylistSelectedListener, Application.OnMessageReceived, ModeFragment.OnModeSelectedListener,
+                TrackAdapter.OnAddedTrackListener {
 
 
     private final static String TAG = "MusicastActivity";
@@ -65,6 +67,7 @@ public class MusicastActivity extends ActionBarActivity
     private VoteFragment mVoteFragment;
     private ModeFragment mModeFragment;
     private CastSelectorFragment mCastSelectorFragment;
+    private GuestFragment mGuestFragment;
     private ListView mPlayQueueListView;
 
     private ImageButton mPlayPauseButton;
@@ -169,6 +172,7 @@ public class MusicastActivity extends ActionBarActivity
             }
         } catch (Exception e) {
             Log.d(TAG, "Erro ao enviar mensagem no onResume. SEM DATANAMESPACE?" );
+            Toast.makeText(getApplicationContext(), "Erro ao enviar mensagem. Namespace nulo?", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -259,6 +263,10 @@ public class MusicastActivity extends ActionBarActivity
 
         if (mCastSelectorFragment == null) {
             mCastSelectorFragment = CastSelectorFragment.newInstance();
+        }
+
+        if (mGuestFragment == null) {
+            mGuestFragment = GuestFragment.newInstance();
         }
 
         mPlaylistsFragment.setListAdapter(mPlaylistAdapter);
@@ -403,7 +411,7 @@ public class MusicastActivity extends ActionBarActivity
         if (type.equals("modeInfo")) {
             // Modo atual (SOLO ou PARTY)
             int mode = Integer.parseInt(obj.getMessage());
-            updateMode(mode);
+            Application.setMode(mode);
         }
         if (type.equals("trackInfo")) {
             // Pega o JSON encapsulado no campo "message" e o transforma num objeto TrackItem.
@@ -458,10 +466,6 @@ public class MusicastActivity extends ActionBarActivity
             case BUFFERING:
                 break;
         }
-    }
-
-    private void updateMode(int mode){
-        Application.setMode(mode);
     }
 
     private void updateTrackInfo(TrackItem track) {
@@ -523,14 +527,12 @@ public class MusicastActivity extends ActionBarActivity
                             .commit();
                     break;
                 case Application.MODE_SOLO :
-                    // TODO: abrir direto o PlaylistFragment.
-                    mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
-                    mFragmentManager.beginTransaction()
-                            .replace(R.id.main_container, mPlaylistsFragment)
-                            .commit();
+                    loadPlaylistsFragment();
                     break;
                 case Application.MODE_PARTY :
-                    // TODO: abrir o GuestFragment.
+                    mFragmentManager.beginTransaction()
+                            .replace(R.id.main_container, mGuestFragment)
+                            .commit();
                     break;
             }
 
@@ -538,6 +540,13 @@ public class MusicastActivity extends ActionBarActivity
         }
     }
 
+    protected void loadPlaylistsFragment() {
+        mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
+        mFragmentManager.beginTransaction()
+                .replace(R.id.main_container, mPlaylistsFragment)
+                .commit();
+        mPlaylistAdapter.notifyDataSetChanged();
+    }
     @Override
     public void onModeSelected(int mode) {
         sendMessage(jsonConverter.makeModeJson(mode));
@@ -546,6 +555,12 @@ public class MusicastActivity extends ActionBarActivity
     /**
 	 * Inner classes para execução em segundo plano (AsyncTask):
 	 */
+
+    @Override
+    public void onTrackVoted(TrackItem track) {
+        String msg = jsonConverter.makeTrackVoteJson(track);
+        sendMessage(msg);
+    }
 
     public class PlaylistDownloader extends AsyncTask<String, Void, ArrayList<PlaylistItem>>{
         ProgressDialog pd;

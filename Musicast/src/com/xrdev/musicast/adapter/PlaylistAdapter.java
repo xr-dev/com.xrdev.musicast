@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.model.PlaylistItem;
 
@@ -77,6 +78,8 @@ public class PlaylistAdapter extends BaseAdapter {
 		final PlaylistItem playlistItem = mItems.get(position);
 
         // Inflar o layout para cada item:
+
+        int mode = Application.getMode();
 
         PlaylistHolder holder = new PlaylistHolder();
 

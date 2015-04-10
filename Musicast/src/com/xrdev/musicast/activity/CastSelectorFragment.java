@@ -47,7 +47,6 @@ public class CastSelectorFragment extends Fragment {
         mSoloButton = (Button) v.findViewById(R.id.solo_button);
         mPartyButton = (Button) v.findViewById(R.id.party_button);
 
-
         return v;
     }
 
