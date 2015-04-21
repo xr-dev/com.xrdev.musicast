@@ -58,7 +58,6 @@ public class LocalQueue {
         int count = 0;
         for (TrackItem trackItem : mValidTracks) {
             trackItem.setInitialPos(count);
-            trackItem.setCurrentPos(count);
             count++;
         }
     }

@@ -1,0 +1,37 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/media_route_menu_item"
+        android:title="@string/media_route_menu_title"
+        app:actionProviderClass="android.support.v7.app.MediaRouteActionProvider"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_add_to_queue"
+        android:orderInCategory="2"
+        app:showAsAction="always"
+        android:title="@string/string_add_to_queue"
+        android:icon="@drawable/ic_action_add_to_queue"/>
+
+    <item
+        android:id="@+id/action_swap"
+        android:orderInCategory="3"
+        app:showAsAction="always"
+        android:title="@string/string_swap_playlist"
+        android:icon="@drawable/ic_action_replace"/>
+
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/string_logout"/>
+
+    <item
+        android:id="@+id/action_login"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/title_activity_spotify_login"/>
+
+
+</menu>

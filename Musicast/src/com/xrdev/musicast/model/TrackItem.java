@@ -19,7 +19,6 @@ public class TrackItem {
     private int duration;
     private String album;
     private int initialPos;
-    private int currentPos;
     private ArrayList<String> votes;
 
     private String youtubeId;
@@ -34,6 +33,7 @@ public class TrackItem {
         this.duration = apiTrack.getDuration() / 1000; // Duração no Spotify API é em milissegundos. Transformar em segundos.
         this.album = apiTrack.getAlbum().getName();
         this.artists = getArtistsFromApi(apiTrack);
+        this.votes = new ArrayList<String>();
     }
 
     public String getTrackId() {
@@ -124,14 +124,6 @@ public class TrackItem {
 
     public void setInitialPos(int initialPos) {
         this.initialPos = initialPos;
-    }
-
-    public int getCurrentPos() {
-        return currentPos;
-    }
-
-    public void setCurrentPos(int currentPos) {
-        this.currentPos = currentPos;
     }
 
     public ArrayList<String> getVotes() {

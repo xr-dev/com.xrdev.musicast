@@ -1,8 +1,10 @@
 package com.xrdev.musicast.activity;
 
 import android.app.ListFragment;
-import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -10,6 +12,7 @@ import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
 import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.xrdev.musicast.Application;
+import com.xrdev.musicast.R;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.model.TrackItem;
@@ -30,6 +33,30 @@ public class TracksFragment extends ListFragment {
         return tf;
     }
 
+/*    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View list = inflater.inflate(R.layout.tracks_header, null);
+
+        //mHeader = inflater.inflate(R.layout.tracks_header, null);
+
+        return list;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getListView().addHeaderView(mHeader);
+        //setListAdapter(getListAdapter());
+    }
+
+    @Override
+    public void onDestroyView() {
+        //setListAdapter(null);
+    }*/
+
+
     public void setQueue(LocalQueue queue) {
         this.mLocalQueue = queue;
     }
@@ -41,6 +68,7 @@ public class TracksFragment extends ListFragment {
     public void setPlaylist(PlaylistItem mPlaylist) {
         this.mPlaylist = mPlaylist;
     }
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ public class PlaylistAdapter extends BaseAdapter {
 	private final List<PlaylistItem> mItems = new ArrayList<PlaylistItem>();
 	private final Context mContext;
 	private final static String TAG = "PlaylistAdapter";
+
 
 
 	public PlaylistAdapter(Context context) {
@@ -79,7 +81,7 @@ public class PlaylistAdapter extends BaseAdapter {
 
         // Inflar o layout para cada item:
 
-        int mode = Application.getMode();
+        int currentMode = Application.getMode();
 
         PlaylistHolder holder = new PlaylistHolder();
 
@@ -101,7 +103,7 @@ public class PlaylistAdapter extends BaseAdapter {
 		holder.tracksView.setText(playlistItem.getNumTracks());
 
 
-		// Retornar o item dentro do layout.
+            // Retornar o item dentro do layout.
 		return convertView;
 	}
 

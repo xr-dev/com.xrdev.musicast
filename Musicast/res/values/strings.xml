@@ -11,8 +11,11 @@
     <string name="string_loading">Loading</string>
     <string name="title_activity_spotify_login">Log in to Spotify</string>
     <string name="string_spotify_login_button">LOG IN TO SPOTIFY</string>
-    <string name="string_spotify_login_description">Log in with your Spotify account and start casting the videos of your favorite songs to Chromecast!</string>
+    <string name="string_spotify_login_description">Log in with your Spotify account and start casting the videos of your favorite songs to Chromecast! \n\n If you don\'t have a Spotify account you can still vote on an ongoing party.</string>
     <string name="string_tracks">" tracks"</string>
+    <string name="string_add_to_queue">"Add all tracks"</string>
+    <string name="string_swap_playlist">"Replace all tracks"</string>
+    <string name="string_videos_found">" videos found"</string>
     <string name="title_activity_tracks">Tracks</string>
     <string name="string_spacer">" - "</string>
     <string name="string_success">Success</string>
@@ -25,6 +28,8 @@
     <string name="string_video_not_found">NOT FOUND</string>
     <string name="string_video_not_playing">No video currently playing or Chromecast disconnected.</string>
     <string name="play_pause">Play/Pause</string>
+    <string name="string_logout">Logout</string>
+    <string name="string_logout_successful">Logged out successfully.</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="previous">Previous</string>
@@ -45,5 +50,7 @@
     <string name="string_got_it">GOT IT!</string>
     <string name="requestCode">9000</string>
     <string name="string_chromecast_selection">Welcome to Musicast!\n\n You need to be connected to a Chromecast in order to use this app. \n\n Please make sure that your Chromecast is turned on and set up and connect using the selector button in the action bar. </string>
-
+    <string name="error_no_tracks_on_playlist">No tracks on the selected playlist.</string>
+    <string name="error_not_admin_swap">You are not the host of this party and cannot swap playlists.</string>
+    <string name="string_no_playlists_or_logged_out">No playlists to show. \n\n Make sure you are logged in to Spotify on Musicast and created or are following playlists.</string>
 </resources>

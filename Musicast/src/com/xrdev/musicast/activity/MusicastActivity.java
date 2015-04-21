@@ -27,6 +27,7 @@ import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
 import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.spotify.sdk.android.authentication.LoginActivity;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.PlaylistAdapter;
@@ -39,17 +40,20 @@ import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.utils.JsonConverter;
+import com.xrdev.musicast.utils.PrefsManager;
 
 import java.util.ArrayList;
 
 public class MusicastActivity extends ActionBarActivity
     implements PlaylistsFragment.OnPlaylistSelectedListener, Application.OnMessageReceived, ModeFragment.OnModeSelectedListener,
-                TrackAdapter.OnAddedTrackListener {
+                TrackAdapter.OnAddedTrackListener, QueueAdapter.OnVotedTrackListener {
 
 
     private final static String TAG = "MusicastActivity";
     private final static String EXTRA_CODE = "code";
     private final static String CAST_APP_ID = "E3FA9FF0";
+
+    private Menu mMenu;
 
     private PlaylistItem mPlaylistSelected;
     private LocalQueue mLocalQueue;
@@ -69,6 +73,7 @@ public class MusicastActivity extends ActionBarActivity
     private CastSelectorFragment mCastSelectorFragment;
     private GuestFragment mGuestFragment;
     private ListView mPlayQueueListView;
+    private ListView mTracksView;
 
     private ImageButton mPlayPauseButton;
     private ImageButton mPrevButton;
@@ -190,6 +195,9 @@ public class MusicastActivity extends ActionBarActivity
         } else {
             if (mFragmentManager.getBackStackEntryCount() > 0) {
                 mFragmentManager.popBackStack();
+                mMenu.findItem(R.id.action_add_to_queue).setVisible(false);
+                mMenu.findItem(R.id.action_swap).setVisible(false);
+                setTitle(R.string.app_name);
             } else {
                 super.onBackPressed();
             }
@@ -202,12 +210,50 @@ public class MusicastActivity extends ActionBarActivity
 
         super.onCreateOptionsMenu(menu);
 
-        getMenuInflater().inflate(R.menu.result, menu);
+        mMenu = menu;
+
+        getMenuInflater().inflate(R.menu.menu, menu);
 
         mCastMgr.addMediaRouterButton(menu, R.id.media_route_menu_item);
 
+        // Esconder os botões da ActionBar exclusivos da TracksFragment.
+
+        menu.findItem(R.id.action_add_to_queue).setVisible(false);
+        menu.findItem(R.id.action_swap).setVisible(false);
+
+        if (PrefsManager.getAccessToken(this) != null){
+            menu.findItem(R.id.action_logout).setVisible(true);
+            menu.findItem(R.id.action_login).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_logout).setVisible(false);
+            menu.findItem(R.id.action_login).setVisible(true);
+        }
+
         return true;
 	}
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_add_to_queue :
+                addToQueue(mLocalQueue);
+                return true;
+            case R.id.action_swap :
+                swapPlaylist(mLocalQueue);
+                return true;
+            case R.id.action_logout :
+                PrefsManager.clearPrefs(this);
+                SpotifyManager.logoutFromWebView(this);
+                Toast.makeText(getApplicationContext(),getString(R.string.string_logout_successful),Toast.LENGTH_SHORT).show();
+                startActivity(
+                        new Intent(MusicastActivity.this, SpotifyAuthActivity.class)
+                );
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     @Override
     public void onDestroy(){
@@ -388,6 +434,9 @@ public class MusicastActivity extends ActionBarActivity
 
         setTitle(mPlaylistSelected.getName());
 
+        mMenu.findItem(R.id.action_add_to_queue).setVisible(true);
+        mMenu.findItem(R.id.action_swap).setVisible(true);
+
         mFirstTracksTask = new TrackDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
 
     }
@@ -428,6 +477,10 @@ public class MusicastActivity extends ActionBarActivity
             String index = obj.getMessage();
             highlightPlayingNow(index);
         }
+
+        if (type.equals("feedback")) {
+            Toast.makeText(this, obj.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -467,6 +520,11 @@ public class MusicastActivity extends ActionBarActivity
                 break;
         }
     }
+
+    public void onAdminChanged(String admin) {
+        // TODO:  lógica para atualizar interface em alteração de admin.
+    }
+
 
     private void updateTrackInfo(TrackItem track) {
         if (null != track) {
@@ -557,9 +615,46 @@ public class MusicastActivity extends ActionBarActivity
 	 */
 
     @Override
+    public void onTrackAdded(TrackItem track) {
+        String msg = jsonConverter.makeTrackVoteJson(track);
+        sendMessage(msg);
+    }
+
+
+    @Override
     public void onTrackVoted(TrackItem track) {
         String msg = jsonConverter.makeTrackVoteJson(track);
         sendMessage(msg);
+    }
+
+    private void addToQueue(LocalQueue localQueue) {
+
+        if (mLocalQueue != null) {
+            String msg = jsonConverter.makeAddToQueueJson(localQueue);
+            sendMessage(msg);
+        } else {
+            Toast.makeText(this, getString(R.string.error_no_tracks_on_playlist), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void swapPlaylist(LocalQueue localQueue) {
+        if (mLocalQueue != null) {
+            if (isAdmin()) {
+                String msg = jsonConverter.makeSwapPlaylistJson(localQueue);
+                sendMessage(msg);
+            } else {
+                Toast.makeText(this, getString(R.string.error_not_admin_swap), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, getString(R.string.error_no_tracks_on_playlist), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean isAdmin() {
+        if (Application.getAdmin().equals(PrefsManager.getUUID(this)))
+            return true;
+        else
+            return false;
     }
 
     public class PlaylistDownloader extends AsyncTask<String, Void, ArrayList<PlaylistItem>>{
@@ -618,13 +713,7 @@ public class MusicastActivity extends ActionBarActivity
                     mPlaylistAdapter.add(item);
                 }
             }
-
-
-
         }
-
-
-
     }
 
 

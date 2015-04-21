@@ -29,6 +29,8 @@ public class JsonConverter {
     public static String TYPE_SHOW_OVERLAY = "showOverlay";
     public static String TYPE_CHANGE_MODE = "changeMode";
     public static String TYPE_TRACK_VOTE = "trackVote";
+    public static String TYPE_ADD_TO_QUEUE = "addListToQueue";
+    public static String TYPE_SWAP_PLAYLIST = "swapPlaylist";
 
     public JsonConverter(Context context) {
         mContext = context;
@@ -60,6 +62,36 @@ public class JsonConverter {
         jsonModel.setType(TYPE_LOAD_PLAYLIST);
         jsonModel.setVideoIds(queue.getValidIds());
         jsonModel.setIndex(String.valueOf(index));
+        jsonModel.setTracksMetadata(queue.getValidTracks());
+        jsonModel.setUUID(PrefsManager.getUUID(mContext));
+
+        jsonString = gson.toJson(jsonModel);
+
+        writeLog();
+
+        return jsonString;
+    }
+
+    public String makeAddToQueueJson(LocalQueue queue){
+
+        jsonModel = new JsonModel();
+        jsonModel.setType(TYPE_ADD_TO_QUEUE);
+        jsonModel.setVideoIds(queue.getValidIds());
+        jsonModel.setTracksMetadata(queue.getValidTracks());
+        jsonModel.setUUID(PrefsManager.getUUID(mContext));
+
+        jsonString = gson.toJson(jsonModel);
+
+        writeLog();
+
+        return jsonString;
+    }
+
+    public String makeSwapPlaylistJson(LocalQueue queue){
+
+        jsonModel = new JsonModel();
+        jsonModel.setType(TYPE_SWAP_PLAYLIST);
+        jsonModel.setVideoIds(queue.getValidIds());
         jsonModel.setTracksMetadata(queue.getValidTracks());
         jsonModel.setUUID(PrefsManager.getUUID(mContext));
 

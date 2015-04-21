@@ -35,7 +35,7 @@ public class GuestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_guest, container, false);
-        mGotItButton = (Button) v.findViewById(R.id.solo_button);
+        mGotItButton = (Button) v.findViewById(R.id.button_got_it);
 
         mGotItButton.setOnClickListener(new View.OnClickListener() {
             @Override

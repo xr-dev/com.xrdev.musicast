@@ -24,8 +24,7 @@
         android:maxLines="2" 
         android:ellipsize="end"
         android:layout_alignTop="@+id/text_playlist_num_tracks"
-        android:layout_toRightOf="@+id/text_playlist_num_tracks"
-        android:layout_toEndOf="@+id/text_playlist_num_tracks" />
+        android:layout_toRightOf="@+id/text_playlist_num_tracks" />
 
     <TextView
         android:layout_width="wrap_content"

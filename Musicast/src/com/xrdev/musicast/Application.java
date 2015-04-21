@@ -34,6 +34,7 @@ public class Application extends MultiDexApplication {
     public static final int MODE_SOLO = 1;
     public static final int MODE_PARTY = 2;
     private static int mMode;
+    private static String mAdmin;
 
     private static JsonConverter mJsonConverter;
 
@@ -43,6 +44,7 @@ public class Application extends MultiDexApplication {
         public void onDisconnected();
         public void onConnected();
         public void onModeChanged();
+        public void onAdminChanged(String admin);
     }
     
 
@@ -148,8 +150,17 @@ public class Application extends MultiDexApplication {
         mCallback.onModeChanged();
     }
 
+    public static void setAdmin(String admin) {
+        mAdmin = admin;
+        mCallback.onAdminChanged(admin);
+    }
+
     public static int getMode() {
         return mMode;
+    }
+
+    public static String getAdmin() {
+        return mAdmin;
     }
 
     public static JsonConverter getConverter(Context context) {

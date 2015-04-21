@@ -32,7 +32,7 @@ public class TrackAdapter extends BaseAdapter {
 	
 
     public interface OnAddedTrackListener {
-        public void onTrackVoted(TrackItem track);
+        public void onTrackAdded(TrackItem track);
     }
 
 	// Adiciona um item a lista
@@ -110,23 +110,34 @@ public class TrackAdapter extends BaseAdapter {
 
 		holder.artistsView.setText(trackItem.getArtists() + " - " + trackItem.getAlbum());
 
-        if (Application.getMode() == Application.MODE_SOLO || currentMode == Application.MODE_UNSTARTED)
-            holder.buttonAdd.setVisibility(View.GONE);
 
         if (trackItem.wasSearched()) {
             holder.progressBar.setVisibility(View.GONE);
+
+            if (currentMode == Application.MODE_SOLO || currentMode == Application.MODE_UNSTARTED)
+                holder.buttonAdd.setVisibility(View.GONE);
+            else
+                holder.buttonAdd.setVisibility(View.VISIBLE);
+
             if (trackItem.wasFound()) {
                 holder.titleView.setTextColor(Color.parseColor("#000000"));
                 holder.artistsView.setTextColor(Color.parseColor("#000000"));
+            } else {
+                holder.titleView.setTextColor(Color.parseColor("#aaaaaa"));
+                holder.artistsView.setTextColor(Color.parseColor("#aaaaaa"));
+                holder.buttonAdd.setVisibility(View.GONE);
             }
         } else {
             holder.progressBar.setVisibility(View.VISIBLE);
+            holder.buttonAdd.setVisibility(View.GONE);
+            holder.titleView.setTextColor(Color.parseColor("#aaaaaa"));
+            holder.artistsView.setTextColor(Color.parseColor("#aaaaaa"));
         }
 
         holder.buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onTrackVoted(trackItem);
+                mCallback.onTrackAdded(trackItem);
             }
         });
 

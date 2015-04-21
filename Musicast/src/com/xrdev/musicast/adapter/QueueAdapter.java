@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.model.TrackItem;
+import com.xrdev.musicast.utils.PrefsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +22,22 @@ public class QueueAdapter extends BaseAdapter {
 
 	private final List<TrackItem> mItems = new ArrayList<TrackItem>();
 	private final Context mContext;
-	private final static String TAG = "QueueAdapter";
+    public OnVotedTrackListener mCallback;
+    private final static String TAG = "QueueAdapter";
     private int playingIndex;
 
 
+    public interface OnVotedTrackListener {
+        public void onTrackVoted(TrackItem track);
+    }
+
 	public QueueAdapter(Context context) {
 		mContext = context;
-	}
-	
-	
+        mCallback = (OnVotedTrackListener) context;
+
+    }
+
+
 	// Adiciona um item a lista
 	
 	public void add(TrackItem item) {
@@ -79,14 +88,19 @@ public class QueueAdapter extends BaseAdapter {
         // Inflar o layout para cada item:
         TrackHolder holder = new TrackHolder();
 
+        int currentMode = Application.getMode();
+
         if (convertView == null) {
             LayoutInflater li = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = li.inflate(R.layout.item_track, parent, false);
+            convertView = li.inflate(R.layout.item_queue, parent, false);
 
-            holder.titleView = (TextView) convertView.findViewById(R.id.text_track_name);
-            holder.artistsView = (TextView) convertView.findViewById(R.id.text_track_artists);
-            holder.progressBar = (ProgressBar) convertView.findViewById(R.id.pbar_youtube_fetch);
+            holder.queueLayout = (RelativeLayout) convertView.findViewById(R.id.queue_layout);
+            holder.voteStats = (RelativeLayout) convertView.findViewById(R.id.container_queue_stats);
+
+            holder.titleView = (TextView) convertView.findViewById(R.id.text_queue_track_name);
+            holder.artistsView = (TextView) convertView.findViewById(R.id.text_queue_track_artists);
             holder.buttonLike = (ImageButton) convertView.findViewById(R.id.button_track_like);
+            holder.voteCount = (TextView) convertView.findViewById(R.id.text_votes);
 
             convertView.setTag(holder);
         } else {
@@ -98,15 +112,47 @@ public class QueueAdapter extends BaseAdapter {
 
 		holder.artistsView.setText(trackItem.getArtists() + " - " + trackItem.getAlbum());
 
-        holder.progressBar.setVisibility(View.GONE);
+        holder.voteCount.setText(String.valueOf(trackItem.getVoteCount()));
 
-        if (playingIndex == position) {
-            holder.titleView.setTextColor(Color.parseColor("#006600"));
+        if (currentMode == Application.MODE_SOLO || currentMode == Application.MODE_UNSTARTED) {
+            holder.voteStats.setVisibility(View.GONE);
         } else {
-            holder.titleView.setTextColor(Color.BLACK);
+            if (playingIndex > position) {
+                holder.voteStats.setVisibility(View.GONE);
+                holder.titleView.setTextColor(Color.parseColor("#aaaaaa"));
+                holder.artistsView.setTextColor(Color.parseColor("#aaaaaa"));
+            }
+
+            if (playingIndex == position) {
+                holder.voteStats.setVisibility(View.GONE);
+                holder.titleView.setTextColor(Color.parseColor("#006600"));
+                holder.artistsView.setTextColor(Color.parseColor("#006600"));
+            }
+
+            if (playingIndex < position) {
+                holder.voteStats.setVisibility(View.VISIBLE);
+                holder.titleView.setTextColor(Color.BLACK);
+                holder.artistsView.setTextColor(Color.BLACK);
+            }
+
         }
 
-		// Retornar o item dentro do layout.
+
+        if (trackItem.hasVoted(PrefsManager.getUUID(mContext)))
+            holder.buttonLike.setBackgroundResource(R.drawable.ic_action_good_pressed);
+        else
+            holder.buttonLike.setBackgroundResource(R.drawable.ic_action_good);
+
+
+        holder.buttonLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onTrackVoted(trackItem);
+            }
+        });
+
+
+        // Retornar o item dentro do layout.
 		return convertView;
 	}
 
@@ -118,9 +164,10 @@ public class QueueAdapter extends BaseAdapter {
     static class TrackHolder {
         TextView titleView;
         TextView artistsView;
-        ProgressBar progressBar;
         ImageButton buttonLike;
-
+        RelativeLayout queueLayout;
+        RelativeLayout voteStats;
+        TextView voteCount;
     }
 
 	
