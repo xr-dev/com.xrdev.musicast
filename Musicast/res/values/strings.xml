@@ -11,7 +11,10 @@
     <string name="string_loading">Loading</string>
     <string name="title_activity_spotify_login">Log in to Spotify</string>
     <string name="string_spotify_login_button">LOG IN TO SPOTIFY</string>
-    <string name="string_spotify_login_description">Log in with your Spotify account and start casting the videos of your favorite songs to Chromecast! \n\n If you don\'t have a Spotify account you can still vote on an ongoing party.</string>
+    <string name="skip_login">SKIP LOGIN</string>
+    <string name="string_spotify_login">Log in with your Spotify account and start casting the videos of your favorite songs to Chromecast!</string>
+    <string name="string_spotify_login_admin">You need to login to host a Party or use Solo Mode.</string>
+    <string name="string_spotify_login_guest">You can skip login authentication and just vote as a Guest in this Party.</string>
     <string name="string_tracks">" tracks"</string>
     <string name="string_add_to_queue">"Add all tracks"</string>
     <string name="string_swap_playlist">"Replace all tracks"</string>
@@ -22,7 +25,6 @@
     <string name="title_activity_result">Test Result</string>
     <string name="title_activity_login_test">LoginTest</string>
     <string name="title_activity_spotify_playlists">Playlists</string>
-    <string name="title_activity_binder_activity_test">BinderActivityTest</string>
     <string name="title_text">Musicast Debug Activity</string>
     <string name="string_video_found">FOUND</string>
     <string name="string_video_not_found">NOT FOUND</string>
@@ -46,11 +48,25 @@
     <string name="string_solo_mode_button">SOLO MODE</string>
     <string name="string_host_party_button">HOST PARTY</string>
     <string name="string_solo_mode_selection">It looks like there is nobody casting on Party Mode.\n\n You can control your Chromecast using Solo Mode or start hosting a Party.</string>
-    <string name="string_party_intro">Someone started a party! \n\n You can see the play queue and vote in your favorite songs in the slider below. \n\n You can also add new songs to the current playlist or start a vote to change it for one of yours. </string>
+    <string name="string_party_guest">Someone has started a party! \n\n You can see the play queue and vote in your favorite songs in the slider below. \n\n If you are connected with your Spotify account, you will be able add new songs to the play queue. </string>
+    <string name="string_party_admin">You are the party host! \n\n As a host, you can vote, control playback and change the play queue songs. </string>
     <string name="string_got_it">GOT IT!</string>
     <string name="requestCode">9000</string>
     <string name="string_chromecast_selection">Welcome to Musicast!\n\n You need to be connected to a Chromecast in order to use this app. \n\n Please make sure that your Chromecast is turned on and set up and connect using the selector button in the action bar. </string>
     <string name="error_no_tracks_on_playlist">No tracks on the selected playlist.</string>
     <string name="error_not_admin_swap">You are not the host of this party and cannot swap playlists.</string>
-    <string name="string_no_playlists_or_logged_out">No playlists to show. \n\n Make sure you are logged in to Spotify on Musicast and created or are following playlists.</string>
+    <string name="string_no_playlists_or_logged_out">No playlists found. \n\n Make sure you are logged in to Spotify on Musicast and \n created or are following playlists.</string>
+    <string name="feedback_track_add">Track being added to the Play Queue with your vote.</string>
+    <string name="feedback_error_not_admin">Sorry, only the party host is allowed to do this.</string>
+    <string name="solo_mode">Solo Mode</string>
+    <string name="party_mode_guest">Guest - Party Mode</string>
+    <string name="party_mode_host">Host - Party Mode</string>
+    <string name="playlists">Playlists</string>
+    <string name="add_tracks_to_queue_dialog_title">Add all tracks to queue?</string>
+    <string name="add_tracks_to_queue_dialog_message">Are you sure you want to add every music video found on this playlist to the play queue?</string>
+    <string name="add_tracks_to_queue_dialog_yes">Add tracks</string>
+    <string name="swap_playlist_dialog_title">Swap current playlist?</string>
+    <string name="swap_playlist_dialog_message">Are you sure you want to replace all the tracks on the play queue with this playlist? Your current play queue and votes sent will be lost.</string>
+    <string name="swap_playlist_dialog_yes">Swap playlist</string>
+    <string name="cancel">Cancel</string>
 </resources>

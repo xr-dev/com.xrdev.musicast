@@ -10,16 +10,8 @@ import android.widget.Button;
 
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
+import com.xrdev.musicast.utils.PrefsManager;
 
-/**
- * A simple {@link android.app.Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link com.xrdev.musicast.activity.ModeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link com.xrdev.musicast.activity.ModeFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 public class ModeFragment extends Fragment {
 
     private Button mSoloButton;

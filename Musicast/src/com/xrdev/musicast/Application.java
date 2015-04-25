@@ -24,6 +24,7 @@ public class Application extends MultiDexApplication {
 
     private static final String TAG = "Application";
 
+
     private static VideoCastManager mCastMgr = null;
     private static VideoCastConsumerImpl mCastConsumer = null;
     private static BaseCastConsumerImpl mBaseConsumer = null;
@@ -159,6 +160,7 @@ public class Application extends MultiDexApplication {
         return mMode;
     }
 
+
     public static String getAdmin() {
         return mAdmin;
     }
@@ -171,4 +173,5 @@ public class Application extends MultiDexApplication {
 
         return mJsonConverter;
     }
+
 }

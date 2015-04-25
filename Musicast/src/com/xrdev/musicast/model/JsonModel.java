@@ -9,6 +9,7 @@ public class JsonModel {
     String type;
     String index;
     String videoId;
+    String mode;
     ArrayList<String> videoIds;
     ArrayList<TrackItem> tracksMetadata;
     String message;
@@ -77,5 +78,13 @@ public class JsonModel {
 
     public void setUUID(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }

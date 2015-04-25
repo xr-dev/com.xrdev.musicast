@@ -8,8 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.xrdev.musicast.utils.PrefsManager;
@@ -20,8 +23,9 @@ public class SpotifyAuthActivity extends Activity {
 
     private static final String TAG = "SpotifyAuthActivity";
     private static final String EXTRA_CODE = "code";
-    private static final String EXTRA_TOKEN = "token";
     private Button mLoginButton;
+    private Button mSkipButton;
+    private TextView mAuxText;
     private int REQUEST_CODE = SpotifyManager.REQUEST_CODE;
 
     @Override
@@ -30,6 +34,8 @@ public class SpotifyAuthActivity extends Activity {
         setContentView(R.layout.activity_spotify_auth);
 
         mLoginButton = (Button) findViewById(R.id.spotify_login_button);
+        mSkipButton = (Button) findViewById(R.id.spotify_login_skip);
+        mAuxText = (TextView) findViewById(R.id.textAux);
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +45,30 @@ public class SpotifyAuthActivity extends Activity {
             }
         });
 
+        mSkipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // mSpotifyBinder.getService().login(SpotifyAuthActivity.this);
+                Intent intent = new Intent(SpotifyAuthActivity.this, MusicastActivity.class);
+                intent.putExtra(MusicastActivity.EXTRA_IS_LOGIN_SKIPPED, true);
+                intent.putExtra(MusicastActivity.EXTRA_WAS_LOGIN_PROMPTED, true);
+                startActivity(intent);
+            }
+        });
 
+        String thisUuid = PrefsManager.getUUID(this);
+        String hostUuid = Application.getAdmin();
+
+        if (thisUuid.equals(hostUuid)) {
+            mAuxText.setText(R.string.string_spotify_login_admin);
+            mSkipButton.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mLoginButton.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            mLoginButton.setLayoutParams(params);
+        } else {
+            mAuxText.setText(R.string.string_spotify_login_guest);
+            mSkipButton.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -106,6 +135,7 @@ public class SpotifyAuthActivity extends Activity {
 
                 Intent redirectIntent = new Intent(SpotifyAuthActivity.this, MusicastActivity.class);
                 redirectIntent.putExtra(EXTRA_CODE, code);
+                redirectIntent.putExtra(MusicastActivity.EXTRA_WAS_LOGIN_PROMPTED, true);
 
 
                 Log.i(TAG, "Access token obtido: " + accessToken);

@@ -118,25 +118,6 @@
             android:id="@+id/play_queue_text"
             android:text="@string/play_queue"/>
 
-        <RelativeLayout
-            xmlns:tools="http:schemas.android.com/tools"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:id="@+id/bottom_container"
-            android:gravity="center|top"
-            android:background="@drawable/vote_container_bg">
-
-            <FrameLayout
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="59dp"
-                android:layout_alignParentBottom="true"
-                tools:context="com.xrdev.musicast.activity.MusicastActivity"
-                android:id="@+id/vote_container">
-            </FrameLayout>
-
-        </RelativeLayout>
 
         <ListView
             android:layout_width="wrap_content"
@@ -145,7 +126,7 @@
             android:layout_marginRight="10dp"
             android:id="@+id/play_queue_list"
             android:layout_below="@id/play_queue_text"
-            android:layout_above="@id/bottom_container"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/queue_header_bg"/>
 

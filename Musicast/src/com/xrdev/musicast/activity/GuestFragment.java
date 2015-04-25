@@ -7,13 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
+import com.xrdev.musicast.utils.PrefsManager;
 
 public class GuestFragment extends Fragment {
 
     private Button mGotItButton;
+    private TextView mGuestDescriptionText;
     private MusicastActivity mActivity;
 
     public static GuestFragment newInstance() {
@@ -36,6 +39,15 @@ public class GuestFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_guest, container, false);
         mGotItButton = (Button) v.findViewById(R.id.button_got_it);
+        mGuestDescriptionText = (TextView) v.findViewById(R.id.text_party_description);
+
+        String thisUuid = PrefsManager.getUUID(getActivity().getApplicationContext());
+        String adminUuid = Application.getAdmin();
+
+        if (thisUuid.equals(adminUuid))
+            mGuestDescriptionText.setText(R.string.string_party_admin);
+        else
+            mGuestDescriptionText.setText(R.string.string_party_guest);
 
         mGotItButton.setOnClickListener(new View.OnClickListener() {
             @Override

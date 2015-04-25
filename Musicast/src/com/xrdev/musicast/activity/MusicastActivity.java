@@ -1,10 +1,13 @@
 package com.xrdev.musicast.activity;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -50,7 +53,9 @@ public class MusicastActivity extends ActionBarActivity
 
 
     private final static String TAG = "MusicastActivity";
-    private final static String EXTRA_CODE = "code";
+    public final static String EXTRA_CODE = "code";
+    public final static String EXTRA_IS_LOGIN_SKIPPED = "isLoginSkipped";
+    public final static String EXTRA_WAS_LOGIN_PROMPTED = "wasLoginPrompted";
     private final static String CAST_APP_ID = "E3FA9FF0";
 
     private Menu mMenu;
@@ -68,13 +73,13 @@ public class MusicastActivity extends ActionBarActivity
     private PlaylistsFragment mPlaylistsFragment;
     private TracksFragment mTracksFragment;
     private PlayingTrackFragment mPlayingTrackFragment;
-    private VoteFragment mVoteFragment;
     private ModeFragment mModeFragment;
     private CastSelectorFragment mCastSelectorFragment;
     private GuestFragment mGuestFragment;
     private ListView mPlayQueueListView;
     private ListView mTracksView;
 
+    private RelativeLayout mMediaControlsContainer;
     private ImageButton mPlayPauseButton;
     private ImageButton mPrevButton;
     private ImageButton mNextButton;
@@ -197,7 +202,7 @@ public class MusicastActivity extends ActionBarActivity
                 mFragmentManager.popBackStack();
                 mMenu.findItem(R.id.action_add_to_queue).setVisible(false);
                 mMenu.findItem(R.id.action_swap).setVisible(false);
-                setTitle(R.string.app_name);
+                actionBar.setSubtitle(R.string.playlists);
             } else {
                 super.onBackPressed();
             }
@@ -214,19 +219,23 @@ public class MusicastActivity extends ActionBarActivity
 
         getMenuInflater().inflate(R.menu.menu, menu);
 
-        mCastMgr.addMediaRouterButton(menu, R.id.media_route_menu_item);
-
+        if (mCastMgr != null)
+            mCastMgr.addMediaRouterButton(menu, R.id.media_route_menu_item);
+        else {
+            mCastMgr = Application.getCastManager(this);
+            mCastMgr.addMediaRouterButton(menu, R.id.media_route_menu_item);
+        }
         // Esconder os botões da ActionBar exclusivos da TracksFragment.
 
-        menu.findItem(R.id.action_add_to_queue).setVisible(false);
-        menu.findItem(R.id.action_swap).setVisible(false);
+        mMenu.findItem(R.id.action_add_to_queue).setVisible(false);
+        mMenu.findItem(R.id.action_swap).setVisible(false);
 
         if (PrefsManager.getAccessToken(this) != null){
-            menu.findItem(R.id.action_logout).setVisible(true);
-            menu.findItem(R.id.action_login).setVisible(false);
+            mMenu.findItem(R.id.action_logout).setVisible(true);
+            mMenu.findItem(R.id.action_login).setVisible(false);
         } else {
-            menu.findItem(R.id.action_logout).setVisible(false);
-            menu.findItem(R.id.action_login).setVisible(true);
+            mMenu.findItem(R.id.action_logout).setVisible(false);
+            mMenu.findItem(R.id.action_login).setVisible(true);
         }
 
         return true;
@@ -237,15 +246,16 @@ public class MusicastActivity extends ActionBarActivity
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_add_to_queue :
-                addToQueue(mLocalQueue);
+                addToQueue();
                 return true;
             case R.id.action_swap :
-                swapPlaylist(mLocalQueue);
+                swapPlaylist();
                 return true;
             case R.id.action_logout :
                 PrefsManager.clearPrefs(this);
                 SpotifyManager.logoutFromWebView(this);
                 Toast.makeText(getApplicationContext(),getString(R.string.string_logout_successful),Toast.LENGTH_SHORT).show();
+            case R.id.action_login :
                 startActivity(
                         new Intent(MusicastActivity.this, SpotifyAuthActivity.class)
                 );
@@ -274,6 +284,11 @@ public class MusicastActivity extends ActionBarActivity
 
     private void initializeCastUi(){
         actionBar = getSupportActionBar();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayShowHomeEnabled(false);
+        }
+
         // -------------------- VERIFICAR GOOGLE PLAY SERVICES, PREPARAR CAST --------------------
         BaseCastManager.checkGooglePlayServices(this);
         mCastMgr = Application.getCastManager(this);
@@ -299,10 +314,6 @@ public class MusicastActivity extends ActionBarActivity
             mPlayingTrackFragment = PlayingTrackFragment.newInstance();
         }
 
-        if (mVoteFragment == null) {
-            mVoteFragment = VoteFragment.newInstance();
-        }
-
         if (mModeFragment == null) {
             mModeFragment = ModeFragment.newInstance();
         }
@@ -325,10 +336,6 @@ public class MusicastActivity extends ActionBarActivity
                 .commit();
 
         mFragmentManager.beginTransaction()
-                .add(R.id.vote_container, mVoteFragment)
-                .commit();
-
-        mFragmentManager.beginTransaction()
                 .add(R.id.main_container, mCastSelectorFragment)
                 .commit();
 
@@ -338,6 +345,9 @@ public class MusicastActivity extends ActionBarActivity
 
     private void initializeSlidingPanel(){
         // -------------------- INSTANCIAR VIEWS DO SLIDING PANEL --------------------
+
+        mMediaControlsContainer = (RelativeLayout) findViewById(R.id.media_controls_layout);
+
 
         mPlayPauseButton = (ImageButton) findViewById(R.id.imagebutton_play_pause);
         mPrevButton = (ImageButton) findViewById(R.id.imagebutton_previous);
@@ -396,6 +406,7 @@ public class MusicastActivity extends ActionBarActivity
             public void onPanelCollapsed(View panel) {
                 Log.i(TAG, "onPanelCollapsed");
                 mCollapseExpandImg.setImageResource(R.drawable.ic_action_expand);
+
             }
 
             @Override
@@ -432,10 +443,12 @@ public class MusicastActivity extends ActionBarActivity
 
         displayBackStack(mFragmentManager);
 
-        setTitle(mPlaylistSelected.getName());
+        actionBar.setSubtitle(mPlaylistSelected.getName());
+
+        if (isAdmin())
+            mMenu.findItem(R.id.action_swap).setVisible(true);
 
         mMenu.findItem(R.id.action_add_to_queue).setVisible(true);
-        mMenu.findItem(R.id.action_swap).setVisible(true);
 
         mFirstTracksTask = new TrackDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
 
@@ -460,6 +473,9 @@ public class MusicastActivity extends ActionBarActivity
         if (type.equals("modeInfo")) {
             // Modo atual (SOLO ou PARTY)
             int mode = Integer.parseInt(obj.getMessage());
+            String adminUuid = obj.getUUID();
+            Application.setAdmin(adminUuid);
+            // IMPORTANTE SETAR O ADMIN ANTES DO MODO!
             Application.setMode(mode);
         }
         if (type.equals("trackInfo")) {
@@ -479,7 +495,14 @@ public class MusicastActivity extends ActionBarActivity
         }
 
         if (type.equals("feedback")) {
-            Toast.makeText(this, obj.getMessage(), Toast.LENGTH_SHORT).show();
+            String feedbackType = obj.getMessage();
+
+            if (feedbackType.equals("FEEDBACK_TRACK_ADD"))
+                Toast.makeText(this, R.string.feedback_track_add, Toast.LENGTH_SHORT).show();
+
+            if (feedbackType.equals("FEEDBACK_ERR_NO_ADMIN_RIGHTS"))
+                Toast.makeText(this, R.string.feedback_error_not_admin, Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -523,6 +546,10 @@ public class MusicastActivity extends ActionBarActivity
 
     public void onAdminChanged(String admin) {
         // TODO:  lógica para atualizar interface em alteração de admin.
+        if (!isAdmin())
+            mMediaControlsContainer.setVisibility(View.GONE);
+        else
+            mMediaControlsContainer.setVisibility(View.VISIBLE);
     }
 
 
@@ -585,12 +612,29 @@ public class MusicastActivity extends ActionBarActivity
                             .commit();
                     break;
                 case Application.MODE_SOLO :
+                    actionBar.setTitle(R.string.solo_mode);
+                    actionBar.setSubtitle(R.string.playlists);
                     loadPlaylistsFragment();
                     break;
                 case Application.MODE_PARTY :
-                    mFragmentManager.beginTransaction()
-                            .replace(R.id.main_container, mGuestFragment)
-                            .commit();
+                    if (isAdmin())
+                        actionBar.setTitle(R.string.party_mode_host);
+                    else
+                        actionBar.setTitle(R.string.party_mode_guest);
+
+                    actionBar.setSubtitle(R.string.playlists);
+
+                    Intent fromIntent = getIntent();
+
+                    boolean wasLoginPrompted = fromIntent.getBooleanExtra(EXTRA_WAS_LOGIN_PROMPTED, false);
+
+                    if (wasLoginPrompted){
+                        loadPlaylistsFragment();
+                    } else {
+                        mFragmentManager.beginTransaction()
+                                .replace(R.id.main_container, mGuestFragment)
+                                .commit();
+                    }
                     break;
             }
 
@@ -627,21 +671,42 @@ public class MusicastActivity extends ActionBarActivity
         sendMessage(msg);
     }
 
-    private void addToQueue(LocalQueue localQueue) {
+    private void addToQueue() {
 
         if (mLocalQueue != null) {
-            String msg = jsonConverter.makeAddToQueueJson(localQueue);
-            sendMessage(msg);
+
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.add_tracks_to_queue_dialog_title)
+                    .setMessage(R.string.add_tracks_to_queue_dialog_message)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.add_tracks_to_queue_dialog_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String msg = jsonConverter.makeAddToQueueJson(mLocalQueue);
+                            sendMessage(msg);
+                        }
+                    })
+                    .show();
         } else {
             Toast.makeText(this, getString(R.string.error_no_tracks_on_playlist), Toast.LENGTH_LONG).show();
         }
     }
 
-    private void swapPlaylist(LocalQueue localQueue) {
+    private void swapPlaylist() {
         if (mLocalQueue != null) {
             if (isAdmin()) {
-                String msg = jsonConverter.makeSwapPlaylistJson(localQueue);
-                sendMessage(msg);
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.swap_playlist_dialog_title)
+                        .setMessage(R.string.swap_playlist_dialog_message)
+                        .setNegativeButton(R.string.cancel, null)
+                        .setPositiveButton(R.string.swap_playlist_dialog_yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String msg = jsonConverter.makeSwapPlaylistJson(mLocalQueue);
+                                sendMessage(msg);
+                            }
+                        })
+                        .show();
             } else {
                 Toast.makeText(this, getString(R.string.error_not_admin_swap), Toast.LENGTH_LONG).show();
             }
@@ -651,6 +716,9 @@ public class MusicastActivity extends ActionBarActivity
     }
 
     private boolean isAdmin() {
+        if (Application.getAdmin() == null)
+            return false;
+
         if (Application.getAdmin().equals(PrefsManager.getUUID(this)))
             return true;
         else
@@ -659,6 +727,8 @@ public class MusicastActivity extends ActionBarActivity
 
     public class PlaylistDownloader extends AsyncTask<String, Void, ArrayList<PlaylistItem>>{
         ProgressDialog pd;
+        Intent fromIntent;
+
         // SpotifyServiceBinder mBinder = new SpotifyServiceBinder(getApplicationContext());
 
         public PlaylistDownloader() {
@@ -673,17 +743,12 @@ public class MusicastActivity extends ActionBarActivity
             pd.setMessage(getString(R.string.string_loading));
             pd.show();
 
+            fromIntent = getIntent();
         }
 
         @Override
         protected ArrayList<PlaylistItem> doInBackground(String... arg0) {
             Log.i(TAG, "AsyncTask: Entrando no doInBackground.");
-
-            // mBinder.bindService();
-
-            // ArrayList<PlaylistItem> resultItems = mBinder.getService().getUserPlaylists();
-
-            Intent fromIntent = getIntent();
 
             String code = fromIntent.getStringExtra(EXTRA_CODE);
 
@@ -707,7 +772,12 @@ public class MusicastActivity extends ActionBarActivity
             }
 
             if (resultItems == null) {
-                SpotifyManager.startLoginActivity(getApplicationContext());
+                boolean isLoginSkipped = fromIntent.getBooleanExtra(EXTRA_IS_LOGIN_SKIPPED, false);
+
+                if (!isLoginSkipped || isAdmin())
+                    SpotifyManager.startLoginActivity(getApplicationContext());
+
+
             } else {
                 for (PlaylistItem item : resultItems) {
                     mPlaylistAdapter.add(item);
