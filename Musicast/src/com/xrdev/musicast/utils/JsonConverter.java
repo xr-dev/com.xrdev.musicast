@@ -31,6 +31,8 @@ public class JsonConverter {
     public static String TYPE_TRACK_VOTE = "trackVote";
     public static String TYPE_ADD_TO_QUEUE = "addListToQueue";
     public static String TYPE_SWAP_PLAYLIST = "swapPlaylist";
+    public static String TYPE_STOP_HOSTING = "stopHosting";
+    public static String TYPE_BECOME_ADMIN = "becomeAdmin";
 
     public JsonConverter(Context context) {
         mContext = context;

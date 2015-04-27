@@ -33,28 +33,6 @@ public class TracksFragment extends ListFragment {
         return tf;
     }
 
-/*    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View list = inflater.inflate(R.layout.tracks_header, null);
-
-        //mHeader = inflater.inflate(R.layout.tracks_header, null);
-
-        return list;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        getListView().addHeaderView(mHeader);
-        //setListAdapter(getListAdapter());
-    }
-
-    @Override
-    public void onDestroyView() {
-        //setListAdapter(null);
-    }*/
 
 
     public void setQueue(LocalQueue queue) {
@@ -137,7 +115,7 @@ public class TracksFragment extends ListFragment {
                         show();
 
             } else {
-                Toast.makeText(getActivity(),"YouTube video not found for this track.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),R.string.video_not_found, Toast.LENGTH_LONG).show();
             }
 
 

@@ -13,19 +13,19 @@ import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.utils.PrefsManager;
 
-public class GuestFragment extends Fragment {
+public class PartyFragment extends Fragment {
 
     private Button mGotItButton;
     private TextView mGuestDescriptionText;
     private MusicastActivity mActivity;
 
-    public static GuestFragment newInstance() {
-        GuestFragment fragment = new GuestFragment();
+    public static PartyFragment newInstance() {
+        PartyFragment fragment = new PartyFragment();
         return fragment;
     }
 
 
-    public GuestFragment() {
+    public PartyFragment() {
         // Required empty public constructor
     }
 
@@ -37,7 +37,7 @@ public class GuestFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_guest, container, false);
+        View v = inflater.inflate(R.layout.fragment_party, container, false);
         mGotItButton = (Button) v.findViewById(R.id.button_got_it);
         mGuestDescriptionText = (TextView) v.findViewById(R.id.text_party_description);
 

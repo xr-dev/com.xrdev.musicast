@@ -115,7 +115,12 @@ public class QueueAdapter extends BaseAdapter {
         holder.voteCount.setText(String.valueOf(trackItem.getVoteCount()));
 
         if (currentMode == Application.MODE_SOLO || currentMode == Application.MODE_UNSTARTED) {
+            // TODO: adicionar um ClickListener parecido com o do TracksAdapter para tocar a música direto em caso de MODE_SOLO.
             holder.voteStats.setVisibility(View.GONE);
+            if (playingIndex == position) {
+                holder.titleView.setTextColor(Color.parseColor("#006600"));
+                holder.artistsView.setTextColor(Color.parseColor("#006600"));
+            }
         } else {
             if (playingIndex > position) {
                 holder.voteStats.setVisibility(View.GONE);

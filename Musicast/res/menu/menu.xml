@@ -23,8 +23,26 @@
         android:icon="@drawable/ic_action_replace"/>
 
     <item
+        android:id="@+id/action_become_host"
+        android:orderInCategory="4"
+        app:showAsAction="never"
+        android:title="@string/action_become_host" />
+
+    <item
+        android:id="@+id/action_stop_hosting"
+        android:orderInCategory="5"
+        app:showAsAction="never"
+        android:title="@string/action_stop_hosting" />
+
+    <item
+        android:id="@+id/action_switch_mode"
+        android:orderInCategory="6"
+        app:showAsAction="never"
+        android:title="@string/action_switch_to_party" />
+
+    <item
         android:id="@+id/action_logout"
-        android:orderInCategory="100"
+        android:orderInCategory="99"
         app:showAsAction="never"
         android:title="@string/string_logout"/>
 

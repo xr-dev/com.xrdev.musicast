@@ -26,7 +26,7 @@
         android:id="@+id/button_test_app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test App"
+        android:text="Open App"
         android:layout_below="@+id/linearLayout"
         android:layout_centerHorizontal="true" />
 

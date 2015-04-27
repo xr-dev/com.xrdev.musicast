@@ -30,7 +30,6 @@ import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
 import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.spotify.sdk.android.authentication.LoginActivity;
 import com.xrdev.musicast.Application;
 import com.xrdev.musicast.R;
 import com.xrdev.musicast.adapter.PlaylistAdapter;
@@ -49,7 +48,7 @@ import java.util.ArrayList;
 
 public class MusicastActivity extends ActionBarActivity
     implements PlaylistsFragment.OnPlaylistSelectedListener, Application.OnMessageReceived, ModeFragment.OnModeSelectedListener,
-                TrackAdapter.OnAddedTrackListener, QueueAdapter.OnVotedTrackListener {
+                TrackAdapter.OnAddedTrackListener, QueueAdapter.OnVotedTrackListener, NoAdminFragment.OnBecomeNewAdmin {
 
 
     private final static String TAG = "MusicastActivity";
@@ -75,7 +74,8 @@ public class MusicastActivity extends ActionBarActivity
     private PlayingTrackFragment mPlayingTrackFragment;
     private ModeFragment mModeFragment;
     private CastSelectorFragment mCastSelectorFragment;
-    private GuestFragment mGuestFragment;
+    private PartyFragment mPartyFragment;
+    private NoAdminFragment mNoAdminFragment;
     private ListView mPlayQueueListView;
     private ListView mTracksView;
 
@@ -112,6 +112,9 @@ public class MusicastActivity extends ActionBarActivity
     private int mLayoutMode = LAYOUT_INIT;
 
     boolean isChromecastConnected;
+    boolean hasRefusedAdmin;
+    boolean isAskingForAdmin;
+    boolean wasPlaylistsLoaded;
 
 
     JsonConverter jsonConverter;
@@ -129,6 +132,9 @@ public class MusicastActivity extends ActionBarActivity
         mSlidingUpLayout.hidePanel();
 
         isChromecastConnected = false;
+        hasRefusedAdmin = false;
+        isAskingForAdmin = false;
+        wasPlaylistsLoaded = false;
 
         /**
          * ONCREATE DA ACTIVITY: Instanciar apenas objetos que serão comuns aos Fragments.
@@ -230,6 +236,11 @@ public class MusicastActivity extends ActionBarActivity
         mMenu.findItem(R.id.action_add_to_queue).setVisible(false);
         mMenu.findItem(R.id.action_swap).setVisible(false);
 
+        // Esconder o botão de parar o hosting e trocar de modo, inicialmente.
+        mMenu.findItem(R.id.action_become_host).setVisible(false);
+        mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
+        mMenu.findItem(R.id.action_switch_mode).setVisible(false);
+
         if (PrefsManager.getAccessToken(this) != null){
             mMenu.findItem(R.id.action_logout).setVisible(true);
             mMenu.findItem(R.id.action_login).setVisible(false);
@@ -255,10 +266,21 @@ public class MusicastActivity extends ActionBarActivity
                 PrefsManager.clearPrefs(this);
                 SpotifyManager.logoutFromWebView(this);
                 Toast.makeText(getApplicationContext(),getString(R.string.string_logout_successful),Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.action_login :
                 startActivity(
                         new Intent(MusicastActivity.this, SpotifyAuthActivity.class)
                 );
+                return true;
+            case R.id.action_stop_hosting :
+                stopHosting();
+                return true;
+            case R.id.action_become_host :
+                onBecomeNewAdmin(true);
+                return true;
+            case R.id.action_switch_mode :
+                switchMode();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -322,8 +344,13 @@ public class MusicastActivity extends ActionBarActivity
             mCastSelectorFragment = CastSelectorFragment.newInstance();
         }
 
-        if (mGuestFragment == null) {
-            mGuestFragment = GuestFragment.newInstance();
+        if (mPartyFragment == null) {
+            mPartyFragment = PartyFragment.newInstance();
+        }
+
+
+        if (mNoAdminFragment == null) {
+            mNoAdminFragment = NoAdminFragment.newInstance();
         }
 
         mPlaylistsFragment.setListAdapter(mPlaylistAdapter);
@@ -445,10 +472,12 @@ public class MusicastActivity extends ActionBarActivity
 
         actionBar.setSubtitle(mPlaylistSelected.getName());
 
-        if (isAdmin())
-            mMenu.findItem(R.id.action_swap).setVisible(true);
+        if (Application.getMode() == Application.MODE_PARTY) {
+            if (isAdmin())
+                mMenu.findItem(R.id.action_swap).setVisible(true);
 
-        mMenu.findItem(R.id.action_add_to_queue).setVisible(true);
+            mMenu.findItem(R.id.action_add_to_queue).setVisible(true);
+        }
 
         mFirstTracksTask = new TrackDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
 
@@ -493,7 +522,9 @@ public class MusicastActivity extends ActionBarActivity
             String index = obj.getMessage();
             highlightPlayingNow(index);
         }
-
+        if (type.equals("adminDisconnected")) {
+            // TODO: Fragmento para solicitar novo admin.
+        }
         if (type.equals("feedback")) {
             String feedbackType = obj.getMessage();
 
@@ -502,6 +533,10 @@ public class MusicastActivity extends ActionBarActivity
 
             if (feedbackType.equals("FEEDBACK_ERR_NO_ADMIN_RIGHTS"))
                 Toast.makeText(this, R.string.feedback_error_not_admin, Toast.LENGTH_SHORT).show();
+
+            if (feedbackType.equals("FEEDBACK_ERR_HAS_ADMIN"))
+                Toast.makeText(this, R.string.feedback_error_has_admin, Toast.LENGTH_SHORT).show();
+
 
         }
     }
@@ -546,10 +581,10 @@ public class MusicastActivity extends ActionBarActivity
 
     public void onAdminChanged(String admin) {
         // TODO:  lógica para atualizar interface em alteração de admin.
-        if (!isAdmin())
-            mMediaControlsContainer.setVisibility(View.GONE);
-        else
-            mMediaControlsContainer.setVisibility(View.VISIBLE);
+        if (!admin.isEmpty()) {
+            hasRefusedAdmin = false;
+        }
+
     }
 
 
@@ -603,8 +638,48 @@ public class MusicastActivity extends ActionBarActivity
 
     private void updateLayout(int fromLayout, int toLayout) {
 
-        if (fromLayout != toLayout) {
+        Intent fromIntent = getIntent();
 
+        boolean wasLoginPrompted = fromIntent.getBooleanExtra(EXTRA_WAS_LOGIN_PROMPTED, false);
+
+
+        if (isAdmin()) {
+            mMediaControlsContainer.setVisibility(View.VISIBLE);
+            mMenu.findItem(R.id.action_switch_mode).setVisible(true);
+            if (Application.getMode() == Application.MODE_PARTY) {
+                mMenu.findItem(R.id.action_stop_hosting).setVisible(true);
+                mMenu.findItem(R.id.action_switch_mode).setTitle(R.string.action_switch_to_solo);
+            } else {
+                mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
+                mMenu.findItem(R.id.action_switch_mode).setTitle(R.string.action_switch_to_party);
+            }
+        } else {
+            mMediaControlsContainer.setVisibility(View.GONE);
+            mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
+            mMenu.findItem(R.id.action_switch_mode).setVisible(false);
+        }
+
+        if (toLayout == Application.MODE_PARTY) {
+
+            if (Application.getAdmin().isEmpty()) {
+                // Não tem admin. Mostrar fragment que pergunta se quer se tornar um. Testar esse método de comparação...
+                mMenu.findItem(R.id.action_become_host).setVisible(true);
+                if (!hasRefusedAdmin && !wasLoginPrompted) {
+                    mFragmentManager.beginTransaction()
+                            .replace(R.id.main_container, mNoAdminFragment)
+                            .commit();
+                    isAskingForAdmin = true;
+                    return;
+                }
+            } else {
+                mMenu.findItem(R.id.action_become_host).setVisible(false);
+                if (isAskingForAdmin)
+                    loadPlaylistsFragment();
+            }
+
+        }
+
+        if (fromLayout != toLayout) {
             switch (toLayout) {
                 case Application.MODE_UNSTARTED :
                     mFragmentManager.beginTransaction()
@@ -614,36 +689,43 @@ public class MusicastActivity extends ActionBarActivity
                 case Application.MODE_SOLO :
                     actionBar.setTitle(R.string.solo_mode);
                     actionBar.setSubtitle(R.string.playlists);
+                    mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
                     loadPlaylistsFragment();
                     break;
                 case Application.MODE_PARTY :
-                    if (isAdmin())
+                    mMenu.findItem(R.id.action_become_host).setVisible(false);
+
+                    if (isAdmin()) {
                         actionBar.setTitle(R.string.party_mode_host);
-                    else
+                        mMenu.findItem(R.id.action_stop_hosting).setVisible(true);
+                    } else {
                         actionBar.setTitle(R.string.party_mode_guest);
+                        mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
+                    }
 
                     actionBar.setSubtitle(R.string.playlists);
 
-                    Intent fromIntent = getIntent();
-
-                    boolean wasLoginPrompted = fromIntent.getBooleanExtra(EXTRA_WAS_LOGIN_PROMPTED, false);
 
                     if (wasLoginPrompted){
                         loadPlaylistsFragment();
                     } else {
                         mFragmentManager.beginTransaction()
-                                .replace(R.id.main_container, mGuestFragment)
+                                .replace(R.id.main_container, mPartyFragment)
                                 .commit();
                     }
                     break;
             }
+        }
+
 
             mLayoutMode = toLayout;
-        }
+
     }
 
     protected void loadPlaylistsFragment() {
-        mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
+        if (!wasPlaylistsLoaded)
+            mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
+
         mFragmentManager.beginTransaction()
                 .replace(R.id.main_container, mPlaylistsFragment)
                 .commit();
@@ -669,6 +751,24 @@ public class MusicastActivity extends ActionBarActivity
     public void onTrackVoted(TrackItem track) {
         String msg = jsonConverter.makeTrackVoteJson(track);
         sendMessage(msg);
+    }
+
+    @Override
+    public void onBecomeNewAdmin(boolean becomeNewAdmin) {
+
+
+        if (becomeNewAdmin) {
+            if (PrefsManager.getAccessToken(this) == null) {
+                Toast.makeText(this, R.string.string_login_required_to_host, Toast.LENGTH_LONG).show();
+            } else {
+                String msg = jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_BECOME_ADMIN);
+                sendMessage(msg);
+            }
+        } else {
+            loadPlaylistsFragment();
+            hasRefusedAdmin = true;
+            isAskingForAdmin = false;
+        }
     }
 
     private void addToQueue() {
@@ -715,6 +815,62 @@ public class MusicastActivity extends ActionBarActivity
         }
     }
 
+    private void stopHosting() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.stop_hosting_dialog_title)
+                .setMessage(R.string.stop_hosting_dialog_message)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.stop_hosting_dialog_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String msg = jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_STOP_HOSTING);
+                        sendMessage(msg);
+                        hasRefusedAdmin = true;
+                        mMenu.findItem(R.id.action_swap).setVisible(false);
+                        actionBar.setTitle(R.string.party_mode_guest);
+                    }
+                })
+                .show();
+    }
+
+    private void switchMode() {
+
+        String dialogTitle;
+        String dialogMessage;
+        String dialogConfirm;
+        int toMode;
+
+        switch (Application.getMode()) {
+            case Application.MODE_SOLO :
+                dialogTitle = getString(R.string.switch_to_party_dialog_title);
+                dialogMessage = getString(R.string.switch_to_party_dialog_message);
+                dialogConfirm = getString(R.string.switch_to_party_dialog_yes);
+                break;
+            case Application.MODE_PARTY :
+                dialogTitle = getString(R.string.switch_to_solo_dialog_title);
+                dialogMessage = getString(R.string.switch_to_solo_dialog_message);
+                dialogConfirm = getString(R.string.switch_to_solo_dialog_yes);
+                break;
+            default:
+                return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(dialogTitle)
+                .setMessage(dialogMessage)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(dialogConfirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (Application.getMode() == Application.MODE_SOLO)
+                            onModeSelected(Application.MODE_PARTY);
+                        else
+                            onModeSelected(Application.MODE_SOLO);
+                    }
+                })
+                .show();
+    }
+
     private boolean isAdmin() {
         if (Application.getAdmin() == null)
             return false;
@@ -725,11 +881,11 @@ public class MusicastActivity extends ActionBarActivity
             return false;
     }
 
+
+
     public class PlaylistDownloader extends AsyncTask<String, Void, ArrayList<PlaylistItem>>{
         ProgressDialog pd;
         Intent fromIntent;
-
-        // SpotifyServiceBinder mBinder = new SpotifyServiceBinder(getApplicationContext());
 
         public PlaylistDownloader() {
             super();
@@ -783,6 +939,8 @@ public class MusicastActivity extends ActionBarActivity
                     mPlaylistAdapter.add(item);
                 }
             }
+
+            wasPlaylistsLoaded = true;
         }
     }
 
