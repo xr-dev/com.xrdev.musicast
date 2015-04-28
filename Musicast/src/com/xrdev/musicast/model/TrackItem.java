@@ -1,9 +1,11 @@
 package com.xrdev.musicast.model;
 
-import com.xrdev.musicast.connection.YouTubeManager;
-import com.xrdev.musicast.connection.spotifywrapper.models.SimpleAlbum;
 import com.xrdev.musicast.connection.spotifywrapper.models.SimpleArtist;
 import com.xrdev.musicast.connection.spotifywrapper.models.Track;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +26,10 @@ public class TrackItem {
     private String youtubeId;
     public static String VIDEO_NOT_FOUND = "0";
 
+    private String refreshCacheDate;
+
+    public boolean wasCached;
+
     private int queueIndex;
 
 
@@ -34,6 +40,7 @@ public class TrackItem {
         this.album = apiTrack.getAlbum().getName();
         this.artists = getArtistsFromApi(apiTrack);
         this.votes = new ArrayList<String>();
+        this.wasCached = false;
     }
 
     public String getTrackId() {
@@ -145,4 +152,27 @@ public class TrackItem {
     public int getVoteCount() {
         return votes.size();
     }
+
+    public String getRefreshCacheDate() {
+        return refreshCacheDate;
+    }
+
+    public boolean isRefreshNeeded() {
+        if (refreshCacheDate == null)
+            return false;
+
+        DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+        DateTime refreshDateTime = fmt.parseDateTime(refreshCacheDate);
+
+        if (refreshDateTime.isBeforeNow())
+            return true;
+        else
+            return false;
+    }
+
+    public void setRefreshCacheDate(String refreshCacheDate) {
+        this.refreshCacheDate = refreshCacheDate;
+    }
+
+
 }

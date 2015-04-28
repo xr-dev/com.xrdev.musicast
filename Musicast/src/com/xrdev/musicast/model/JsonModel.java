@@ -10,7 +10,6 @@ public class JsonModel {
     String index;
     String videoId;
     String mode;
-    ArrayList<String> videoIds;
     ArrayList<TrackItem> tracksMetadata;
     String message;
     TrackItem trackInfo;
@@ -38,14 +37,6 @@ public class JsonModel {
 
     public void setVideoId(String videoId) {
         this.videoId = videoId;
-    }
-
-    public ArrayList<String> getVideoIds() {
-        return videoIds;
-    }
-
-    public void setVideoIds(ArrayList<String> videoIds) {
-        this.videoIds = videoIds;
     }
 
     public ArrayList<TrackItem> getTracksMetadata() {

@@ -39,7 +39,8 @@
             android:name=".activity.SpotifyAuthActivity"
             android:label="@string/title_activity_spotify_login"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

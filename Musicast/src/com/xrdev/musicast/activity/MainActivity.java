@@ -83,7 +83,8 @@ public class MainActivity extends Activity {
 	public void startLoginTest() {
 		Log.i(TAG, "Iniciando teste de login do Spotify. / Starting Spotify Login Test.");
 
-        Intent intent = new Intent(MainActivity.this, SpotifyAuthActivity.class);
+        Intent intent = new Intent(MainActivity.this, SpotifyAuthActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
         startActivity(intent);
 		

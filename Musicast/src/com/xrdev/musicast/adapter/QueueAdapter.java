@@ -22,18 +22,19 @@ public class QueueAdapter extends BaseAdapter {
 
 	private final List<TrackItem> mItems = new ArrayList<TrackItem>();
 	private final Context mContext;
-    public OnVotedTrackListener mCallback;
+    public QueueListener mCallback;
     private final static String TAG = "QueueAdapter";
     private int playingIndex;
 
 
-    public interface OnVotedTrackListener {
+    public interface QueueListener {
         public void onTrackVoted(TrackItem track);
+        public void onQueueTrackSelected(int position);
     }
 
 	public QueueAdapter(Context context) {
 		mContext = context;
-        mCallback = (OnVotedTrackListener) context;
+        mCallback = (QueueListener) context;
 
     }
 
@@ -84,6 +85,7 @@ public class QueueAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final TrackItem trackItem = mItems.get(position);
+        final int index = position;
 
         // Inflar o layout para cada item:
         TrackHolder holder = new TrackHolder();
@@ -120,7 +122,11 @@ public class QueueAdapter extends BaseAdapter {
             if (playingIndex == position) {
                 holder.titleView.setTextColor(Color.parseColor("#006600"));
                 holder.artistsView.setTextColor(Color.parseColor("#006600"));
+            } else {
+                holder.titleView.setTextColor(Color.BLACK);
+                holder.artistsView.setTextColor(Color.BLACK);
             }
+
         } else {
             if (playingIndex > position) {
                 holder.voteStats.setVisibility(View.GONE);
@@ -155,6 +161,17 @@ public class QueueAdapter extends BaseAdapter {
                 mCallback.onTrackVoted(trackItem);
             }
         });
+
+        if (Application.getAdmin() != null) {
+            if (Application.getAdmin().equals(PrefsManager.getUUID(mContext))) {
+                holder.queueLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mCallback.onQueueTrackSelected(index);
+                    }
+                });
+            }
+        }
 
 
         // Retornar o item dentro do layout.

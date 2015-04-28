@@ -1,5 +1,6 @@
 package com.xrdev.musicast.connection;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.api.client.http.HttpRequest;
@@ -14,9 +15,11 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
+import com.xrdev.musicast.Application;
 import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.model.TrackItem;
 import com.xrdev.musicast.model.VideoItem;
+import com.xrdev.musicast.utils.DatabaseHandler;
 
 import org.joda.time.Period;
 import org.joda.time.Seconds;
@@ -174,9 +177,11 @@ public class YouTubeManager {
 		return resultVideo;
 	}
 
-    public static void associateYouTubeData(TrackItem item, LocalQueue queue){
+    public static void associateYouTubeData(Context context, TrackItem item, LocalQueue queue){
         String artists;
         String trackName;
+
+        DatabaseHandler dbHandler = Application.getDbHandler(context);
 
         // Recuperar dados de um item.
 
@@ -203,8 +208,9 @@ public class YouTubeManager {
         if ((video.isLicensed()) || (video.getDurationInt() <= (item.getDuration() + 15)
                 && video.getDurationInt() >= (item.getDuration() - 15))){
             item.setYoutubeId(video.getVideoId());
-            queue.addValidTrack(item);
+            // queue.addTrack(item);
             item.setQueueIndex(queue.getValidTracks().size() - 1);
+            dbHandler.insertMatch(item);
         } else {
             item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
         }

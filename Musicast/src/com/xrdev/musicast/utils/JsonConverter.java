@@ -58,12 +58,11 @@ public class JsonConverter {
         return jsonString;
     }
 
-    public String makeLoadPlaylistJson(LocalQueue queue, int index){
+    public String makeLoadPlaylistJson(LocalQueue queue, TrackItem track){
 
         jsonModel = new JsonModel();
         jsonModel.setType(TYPE_LOAD_PLAYLIST);
-        jsonModel.setVideoIds(queue.getValidIds());
-        jsonModel.setIndex(String.valueOf(index));
+        jsonModel.setTrackInfo(track);
         jsonModel.setTracksMetadata(queue.getValidTracks());
         jsonModel.setUUID(PrefsManager.getUUID(mContext));
 
@@ -74,11 +73,24 @@ public class JsonConverter {
         return jsonString;
     }
 
+    public String makePlayAtJson(int index) {
+        jsonModel = new JsonModel();
+        jsonModel.setType(TYPE_PLAY_VIDEO_AT);
+        jsonModel.setIndex(String.valueOf(index));
+        jsonModel.setUUID(PrefsManager.getUUID(mContext));
+
+        jsonString = gson.toJson(jsonModel);
+
+        writeLog();
+
+        return jsonString;
+
+    }
+
     public String makeAddToQueueJson(LocalQueue queue){
 
         jsonModel = new JsonModel();
         jsonModel.setType(TYPE_ADD_TO_QUEUE);
-        jsonModel.setVideoIds(queue.getValidIds());
         jsonModel.setTracksMetadata(queue.getValidTracks());
         jsonModel.setUUID(PrefsManager.getUUID(mContext));
 
@@ -93,7 +105,6 @@ public class JsonConverter {
 
         jsonModel = new JsonModel();
         jsonModel.setType(TYPE_SWAP_PLAYLIST);
-        jsonModel.setVideoIds(queue.getValidIds());
         jsonModel.setTracksMetadata(queue.getValidTracks());
         jsonModel.setUUID(PrefsManager.getUUID(mContext));
 

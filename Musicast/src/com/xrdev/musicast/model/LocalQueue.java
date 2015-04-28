@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class LocalQueue {
     private static String mPlaylistId;
     private static LocalQueue sInstance;
-    private ArrayList<TrackItem> mValidTracks;
+    private ArrayList<TrackItem> mTracks;
 
     public static LocalQueue initialize(String playlistId){
 
@@ -20,7 +20,7 @@ public class LocalQueue {
 
     public LocalQueue(String playlistId) {
         mPlaylistId = playlistId;
-        mValidTracks = new ArrayList<TrackItem>();
+        mTracks = new ArrayList<TrackItem>();
     }
 
     public String getPlaylistId() {
@@ -37,26 +37,21 @@ public class LocalQueue {
 
 
     public ArrayList<TrackItem> getValidTracks() {
-        return mValidTracks;
-    }
-
-    public void addValidTrack(TrackItem track) {
-        mValidTracks.add(track);
-    }
-
-    public ArrayList<String> getValidIds(){
-        ArrayList<String> validIds = new ArrayList<String>();
-
-        for (TrackItem trackItem : mValidTracks) {
-            validIds.add(trackItem.getYoutubeId());
+        ArrayList<TrackItem> validTracks = new ArrayList<TrackItem>();
+        for (TrackItem track : mTracks) {
+            if (track.wasFound())
+                validTracks.add(track);
         }
+        return validTracks;
+    }
 
-        return validIds;
+    public void addTrack(TrackItem track) {
+        mTracks.add(track);
     }
 
     public void setPositions(){
         int count = 0;
-        for (TrackItem trackItem : mValidTracks) {
+        for (TrackItem trackItem : mTracks) {
             trackItem.setInitialPos(count);
             count++;
         }

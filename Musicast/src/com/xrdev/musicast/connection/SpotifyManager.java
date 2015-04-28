@@ -8,6 +8,7 @@ import android.util.Log;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import com.xrdev.musicast.Application;
 import com.xrdev.musicast.activity.SpotifyAuthActivity;
 import com.xrdev.musicast.connection.spotifywrapper.Api;
 import com.xrdev.musicast.connection.spotifywrapper.methods.PlaylistTracksRequest;
@@ -22,6 +23,7 @@ import com.xrdev.musicast.connection.spotifywrapper.models.User;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.Token;
 import com.xrdev.musicast.model.TrackItem;
+import com.xrdev.musicast.utils.DatabaseHandler;
 import com.xrdev.musicast.utils.PrefsManager;
 
 
@@ -51,6 +53,8 @@ public class SpotifyManager {
 
         User currentUser = getCurrentUser(context);
 
+        DatabaseHandler dbHandler = Application.getDbHandler(context);
+
         int totalTracks = playlist.getNumTracksInt();
 
         ArrayList<TrackItem> result = new ArrayList<TrackItem>();
@@ -69,9 +73,11 @@ public class SpotifyManager {
 
                 for (PlaylistTrack playlistTrack : tracksPage.getItems()) {
 
-                    Track track = playlistTrack.getTrack();
+                    TrackItem trackItem = dbHandler.checkForMatch(
+                            new TrackItem(playlistTrack.getTrack())
+                    );
 
-                    result.add(new TrackItem(track));
+                    result.add(trackItem);
 
                 }
 

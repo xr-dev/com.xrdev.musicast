@@ -89,7 +89,7 @@ public class TracksFragment extends ListFragment {
                 // Foi encontrado vídeo, enviar mensagem.
                 try {
                     mCastMgr.sendDataMessage(
-                            jsonConverter.makeLoadPlaylistJson(mLocalQueue, selectedTrack.getQueueIndex())
+                            jsonConverter.makeLoadPlaylistJson(mLocalQueue, selectedTrack)
                     );
 
                 /*mCastMgr.sendDataMessage(

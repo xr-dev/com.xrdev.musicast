@@ -48,7 +48,7 @@ import java.util.ArrayList;
 
 public class MusicastActivity extends ActionBarActivity
     implements PlaylistsFragment.OnPlaylistSelectedListener, Application.OnMessageReceived, ModeFragment.OnModeSelectedListener,
-                TrackAdapter.OnAddedTrackListener, QueueAdapter.OnVotedTrackListener, NoAdminFragment.OnBecomeNewAdmin {
+                TrackAdapter.OnAddedTrackListener, QueueAdapter.QueueListener, NoAdminFragment.OnBecomeNewAdmin {
 
 
     private final static String TAG = "MusicastActivity";
@@ -210,7 +210,8 @@ public class MusicastActivity extends ActionBarActivity
                 mMenu.findItem(R.id.action_swap).setVisible(false);
                 actionBar.setSubtitle(R.string.playlists);
             } else {
-                super.onBackPressed();
+                //super.onBackPressed();
+                this.moveTaskToBack(true);
             }
         }
 
@@ -266,10 +267,16 @@ public class MusicastActivity extends ActionBarActivity
                 PrefsManager.clearPrefs(this);
                 SpotifyManager.logoutFromWebView(this);
                 Toast.makeText(getApplicationContext(),getString(R.string.string_logout_successful),Toast.LENGTH_SHORT).show();
+                mMenu.findItem(R.id.action_logout).setVisible(false);
+                mMenu.findItem(R.id.action_login).setVisible(true);
                 return true;
             case R.id.action_login :
+                mMenu.findItem(R.id.action_logout).setVisible(true);
+                mMenu.findItem(R.id.action_login).setVisible(false);
+
                 startActivity(
                         new Intent(MusicastActivity.this, SpotifyAuthActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 );
                 return true;
             case R.id.action_stop_hosting :
@@ -522,9 +529,6 @@ public class MusicastActivity extends ActionBarActivity
             String index = obj.getMessage();
             highlightPlayingNow(index);
         }
-        if (type.equals("adminDisconnected")) {
-            // TODO: Fragmento para solicitar novo admin.
-        }
         if (type.equals("feedback")) {
             String feedbackType = obj.getMessage();
 
@@ -544,6 +548,10 @@ public class MusicastActivity extends ActionBarActivity
 
     public void onDisconnected() {
         updateTrackInfo(null);
+        updatePlayQueue(null);
+        mFragmentManager.beginTransaction()
+                .add(R.id.main_container, mCastSelectorFragment)
+                .commit();
     }
 
     public void onConnected() {
@@ -603,8 +611,10 @@ public class MusicastActivity extends ActionBarActivity
 
     private void updatePlayQueue(ArrayList<TrackItem> tracks) {
         mQueueAdapter.clear();
-        for (TrackItem track : tracks) {
-            mQueueAdapter.add(track);
+        if (tracks != null) {
+            for (TrackItem track : tracks) {
+                mQueueAdapter.add(track);
+            }
         }
     }
 
@@ -723,6 +733,13 @@ public class MusicastActivity extends ActionBarActivity
     }
 
     protected void loadPlaylistsFragment() {
+
+        if (mFirstTracksTask != null)
+            mFirstTracksTask.cancel(true);
+
+        if (mTracksBackgroundTask != null)
+            mTracksBackgroundTask.cancel(true);
+
         if (!wasPlaylistsLoaded)
             mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
 
@@ -750,6 +767,12 @@ public class MusicastActivity extends ActionBarActivity
     @Override
     public void onTrackVoted(TrackItem track) {
         String msg = jsonConverter.makeTrackVoteJson(track);
+        sendMessage(msg);
+    }
+
+    @Override
+    public void onQueueTrackSelected(int position) {
+        String msg = jsonConverter.makePlayAtJson(position);
         sendMessage(msg);
     }
 
@@ -1005,11 +1028,11 @@ public class MusicastActivity extends ActionBarActivity
 			}
 
             if (spotifyItems == null) {
-                // TODO: Alterar esse método. Uma lista de reprodução vazia tem null como resultado esperado.
                 SpotifyManager.startLoginActivity(getApplicationContext());
             } else {
                 for (TrackItem item : spotifyItems) {
                     mTrackAdapter.add(item);
+                    mLocalQueue.addTrack(item);
                 }
             }
 
@@ -1055,6 +1078,7 @@ public class MusicastActivity extends ActionBarActivity
                         public void run() {
                             for (TrackItem item : spotifyItems) {
                                 adapter.add(item);
+                                mLocalQueue.addTrack(item);
                             }
                         }
                     });
@@ -1072,7 +1096,9 @@ public class MusicastActivity extends ActionBarActivity
                     break;
 
                 TrackItem currentItem = adapter.getItem(i);
-                YouTubeManager.associateYouTubeData(currentItem, mLocalQueue);
+                if (!currentItem.wasCached || !currentItem.wasFound()) {
+                    YouTubeManager.associateYouTubeData(getApplicationContext(), currentItem, mLocalQueue);
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1082,10 +1108,14 @@ public class MusicastActivity extends ActionBarActivity
             }
 
             for (int i = 0; i < adapter.getCount(); i++) {
+                // Atualizar as correspondências antigas.
                 if(isCancelled())
                     break;
 
                 TrackItem currentItem = adapter.getItem(i);
+
+                if (currentItem.isRefreshNeeded())
+                    YouTubeManager.associateYouTubeData(getApplication(), currentItem, mLocalQueue);
 
                 if (currentItem.wasFound())
                     mFoundCount++;

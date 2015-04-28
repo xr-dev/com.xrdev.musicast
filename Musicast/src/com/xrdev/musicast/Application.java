@@ -11,6 +11,7 @@ import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.callbacks.BaseCastConsumerImpl;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.xrdev.musicast.model.LocalQueue;
+import com.xrdev.musicast.utils.DatabaseHandler;
 import com.xrdev.musicast.utils.JsonConverter;
 import com.xrdev.musicast.utils.PrefsManager;
 
@@ -38,6 +39,7 @@ public class Application extends MultiDexApplication {
     private static String mAdmin;
 
     private static JsonConverter mJsonConverter;
+    private static DatabaseHandler mDatabaseHandler;
 
 
     public interface OnMessageReceived {
@@ -172,6 +174,14 @@ public class Application extends MultiDexApplication {
         }
 
         return mJsonConverter;
+    }
+
+    public static DatabaseHandler getDbHandler(Context context) {
+        if (mDatabaseHandler == null) {
+            mDatabaseHandler = new DatabaseHandler(context);
+        }
+
+        return mDatabaseHandler;
     }
 
 }
