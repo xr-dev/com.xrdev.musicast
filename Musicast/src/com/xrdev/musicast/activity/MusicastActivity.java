@@ -182,6 +182,8 @@ public class MusicastActivity extends ActionBarActivity
 
         mCastMgr = Application.getCastManager(this);
 
+
+
         try {
             if (mCastMgr.isConnected()) {
                 sendMessage(jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_GET_STATUS));
@@ -190,6 +192,9 @@ public class MusicastActivity extends ActionBarActivity
             Log.d(TAG, "Erro ao enviar mensagem no onResume. SEM DATANAMESPACE?" );
             Toast.makeText(getApplicationContext(), "Erro ao enviar mensagem. Namespace nulo?", Toast.LENGTH_LONG).show();
         }
+
+
+
     }
 
     @Override
@@ -266,9 +271,9 @@ public class MusicastActivity extends ActionBarActivity
             case R.id.action_logout :
                 PrefsManager.clearPrefs(this);
                 SpotifyManager.logoutFromWebView(this);
-                Toast.makeText(getApplicationContext(),getString(R.string.string_logout_successful),Toast.LENGTH_SHORT).show();
-                mMenu.findItem(R.id.action_logout).setVisible(false);
-                mMenu.findItem(R.id.action_login).setVisible(true);
+                Toast.makeText(getApplicationContext(),getString(R.string.logout_successful),Toast.LENGTH_SHORT).show();
+                //mMenu.findItem(R.id.action_logout).setVisible(false);
+                //mMenu.findItem(R.id.action_login).setVisible(true);
                 return true;
             case R.id.action_login :
                 mMenu.findItem(R.id.action_logout).setVisible(true);
@@ -535,6 +540,9 @@ public class MusicastActivity extends ActionBarActivity
             if (feedbackType.equals("FEEDBACK_TRACK_ADD"))
                 Toast.makeText(this, R.string.feedback_track_add, Toast.LENGTH_SHORT).show();
 
+            if (feedbackType.equals("FEEDBACK_TRACK_ALREADY_ON_QUEUE"))
+                Toast.makeText(this, R.string.feedback_track_already_on_queue, Toast.LENGTH_SHORT).show();
+
             if (feedbackType.equals("FEEDBACK_ERR_NO_ADMIN_RIGHTS"))
                 Toast.makeText(this, R.string.feedback_error_not_admin, Toast.LENGTH_SHORT).show();
 
@@ -550,7 +558,7 @@ public class MusicastActivity extends ActionBarActivity
         updateTrackInfo(null);
         updatePlayQueue(null);
         mFragmentManager.beginTransaction()
-                .add(R.id.main_container, mCastSelectorFragment)
+                .replace(R.id.main_container, mCastSelectorFragment)
                 .commit();
     }
 
@@ -799,10 +807,10 @@ public class MusicastActivity extends ActionBarActivity
         if (mLocalQueue != null) {
 
             new AlertDialog.Builder(this)
-                    .setTitle(R.string.add_tracks_to_queue_dialog_title)
-                    .setMessage(R.string.add_tracks_to_queue_dialog_message)
-                    .setNegativeButton(R.string.cancel, null)
-                    .setPositiveButton(R.string.add_tracks_to_queue_dialog_yes, new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.dlg_title_add_tracks)
+                    .setMessage(R.string.dlg_message_add_tracks)
+                    .setNegativeButton(R.string.dlg_cancel, null)
+                    .setPositiveButton(R.string.dlg_confirm_add_tracks, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String msg = jsonConverter.makeAddToQueueJson(mLocalQueue);
@@ -819,10 +827,10 @@ public class MusicastActivity extends ActionBarActivity
         if (mLocalQueue != null) {
             if (isAdmin()) {
                 new AlertDialog.Builder(this)
-                        .setTitle(R.string.swap_playlist_dialog_title)
-                        .setMessage(R.string.swap_playlist_dialog_message)
-                        .setNegativeButton(R.string.cancel, null)
-                        .setPositiveButton(R.string.swap_playlist_dialog_yes, new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.dlg_title_replace_playlist)
+                        .setMessage(R.string.dlg_message_replace_playlist)
+                        .setNegativeButton(R.string.dlg_cancel, null)
+                        .setPositiveButton(R.string.dlg_confirm_replace_playlist, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String msg = jsonConverter.makeSwapPlaylistJson(mLocalQueue);
@@ -840,10 +848,10 @@ public class MusicastActivity extends ActionBarActivity
 
     private void stopHosting() {
         new AlertDialog.Builder(this)
-                .setTitle(R.string.stop_hosting_dialog_title)
-                .setMessage(R.string.stop_hosting_dialog_message)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.stop_hosting_dialog_yes, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.dlg_title_stop_hosting)
+                .setMessage(R.string.dlg_message_stop_hosting)
+                .setNegativeButton(R.string.dlg_cancel, null)
+                .setPositiveButton(R.string.dlg_confirm_stop_hosting, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String msg = jsonConverter.makeGenericTypeJson(JsonConverter.TYPE_STOP_HOSTING);
@@ -865,14 +873,14 @@ public class MusicastActivity extends ActionBarActivity
 
         switch (Application.getMode()) {
             case Application.MODE_SOLO :
-                dialogTitle = getString(R.string.switch_to_party_dialog_title);
-                dialogMessage = getString(R.string.switch_to_party_dialog_message);
-                dialogConfirm = getString(R.string.switch_to_party_dialog_yes);
+                dialogTitle = getString(R.string.dlg_title_switch_to_party);
+                dialogMessage = getString(R.string.dlg_message_switch_to_party);
+                dialogConfirm = getString(R.string.dlg_confirm_switch_to_party);
                 break;
             case Application.MODE_PARTY :
-                dialogTitle = getString(R.string.switch_to_solo_dialog_title);
-                dialogMessage = getString(R.string.switch_to_solo_dialog_message);
-                dialogConfirm = getString(R.string.switch_to_solo_dialog_yes);
+                dialogTitle = getString(R.string.dlg_title_switch_to_solo);
+                dialogMessage = getString(R.string.dlg_message_switch_to_solo);
+                dialogConfirm = getString(R.string.dlg_confirm_switch_to_solo);
                 break;
             default:
                 return;
@@ -881,7 +889,7 @@ public class MusicastActivity extends ActionBarActivity
         new AlertDialog.Builder(this)
                 .setTitle(dialogTitle)
                 .setMessage(dialogMessage)
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.dlg_cancel, null)
                 .setPositiveButton(dialogConfirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -919,7 +927,7 @@ public class MusicastActivity extends ActionBarActivity
         protected void onPreExecute() {
             // Preparar o spinner
             pd = new ProgressDialog(MusicastActivity.this);
-            pd.setMessage(getString(R.string.string_loading));
+            pd.setMessage(getString(R.string.pd_loading));
             pd.show();
 
             fromIntent = getIntent();
@@ -930,6 +938,7 @@ public class MusicastActivity extends ActionBarActivity
             Log.i(TAG, "AsyncTask: Entrando no doInBackground.");
 
             String code = fromIntent.getStringExtra(EXTRA_CODE);
+
 
             // Significa que a PlaylistsActivity foi aberta pelo onNewIntent da AuthActivity, logo será necessário setar os tokens.
             if (code != null) {
@@ -988,7 +997,7 @@ public class MusicastActivity extends ActionBarActivity
 			// Preparar o spinner
             Log.i(TAG, "AsyncTask Spotify: Iniciando onPreExecute.");
             pd = new ProgressDialog(MusicastActivity.this);
-			pd.setMessage(getString(R.string.string_loading));
+			pd.setMessage(getString(R.string.pd_loading));
 			pd.show();
             Log.i(TAG, "AsyncTask Spotify: Finalizando onPreExecute.");
 		}

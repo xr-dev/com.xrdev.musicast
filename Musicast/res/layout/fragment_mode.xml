@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.xrdev.musicast.activity.VoteFragment">
+    tools:context="com.xrdev.musicast.activity.MusicastActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/string_solo_mode_selection"
+            android:text="@string/mode_selection_description"
             android:id="@+id/textModeSelection"
             android:gravity="center_horizontal"
             android:layout_centerVertical="true"
@@ -29,7 +29,7 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/string_host_party_button"
+            android:text="@string/btn_host_party"
             android:id="@+id/party_button"
             android:background="#ff9adb00"
             android:layout_alignParentBottom="true"
@@ -38,7 +38,7 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/string_solo_mode_button"
+            android:text="@string/btn_solo_mode"
             android:id="@+id/solo_button"
             android:background="#ff9adb00"
             android:layout_above="@id/party_button"

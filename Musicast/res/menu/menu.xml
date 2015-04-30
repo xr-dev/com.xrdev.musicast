@@ -12,14 +12,14 @@
         android:id="@+id/action_add_to_queue"
         android:orderInCategory="2"
         app:showAsAction="always"
-        android:title="@string/string_add_to_queue"
+        android:title="@string/add_all_tracks_to_queue"
         android:icon="@drawable/ic_action_add_to_queue"/>
 
     <item
         android:id="@+id/action_swap"
         android:orderInCategory="3"
         app:showAsAction="always"
-        android:title="@string/string_swap_playlist"
+        android:title="@string/replace_all_tracks"
         android:icon="@drawable/ic_action_replace"/>
 
     <item
@@ -44,13 +44,13 @@
         android:id="@+id/action_logout"
         android:orderInCategory="99"
         app:showAsAction="never"
-        android:title="@string/string_logout"/>
+        android:title="@string/action_logout"/>
 
     <item
         android:id="@+id/action_login"
         android:orderInCategory="100"
         app:showAsAction="never"
-        android:title="@string/title_activity_spotify_login"/>
+        android:title="@string/title_spotify_login"/>
 
 
 </menu>

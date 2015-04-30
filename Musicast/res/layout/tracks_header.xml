@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/string_tracks"
+            android:text="@string/tracks"
             android:id="@+id/text_header_tracks"
             android:layout_alignTop="@+id/text_header_num_tracks"
             android:layout_toRightOf="@+id/text_header_num_tracks"/>
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/string_videos_found"
+            android:text="@string/videos_found"
             android:id="@+id/text_header_videos"
             android:layout_alignTop="@+id/text_header_num_videos_found"
             android:layout_toRightOf="@+id/text_header_num_videos_found"/>
@@ -84,7 +84,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="3dp"
             android:drawableLeft="@drawable/ic_action_add_to_queue"
-            android:text="@string/string_add_to_queue"
+            android:text="@string/add_all_tracks_to_queue"
             android:textSize="15sp" />
 
         <Button
@@ -95,7 +95,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:drawableLeft="@drawable/ic_action_replace"
-            android:text="@string/string_swap_playlist"
+            android:text="@string/replace_all_tracks"
             android:layout_below="@id/button_add_to_queue"
             android:textSize="15sp" />
 

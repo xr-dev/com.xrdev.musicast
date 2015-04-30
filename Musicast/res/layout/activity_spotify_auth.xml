@@ -14,20 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/string_spotify_login"
-        android:id="@+id/textLogin"
-        android:gravity="center_horizontal"
-        android:layout_above="@+id/textAux"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/string_spotify_login_admin"
+        android:text="@string/login_required_for_admin"
         android:id="@+id/textAux"
-        android:layout_marginTop="15dp"
         android:gravity="center_horizontal"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
@@ -37,7 +25,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/string_spotify_login_button"
+        android:text="@string/btn_login"
         android:id="@+id/spotify_login_button"
         android:background="#ff9adb00"
         android:layout_above="@+id/spotify_login_skip"
@@ -46,7 +34,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/skip_login"
+        android:text="@string/btn_skip_login"
         android:id="@+id/spotify_login_skip"
         android:layout_marginTop="5dp"
         android:background="#ff9adb00"

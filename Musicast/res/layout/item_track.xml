@@ -64,7 +64,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:background="@drawable/ic_action_new"
-            android:contentDescription="@string/string_add_to_queue" />
+            android:contentDescription="@string/add_all_tracks_to_queue" />
 
     </RelativeLayout>
 

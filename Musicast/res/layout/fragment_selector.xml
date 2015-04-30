@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.xrdev.musicast.activity.VoteFragment">
+    tools:context="com.xrdev.musicast.activity.MusicastActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/string_chromecast_selection"
+                android:text="@string/chromecast_selection_description"
                 android:id="@+id/textCastSelection"
                 android:gravity="center_horizontal"
                 android:layout_marginBottom="20dp"/>

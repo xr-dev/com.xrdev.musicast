@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -60,13 +58,13 @@ public class SpotifyAuthActivity extends Activity {
         String hostUuid = Application.getAdmin();
 
         if (thisUuid.equals(hostUuid)) {
-            mAuxText.setText(R.string.string_spotify_login_admin);
+            mAuxText.setText(R.string.login_required_for_admin);
             mSkipButton.setVisibility(View.GONE);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mLoginButton.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             mLoginButton.setLayoutParams(params);
         } else {
-            mAuxText.setText(R.string.string_spotify_login_guest);
+            mAuxText.setText(R.string.login_optional_for_guest);
             mSkipButton.setVisibility(View.VISIBLE);
         }
     }

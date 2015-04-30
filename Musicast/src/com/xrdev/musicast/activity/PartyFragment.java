@@ -45,9 +45,9 @@ public class PartyFragment extends Fragment {
         String adminUuid = Application.getAdmin();
 
         if (thisUuid.equals(adminUuid))
-            mGuestDescriptionText.setText(R.string.string_party_admin);
+            mGuestDescriptionText.setText(R.string.party_admin_connected);
         else
-            mGuestDescriptionText.setText(R.string.string_party_guest);
+            mGuestDescriptionText.setText(R.string.party_guest_connected);
 
         mGotItButton.setOnClickListener(new View.OnClickListener() {
             @Override
