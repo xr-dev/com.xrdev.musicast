@@ -200,11 +200,15 @@ public class MusicastActivity extends ActionBarActivity
     @Override
     public void onBackPressed() {
 
-        if (mFirstTracksTask != null)
+        if (mFirstTracksTask != null) {
             mFirstTracksTask.cancel(true);
 
-        if (mTracksBackgroundTask != null)
+        }
+
+        if (mTracksBackgroundTask != null) {
             mTracksBackgroundTask.cancel(true);
+
+        }
 
         if (mSlidingUpLayout.isPanelExpanded()) {
             mSlidingUpLayout.collapsePanel();
@@ -664,6 +668,7 @@ public class MusicastActivity extends ActionBarActivity
         if (isAdmin()) {
             mMediaControlsContainer.setVisibility(View.VISIBLE);
             mMenu.findItem(R.id.action_switch_mode).setVisible(true);
+            actionBar.setTitle(R.string.party_mode_host);
             if (Application.getMode() == Application.MODE_PARTY) {
                 mMenu.findItem(R.id.action_stop_hosting).setVisible(true);
                 mMenu.findItem(R.id.action_switch_mode).setTitle(R.string.action_switch_to_solo);
@@ -673,6 +678,7 @@ public class MusicastActivity extends ActionBarActivity
             }
         } else {
             mMediaControlsContainer.setVisibility(View.GONE);
+            actionBar.setTitle(R.string.party_mode_guest);
             mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
             mMenu.findItem(R.id.action_switch_mode).setVisible(false);
         }
@@ -748,6 +754,9 @@ public class MusicastActivity extends ActionBarActivity
         if (mTracksBackgroundTask != null)
             mTracksBackgroundTask.cancel(true);
 
+        mMenu.findItem(R.id.action_add_to_queue).setVisible(false);
+        mMenu.findItem(R.id.action_swap).setVisible(false);
+
         if (!wasPlaylistsLoaded)
             mPlaylistsTask = new PlaylistDownloader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
 
@@ -767,7 +776,7 @@ public class MusicastActivity extends ActionBarActivity
 
     @Override
     public void onTrackAdded(TrackItem track) {
-        String msg = jsonConverter.makeTrackVoteJson(track);
+        String msg = jsonConverter.makeTrackAddJson(track);
         sendMessage(msg);
     }
 
@@ -942,6 +951,8 @@ public class MusicastActivity extends ActionBarActivity
 
             // Significa que a PlaylistsActivity foi aberta pelo onNewIntent da AuthActivity, logo será necessário setar os tokens.
             if (code != null) {
+                mMenu.findItem(R.id.action_login).setVisible(false);
+                mMenu.findItem(R.id.action_logout).setVisible(true);
                 SpotifyManager.setAuthCredentials(getApplication());
             }
 
@@ -1036,10 +1047,16 @@ public class MusicastActivity extends ActionBarActivity
 				pd.dismiss();
 			}
 
+
             if (spotifyItems == null) {
                 SpotifyManager.startLoginActivity(getApplicationContext());
             } else {
                 for (TrackItem item : spotifyItems) {
+                    if (isCancelled()) {
+                        mTrackAdapter.clear();
+                        mLocalQueue.clear();
+                        break;
+                    }
                     mTrackAdapter.add(item);
                     mLocalQueue.addTrack(item);
                 }
@@ -1077,15 +1094,16 @@ public class MusicastActivity extends ActionBarActivity
                 int totalTracks = mPlaylistSelected.getNumTracksInt();
                 while (mRequestOffset < totalTracks) {
 
+                    final ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(mPlaylistSelected, REQUEST_LIMIT, mRequestOffset, getApplicationContext());
+
                     if (isCancelled())
                         break;
-
-                    final ArrayList<TrackItem> spotifyItems = SpotifyManager.getPlaylistTracks(mPlaylistSelected, REQUEST_LIMIT, mRequestOffset, getApplicationContext());
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             for (TrackItem item : spotifyItems) {
+                                Log.d(TAG, "BackgroundDownloader runOnUiThread(): Música adicionada ao Adapter: " + item.getName());
                                 adapter.add(item);
                                 mLocalQueue.addTrack(item);
                             }

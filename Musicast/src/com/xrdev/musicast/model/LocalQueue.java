@@ -49,6 +49,10 @@ public class LocalQueue {
         mTracks.add(track);
     }
 
+    public void clear(){
+        mTracks.clear();
+    }
+
     public void setPositions(){
         int count = 0;
         for (TrackItem trackItem : mTracks) {

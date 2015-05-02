@@ -21,7 +21,7 @@
     <string name="loading">Loading&#8230;</string>
 
     <!-- Used in Router Controller Dialog -->
-    <string name="no_media_info">No media information available</string>
+    <string name="no_media_info"></string>
 
     <!-- Session Recovery Dialog message -->
     <string name="session_reconnection_attempt">Attempting to recover previous session&#8230;</string>

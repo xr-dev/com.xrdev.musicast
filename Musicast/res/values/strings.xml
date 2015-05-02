@@ -8,7 +8,7 @@
     <string name="action_stop_hosting">Stop Hosting</string>
     <string name="action_switch_to_solo">Enter Solo Mode</string>
     <string name="action_switch_to_party">Host a Party</string>
-    <string name="action_logout">Logout</string>
+    <string name="action_logout">Logout from Spotify</string>
 
 
     <!-- Keys e protocolos -->
@@ -68,7 +68,7 @@
 
     <string name="solo_mode">Solo Mode</string>
     <string name="party_mode_guest">Party Guest</string>
-    <string name="party_mode_host">Hosting Party</string>
+    <string name="party_mode_host">Party Host</string>
     <string name="playlists">Playlists</string>
 
     <string name="no_admin_on_party">The previous Party Host has disconnected. \n\n Become the new Host or keep connected as a Guest?</string>
@@ -78,11 +78,11 @@
     <string name="string_login_required_to_host">To become the Party Host, you need to log in with your Spotify Account.</string>
 
     <string name="dlg_title_add_tracks">Add all tracks to queue?</string>
-    <string name="dlg_message_add_tracks">Add every music video found on this playlist to the play queue?</string>
+    <string name="dlg_message_add_tracks">Add every music video found on this playlist to the end of the play queue?</string>
     <string name="dlg_confirm_add_tracks">Add tracks</string>
 
     <string name="dlg_title_replace_playlist">Replace current playlist?</string>
-    <string name="dlg_message_replace_playlist">Replace all the tracks on the play queue with this playlist? \n Your current play queue and votes sent will be lost.</string>
+    <string name="dlg_message_replace_playlist">Your current play queue and votes sent will be lost.</string>
     <string name="dlg_confirm_replace_playlist">Swap playlist</string>
 
     <string name="dlg_title_stop_hosting">Stop Hosting this Party?</string>
