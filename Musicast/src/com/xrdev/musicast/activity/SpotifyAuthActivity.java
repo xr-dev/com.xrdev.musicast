@@ -57,7 +57,7 @@ public class SpotifyAuthActivity extends Activity {
         String thisUuid = PrefsManager.getUUID(this);
         String hostUuid = Application.getAdmin();
 
-        if (thisUuid.equals(hostUuid)) {
+        if (thisUuid.equals(hostUuid) || Application.getMode() == Application.MODE_SOLO) {
             mAuxText.setText(R.string.login_required_for_admin);
             mSkipButton.setVisibility(View.GONE);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mLoginButton.getLayoutParams();

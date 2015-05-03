@@ -202,6 +202,11 @@ public class YouTubeManager {
             item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
             return;
         }
+
+        if (item.getTrackId() == null || item.getTrackId().equals("null")) {
+            item.setYoutubeId(TrackItem.VIDEO_NOT_FOUND);
+            return;
+        }
         // Procurar correlação usando a duração dos vídeos.
         // Configurar a tolerância na duração pelo if abaixo.
 

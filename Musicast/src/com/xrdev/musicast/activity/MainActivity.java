@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -41,7 +40,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                startFragmentsTest();
+                startApp();
             }
 
         });
@@ -67,8 +66,8 @@ public class MainActivity extends Activity {
 
 
         });
-		
-	}
+
+    }
 
 
 	@Override
@@ -83,14 +82,13 @@ public class MainActivity extends Activity {
 	public void startLoginTest() {
 		Log.i(TAG, "Iniciando teste de login do Spotify. / Starting Spotify Login Test.");
 
-        Intent intent = new Intent(MainActivity.this, SpotifyAuthActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        Intent intent = new Intent(MainActivity.this, SpotifyAuthActivity.class);
 
         startActivity(intent);
 		
 	}
 
-    public void startFragmentsTest() {
+    public void startApp() {
         Log.i(TAG, "Iniciando teste de Fragments. / Starting Fragments test.");
 
         Intent intent = new Intent(MainActivity.this, MusicastActivity.class);

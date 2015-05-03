@@ -45,15 +45,15 @@
     <string name="previous">Anterior</string>
     <string name="next">Próxima</string>
 
-    <string name="play_queue">LISTA DE REPRODUÇÃO</string>
+    <string name="play_queue">FILA DE REPRODUÇÃO</string>
 
     <string name="btn_solo_mode">MODO SOLO</string>
     <string name="btn_host_party">INICIAR FESTA</string>
     <string name="mode_selection_description">Escolha o Modo Musicast. \n\n
         O Modo Solo permite que todos controlem completamente o Musicast. \n\n
         No Modo Festa você e seus amigos podem votar em suas músicas favoritas e decidirem juntos o que será reproduzido.</string>
-    <string name="party_guest_connected">Alguém iniciou uma Festa! \n\n Veja a Lista de Reprodução e vote em suas músicas favoritas usando o painel abaixo. </string>
-    <string name="party_admin_connected">Você é o Anfitrião e possui controle total sobre a Lista de Reprodução.</string>
+    <string name="party_guest_connected">Alguém iniciou uma Festa! \n\n Veja a Fila de Reprodução e vote em suas músicas favoritas usando o painel abaixo. </string>
+    <string name="party_admin_connected">Você é o Anfitrião e possui controle total sobre a Fila de Reprodução.</string>
     <string name="btn_got_it">ENTENDI!</string>
 
     <string name="chromecast_selection_description">Bem-vindo ao Musicast! \n\n
@@ -64,9 +64,9 @@
     <string name="error_not_admin_swap">Você não é o Anfitrião desta Festa e não pode substituir playlists.</string>
 
     <string name="string_no_playlists_or_logged_out">Nenhuma playlist encontrada. \n\n
-        Entre com sua conta do Spotify. \n Playlists que você tenha criado ou esteja seguind aparecerão aqui.</string>
-    <string name="feedback_track_add">Música adicionada à Lista de Reprodução com o seu voto.</string>
-    <string name="feedback_track_already_on_queue">Voto enviado.A música selecionada já estava na Lista de Reprodução.</string>
+        Entre com sua conta do Spotify. \n Playlists que você tenha criado ou esteja seguindo aparecerão aqui.</string>
+    <string name="feedback_track_add">Música adicionada à Fila de Reprodução com o seu voto.</string>
+    <string name="feedback_track_already_on_queue">Voto enviado.A música selecionada já estava na Fila de Reprodução.</string>
     <string name="feedback_error_not_admin">Apenas o Anfitrião pode fazer isso.</string>
     <string name="feedback_error_has_admin">Alguém já se tornou o Anfitrião.</string>
 

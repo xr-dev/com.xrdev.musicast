@@ -16,7 +16,7 @@ import org.joda.time.format.ISODateTimeFormat;
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "musicast.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3    ;
 
     public static final String TBL_MATCHES = "matches";
 
@@ -87,15 +87,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     + "'" + spotifyId + "', '" + youtubeId + "', '" + refreshDate
                     + "')"
         );
+    }
 
-        /*ContentValues values = new ContentValues();
-        values.put(MATCHES_SPOTIFY_ID, trackItem.getTrackId());
-        values.put(MATCHES_YOUTUBE_ID, trackItem.getYoutubeId());
-        values.put(MATCHES_REFRESH_DATE, new DateTime().plusWeeks(2).toString(fmt));
+    public void removeMatch(String youtubeId) {
+        SQLiteDatabase sqLite = this.getWritableDatabase();
 
-        sqLite.insert(TBL_MATCHES, null, values);
+        sqLite.delete(TBL_MATCHES,
+                MATCHES_YOUTUBE_ID + "= ?",
+                new String[]{youtubeId}
+        );
 
-        sqLite.close();*/
+        sqLite.close();
     }
 
 }

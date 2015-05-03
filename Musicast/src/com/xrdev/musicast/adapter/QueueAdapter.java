@@ -163,7 +163,7 @@ public class QueueAdapter extends BaseAdapter {
         });
 
         if (Application.getAdmin() != null) {
-            if (Application.getAdmin().equals(PrefsManager.getUUID(mContext))) {
+            if (Application.getAdmin().equals(PrefsManager.getUUID(mContext)) || Application.getMode() == Application.MODE_SOLO) {
                 holder.queueLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

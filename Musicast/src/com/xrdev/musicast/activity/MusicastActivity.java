@@ -41,6 +41,7 @@ import com.xrdev.musicast.model.JsonModel;
 import com.xrdev.musicast.model.PlaylistItem;
 import com.xrdev.musicast.model.LocalQueue;
 import com.xrdev.musicast.model.TrackItem;
+import com.xrdev.musicast.utils.DatabaseHandler;
 import com.xrdev.musicast.utils.JsonConverter;
 import com.xrdev.musicast.utils.PrefsManager;
 
@@ -174,6 +175,8 @@ public class MusicastActivity extends ActionBarActivity
     @Override
     protected void onResume() {
         super.onResume();
+
+
 /*        mCastMgr = Application.getCastManager(this);
         mCastMgr.incrementUiCounter();
         if (mCastMgr.isConnected()) {
@@ -190,7 +193,15 @@ public class MusicastActivity extends ActionBarActivity
             }
         } catch (Exception e) {
             Log.d(TAG, "Erro ao enviar mensagem no onResume. SEM DATANAMESPACE?" );
-            Toast.makeText(getApplicationContext(), "Erro ao enviar mensagem. Namespace nulo?", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Erro ao enviar mensagem.", Toast.LENGTH_LONG).show();
+        }
+
+        Intent fromIntent = getIntent();
+        String code = fromIntent.getStringExtra(EXTRA_CODE);
+
+        if (code != null) {
+            SpotifyManager.setAuthCredentials(getApplication());
+            wasPlaylistsLoaded = false;
         }
 
 
@@ -276,8 +287,10 @@ public class MusicastActivity extends ActionBarActivity
                 PrefsManager.clearPrefs(this);
                 SpotifyManager.logoutFromWebView(this);
                 Toast.makeText(getApplicationContext(),getString(R.string.logout_successful),Toast.LENGTH_SHORT).show();
-                //mMenu.findItem(R.id.action_logout).setVisible(false);
-                //mMenu.findItem(R.id.action_login).setVisible(true);
+                mMenu.findItem(R.id.action_logout).setVisible(false);
+                mMenu.findItem(R.id.action_login).setVisible(true);
+                mPlaylistAdapter.clear();
+                loadPlaylistsFragment();
                 return true;
             case R.id.action_login :
                 mMenu.findItem(R.id.action_logout).setVisible(true);
@@ -285,7 +298,6 @@ public class MusicastActivity extends ActionBarActivity
 
                 startActivity(
                         new Intent(MusicastActivity.this, SpotifyAuthActivity.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 );
                 return true;
             case R.id.action_stop_hosting :
@@ -552,8 +564,11 @@ public class MusicastActivity extends ActionBarActivity
 
             if (feedbackType.equals("FEEDBACK_ERR_HAS_ADMIN"))
                 Toast.makeText(this, R.string.feedback_error_has_admin, Toast.LENGTH_SHORT).show();
-
-
+        }
+        if (type.equals("playerError")) {
+            String invalidYoutubeId = obj.getMessage();
+            DatabaseHandler dbHandler = Application.getDbHandler(this);
+            dbHandler.removeMatch(invalidYoutubeId);
         }
     }
 
@@ -654,7 +669,8 @@ public class MusicastActivity extends ActionBarActivity
         } catch (NoConnectionException e) {
             e.printStackTrace();
         } catch (IllegalStateException e) {
-
+            Log.d(TAG, "Erro ao enviar mensagem no onResume. SEM DATANAMESPACE?" );
+            Toast.makeText(getApplicationContext(), "Erro ao enviar mensagem.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -665,7 +681,35 @@ public class MusicastActivity extends ActionBarActivity
         boolean wasLoginPrompted = fromIntent.getBooleanExtra(EXTRA_WAS_LOGIN_PROMPTED, false);
 
 
-        if (isAdmin()) {
+        if (Application.getMode() == Application.MODE_SOLO) {
+            mMediaControlsContainer.setVisibility(View.VISIBLE);
+            mMenu.findItem(R.id.action_switch_mode).setVisible(true);
+            actionBar.setTitle(R.string.solo_mode);
+            actionBar.setSubtitle(R.string.playlists);
+            mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
+            mMenu.findItem(R.id.action_switch_mode).setTitle(R.string.action_switch_to_party);
+        }
+
+        if (Application.getMode() == Application.MODE_PARTY) {
+            if (isAdmin()) {
+                mMediaControlsContainer.setVisibility(View.VISIBLE);
+                mMenu.findItem(R.id.action_switch_mode).setVisible(true);
+                actionBar.setTitle(R.string.party_mode_host);
+                mMenu.findItem(R.id.action_stop_hosting).setVisible(true);
+                mMenu.findItem(R.id.action_switch_mode).setTitle(R.string.action_switch_to_solo);
+            } else {
+                mMediaControlsContainer.setVisibility(View.GONE);
+                actionBar.setTitle(R.string.party_mode_guest);
+                mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
+                mMenu.findItem(R.id.action_switch_mode).setVisible(false);
+            }
+        }
+
+
+
+        // COMENTAR TUDO ABAIXO DESSA LINHA:
+
+/*        if (isAdmin()) {
             mMediaControlsContainer.setVisibility(View.VISIBLE);
             mMenu.findItem(R.id.action_switch_mode).setVisible(true);
             actionBar.setTitle(R.string.party_mode_host);
@@ -681,7 +725,7 @@ public class MusicastActivity extends ActionBarActivity
             actionBar.setTitle(R.string.party_mode_guest);
             mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
             mMenu.findItem(R.id.action_switch_mode).setVisible(false);
-        }
+        }*/
 
         if (toLayout == Application.MODE_PARTY) {
 
@@ -713,6 +757,7 @@ public class MusicastActivity extends ActionBarActivity
                 case Application.MODE_SOLO :
                     actionBar.setTitle(R.string.solo_mode);
                     actionBar.setSubtitle(R.string.playlists);
+                    mMediaControlsContainer.setVisibility(View.VISIBLE);
                     mMenu.findItem(R.id.action_stop_hosting).setVisible(false);
                     loadPlaylistsFragment();
                     break;
@@ -951,8 +996,8 @@ public class MusicastActivity extends ActionBarActivity
 
             // Significa que a PlaylistsActivity foi aberta pelo onNewIntent da AuthActivity, logo será necessário setar os tokens.
             if (code != null) {
-                mMenu.findItem(R.id.action_login).setVisible(false);
-                mMenu.findItem(R.id.action_logout).setVisible(true);
+                //mMenu.findItem(R.id.action_login).setVisible(false);
+                //mMenu.findItem(R.id.action_logout).setVisible(true);
                 SpotifyManager.setAuthCredentials(getApplication());
             }
 

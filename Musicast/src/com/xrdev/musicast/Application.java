@@ -123,7 +123,8 @@ public class Application extends MultiDexApplication {
             @Override
             public void onDataMessageReceived(String message) {
                 Log.i(TAG, "CAST RECEIVED MESSAGE:" + message);
-                mCallback.onMessageReceived(message);
+                if (message != null)
+                    mCallback.onMessageReceived(message);
             }
 
             @Override
